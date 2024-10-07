@@ -1,6 +1,6 @@
-<<<<<<< HEAD
+=========================
 ### HMS Project (Group 5)
-=======
+=========================
 
 UML : all do 
 
@@ -13,3 +13,4 @@ Pharmacist : kathlyn
 Doctor : aniston 
 
 Administrator : titus/isaac
+
