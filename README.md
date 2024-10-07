@@ -3,8 +3,13 @@
 =======
 
 UML : all do 
+
 Users : titus/isaac
+
 Patients : jamie
+
 Pharmacist : kathlyn
+
 Doctor : aniston 
+
 Administrator : titus/isaac
