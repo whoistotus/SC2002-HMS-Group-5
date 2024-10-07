@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 =========================
 ### HMS Project (Group 5)
 =========================
@@ -15,4 +14,10 @@ Doctor : aniston
 
 Administrator : titus/isaac
 
-test
+# The Assignment
+
+Our group is tasked to design and develop a Hospital Mangement System (HMS).
+
+The HMS application is designed to automate the management of hospital operations, including patient management, appointment scheduling, staff management, and billing.
+
+The system is expected to facilitate efficient management of hospital resources, enhance patient care, and streamline administrative processes.
