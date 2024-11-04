@@ -1,12 +1,12 @@
-package assignment;
-
 import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class Patient 
 {
+	private final String patientId;
 	private String name;
 	private Date dob;
 	private String gender;
@@ -14,10 +14,12 @@ public class Patient
 	private String email;
 	private String bloodType;
 	private List<String> medicalRecord;
+	private AppointmentManager appointmentManager;
 	
 	
-	public Patient(String name, Date dob, String gender, String contactNumber, String email, String bloodType)
+	public Patient(String patientId, String name, Date dob, String gender, String contactNumber, String email, String bloodType)
 	{
+		this.patientId = patientId;
 		this.name = name;
 		this.dob = dob;
 		this.gender = gender;
@@ -25,6 +27,14 @@ public class Patient
 		this.email = email;
 		this.bloodType = bloodType;
 		this.medicalRecord = new ArrayList<>();
+	}
+	
+	
+	
+	
+	public String getPatientId()
+	{
+		return patientId;
 	}
 
     public String getName()
@@ -51,17 +61,7 @@ public class Patient
     {
     	return email;
     }
-
-    public void setContactInfo(String contactNumber) 
-    {
-        this.contactNumber = contactNumber;
-    }
     
-    public void setEmail(String email)
-    {
-    	this.email = email;
-    }
-
     public String getBloodType() 
     {
         return bloodType;
@@ -72,9 +72,24 @@ public class Patient
         return medicalRecord;
     }
 
+    
+    
+    
+    public void setContactNumber(String contactNumber) 
+    {
+        this.contactNumber = contactNumber;
+    }
+    
+    public void setEmail(String email)
+    {
+    	this.email = email;
+    }
+
+    
+
     public void viewMedicalRecord() 
     {
-//    	System.out.println("Medical Record for Patient ID:", )
+    	System.out.println("Medical Record for Patient ID:" + patientId);
     	System.out.println("Name: " + name);
         System.out.println("Date of Birth: " + dob);
         System.out.println("Gender: " + gender);
@@ -90,35 +105,53 @@ public class Patient
     
     public void updatePersonalInfo(String newContactNumber, String newEmail) 
     {
-        if (newContactNumber != null) 
-        {
-            this.contactNumber = newContactNumber;
-        }
+        setContactNumber(newContactNumber);
+        setEmail(newEmail);
+        System.out.println("Contact information updated successfully.");
         
-        if (newEmail != null)
-        {
-        	this.email = newEmail;
-        }
     }
     
-    public void viewAvailAppointment()
+    
+    
+    
+    
+    public void viewAvailableSlots(Doctor doctor)
     {
-    	
+    	List<LocalDateTime> availableSlots = appointmentManager.viewAvailableSlots(doctor);
+    	System.out.println("Available slots for Dr. " + doctor + ":");
+    	for (LocalDateTime slot : availableSlots)
+    	{
+    		System.out.println(slot);
+    	}
     }
     
-    public void scheduleAppointment()
+    public void scheduleAppointment(Doctor doctor, LocalDateTime dateTime)
     {
-    		
+    	try
+    	{
+    		appointmentManager.scheduleAppointment(this, doctor, dateTime);
+    	}
+    	catch(InvalidAppointmentException e)
+    	{
+    		System.out.println(e.getMessage());
+    	}
     }
     
-    public void rescheduleAppointment()
+    public void rescheduleAppointment(Appointment appointment, LocalDateTime newDateTime)
     {
-    	
+    	try
+    	{
+    		appointmentManager.rescheduleAppointment(this,  appointment,  newDateTime);
+    	}
+    	catch (InvalidAppointmentException e)
+    	{
+    		System.out.println(e.getMessage());
+    	}
     }
     
-    public void cancelAppointment()
+    public void cancelAppointment(Appointment appointment)
     {
-    	
+    	appointmentManager.cancelAppointment(this, appointment);
     }
     
     public void viewScheduled()
