@@ -1,4 +1,4 @@
-package SC2002_Assignment.roles;
+package SC2002_Assignment;
 
 public class User
 {
@@ -73,5 +73,10 @@ public class User
     public String getUserRole()
     {
         return userRole;
+    }
+
+    public void setPassword(String password)
+    {
+        this.password = password;
     }
 }
