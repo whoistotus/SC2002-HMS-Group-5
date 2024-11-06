@@ -2,7 +2,7 @@ import java.util.ArrayList;
 
 public class Pharmacist extends User {
 
-    private ArrayList<Medicine> inventory;
+    private ArrayList<Medication> inventory;
 
     // Constructor
     public Pharmacist(String userId, String name) {
@@ -25,13 +25,13 @@ public class Pharmacist extends User {
     // Method to monitor inventory
     public void displayInventory() {
         System.out.println("Medicine Inventory:");
-        for (Medicine med : inventory) {
+        for (Medication med : inventory) {
             med.print();
         }
     }
     
-    public Medicine getMedicineByName(String name) {
-        for (Medicine medicine : inventory) {
+    public Medication getMedicineByName(String name) {
+        for (Medication medicine : inventory) {
             if (medicine.getMedicineName().equalsIgnoreCase(name)) {
                 return medicine;
             }
@@ -40,7 +40,7 @@ public class Pharmacist extends User {
     }
     // Method to prescribe medicine
     public void prescribeMed(String patientID, String ApptNum, String medicineName, int amount) {
-        Medicine medicine = getMedicineByName(medicineName);
+        Medication medicine = getMedicineByName(medicineName);
 
         if (medicine != null) {
             try {
@@ -61,7 +61,7 @@ public class Pharmacist extends User {
 
 
     // Method to submit replenishment requests for a medicine
-    public String submitReplenishmentRequest(String medicineName, int quantity, InventoryManager inventoryManager) {
+    public String submitReplenishmentRequest(String medicineName, int quantity, InventoryController inventoryManager) {
         ReplenishmentRequest request = new ReplenishmentRequest(medicineName, quantity);
         inventoryManager.addRequest(request);
         System.out.printf("Replenishment request for %d units of %s submitted to inventory manager.%n", quantity, medicineName);

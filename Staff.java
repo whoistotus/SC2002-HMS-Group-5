@@ -1,14 +1,12 @@
 package SC2002_Assignment;
 
-import java.util.Scanner;
-
 
 public class Staff
 {
     private String name;
     private String gender;
     private String role;
-    private int staffID;
+    private int HospitalID;
     private int age;
 
     static int staffCounter = 0;
@@ -61,14 +59,14 @@ public class Staff
         this.age = age;
     }
 
-    public int getStaffID()
+    public int getHospitalID()
     {
-        return staffID;
+        return HospitalID;
     }
 
-    public void setStaffID(int staffID)
+    public void setHospitalID(int HospitalID)
     {
-        this.staffID = staffID;
+        this.HospitalID = HospitalID;
     }
 
 

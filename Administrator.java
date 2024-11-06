@@ -4,8 +4,13 @@ import java.util.Scanner;
 import java.util.List;
 
 
-public class Administrator extends Staff
+
+public class Administrator extends User
 {
+    private String name;
+    private String staff;
+    private String age;
+
     Scanner sc = new Scanner(System.in);
     private List<Staff> staffList;
 
@@ -61,18 +66,38 @@ public class Administrator extends Staff
         }
     }
 
-    public void viewScheduledAppointments(int patientID, String patientName, String doctorID, String doctorName)
+    public List<Appointments> viewScheduledAppointments(String patientID)
     {
 
     }
 
-    public void showInventory()
-    {
-        
-    }
-
-    public void updateInventory()
+    public List<Medication> addMedication(Medication medication, int removeAmount)
     {
         
     }
+
+    public List<Medication> removeMedication(Medication medication, int removeAmount)
+    {
+        
+    }
+    
+    public void viewHospitalStaffs(){
+
+    }
+
+    public List <HospitalStaffs> manageHospitalStaffs(){
+
+    }
+
+    public void viewMedicationInventory() {
+
+    }
+
+    public List <ReplenishmentRequest> viewReplenishmentRequest(){
+
+    }
+
+    public void approveReplenishmentRequest(ReplenishmentRequest reqForm)
+
+
 }

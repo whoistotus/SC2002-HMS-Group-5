@@ -91,14 +91,14 @@ public class DoctorApp {
                         if (toRecord != null) {
                             System.out.print("Enter Service Type: ");
                             String serviceType = scanner.nextLine();
-                            List<Medicine> medicines = new ArrayList<>();
+                            List<Medication> medicines = new ArrayList<>();
                             System.out.print("Enter Medicine name (type 'done' to finish): ");
                             while (true) {
                                 String medName = scanner.nextLine();
                                 if ("done".equalsIgnoreCase(medName)) break;
                                 System.out.print("Enter Medicine status: ");
                                 String medStatus = scanner.nextLine();
-                                medicines.add(new Medicine(medName, medStatus));
+                                medicines.add(new Medication(medName, medStatus));
                                 System.out.print("Enter another Medicine name (or 'done' to finish): ");
                             }
                             System.out.print("Enter Consultation Notes: ");

@@ -2,10 +2,10 @@ import java.util.List;
 
 public class AppointmentOutcomeRecord {
     private String serviceType;
-    private List<Medicine> medicines;
+    private List<Medication> medicines;
     private String notes;
 
-    public AppointmentOutcomeRecord(String serviceType, List<Medicine> medicines, String notes) {
+    public AppointmentOutcomeRecord(String serviceType, List<Medication> medicines, String notes) {
         this.serviceType = serviceType;
         this.medicines = medicines;
         this.notes = notes;
@@ -15,7 +15,7 @@ public class AppointmentOutcomeRecord {
         return serviceType;
     }
 
-    public List<Medicine> getMedicines() {
+    public List<Medication> getMedicines() {
         return medicines;
     }
 

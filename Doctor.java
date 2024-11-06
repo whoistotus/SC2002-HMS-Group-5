@@ -37,7 +37,7 @@ public class Doctor extends User {
         System.out.println("Declined appointment with patient: " + appointment.getPatient().getName());
     }
 
-    public void recordAppointmentOutcome(Appointment appointment, String serviceType, List<Medicine> medicines, String notes) {
+    public void recordAppointmentOutcome(Appointment appointment, String serviceType, List<Medication> medicines, String notes) {
         AppointmentOutcomeRecord outcomeRecord = new AppointmentOutcomeRecord(serviceType, medicines, notes);
         appointment.setOutcome(outcomeRecord);
 

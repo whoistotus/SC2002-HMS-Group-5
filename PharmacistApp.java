@@ -84,7 +84,7 @@ public class PharmacistApp {
         System.out.print("Enter Quantity: ");
         int quantity = scanner.nextInt();
         scanner.nextLine(); // Consume newline character
-        InventoryManager inventoryManager = new InventoryManager();
+        InventoryController inventoryManager = new InventoryController();
         pharmacist.submitReplenishmentRequest(medicineName, quantity, inventoryManager);
     }
 
