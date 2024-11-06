@@ -1,27 +1,18 @@
-package SC2002_Assignment;
+import java.util.ArrayList;
 
-import SC2002_Assignment.StatusOfPrescription;
-import SC2002_Assignment.Medicine;
+public class Pharmacist extends User {
 
-public class Pharmacist {
-    // Pharmacist's own attributes
-    private String pharmacistID;
-    private String name;
-    private String emailAddress;
-    private Pharmacy pharmacy;  // Reference to Pharmacy to access inventory
+    private ArrayList<Medicine> inventory;
 
     // Constructor
-    public Pharmacist(String pharmacistID, String name, String emailAddress, Pharmacy pharmacy) {
-        this.pharmacistID = pharmacistID;
-        this.name = name;
-        this.emailAddress = emailAddress;
-        this.pharmacy = pharmacy;
+    public Pharmacist(String userId, String name) {
+        super(userId, name, "Pharmacist");
     }
-
+    
     // Method to view a patient's appointment outcome by patient ID
-    public void viewAppointmentOutcomeRecord(String patientID) {
-        // Code to retrieve and display patient's appointment outcome
-        System.out.println("Displaying appointment outcome for patient ID: " + patientID);
+    public void viewAppointmentOutcomeRecord(String patientID, String ApptNum) {
+		// Code to retrieve and display patient's appointment outcome
+    	AppointmentOutcomeRecord.viewRecord(patientID, ApptNum);
     }
 
     // Method to update the status of a prescription and return the status as a string
@@ -32,14 +23,24 @@ public class Pharmacist {
     }
 
     // Method to monitor inventory
-    public void monitorInventory() {
-        // Display inventory levels from the Pharmacy
-        pharmacy.displayInventory();
+    public void displayInventory() {
+        System.out.println("Medicine Inventory:");
+        for (Medicine med : inventory) {
+            med.print();
+        }
     }
-
+    
+    public Medicine getMedicineByName(String name) {
+        for (Medicine medicine : inventory) {
+            if (medicine.getMedicineName().equalsIgnoreCase(name)) {
+                return medicine;
+            }
+        }
+        return null; // Return null if no match is found
+    }
     // Method to prescribe medicine
-    public void prescribeMed(String patientID, String medicineName, int amount) {
-        Medicine medicine = pharmacy.getMedicineByName(medicineName);
+    public void prescribeMed(String patientID, String ApptNum, String medicineName, int amount) {
+        Medicine medicine = getMedicineByName(medicineName);
 
         if (medicine != null) {
             try {
@@ -48,6 +49,8 @@ public class Pharmacist {
                     throw new Exception("Not enough stock available. Please submit a replenishment request.");
                 }
                 System.out.printf("Successfully prescribed %d units of %s to patient %s.%n", amount, medicineName, patientID);
+                //can add updateStatus in to AppointmentOutcomeRecord class
+                AppointmentOutcomeRecord.updateStatus(patientID, ApptNum, medicineName, StatusOfPrescription.DISPENSED);
             } catch (Exception e) {
                 System.out.printf("Failed to prescribe medication for patient %s. Error: %s%n", patientID, e.getMessage());
             }
@@ -64,5 +67,7 @@ public class Pharmacist {
         System.out.printf("Replenishment request for %d units of %s submitted to inventory manager.%n", quantity, medicineName);
         return "Replenishment request submitted for " + medicineName;
     }
+
+
 
 }
