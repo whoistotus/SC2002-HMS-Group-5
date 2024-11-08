@@ -2,23 +2,24 @@ package SC2002_Assignment;
 
 import java.util.Scanner;
 import java.util.List;
+import java.util.ArrayList;
 
 
 
-public class Administrator extends User
+public class Administrator extends HospitalStaff
 {
-    private String name;
-    private String staff;
-    private String age;
+    // private String name;
+    // private String staff;
+    // private String age;
 
     Scanner sc = new Scanner(System.in);
-    private List<Staff> staffList;
+    private List<HospitalStaff> staffList;
 
     //Constructor
-    public Administrator()
+    public Administrator(String hospitalID, String password, String userRole, String name, String gender, int age)
     {
-        super("","","", 0); //name, gender, role, age = 0
-        super.setRole("Administrator");
+        super(hospitalID, password, userRole, name, gender, age);
+        super.setuserRole("Administrator");
 
         System.out.println("Enter Administrator name: ");
         String adminName = sc.nextLine();
@@ -34,39 +35,39 @@ public class Administrator extends User
         
     }
 
-    public void updateStaffInfo(int staffID, String name, String role, String gender, int age)
+    public void updateStaffInfo(String hospitalID, String password, String userRole, String name, String gender, int age)
     {
-        for (Staff staff : staffList)
+        for (HospitalStaff staff : staffList)
         {
-            if (staff.getStaffID() == staffID)
+            if (staff.getHospitalID() == hospitalID)
             {
                 staff.setName(name);
-                staff.setRole(role);
+                staff.setuserRole(userRole);
                 staff.setGender(gender);
                 staff.setAge(age);
             }
         }
     }
 
-    public void addStaff(String name, String role, String gender, int age)
+    public void addStaff(String hospitalID, String password, String userRole, String name, String gender, int age)
     {
-        Staff newStaff = new Staff(name, role, gender, age);
+        HospitalStaff newStaff = new HospitalStaff(hospitalID, password, userRole, name, gender, age);
         staffList.add(newStaff);
     }
 
-    public void removeStaff(int staffID)
+    public void removeStaff(String hospitalID)
     {
-        for (Staff staff : staffList)
+        for (HospitalStaff staff : staffList)
         {
-            if (staff.getStaffID() == staffID)
+            if (staff.getHospitalID() == hospitalID)
             {
-                staffList.remove(staffID);
+                staffList.remove(hospitalID);
                 break;
             }
         }
     }
 
-    public List<Appointments> viewScheduledAppointments(String patientID)
+    public List<Appointment> viewScheduledAppointments(String patientID)
     {
 
     }
@@ -85,7 +86,7 @@ public class Administrator extends User
 
     }
 
-    public List <HospitalStaffs> manageHospitalStaffs(){
+    public List <HospitalStaff> manageHospitalStaffs(){
 
     }
 
@@ -98,6 +99,9 @@ public class Administrator extends User
     }
 
     public void approveReplenishmentRequest(ReplenishmentRequest reqForm)
+    {
+
+    }
 
 
 }

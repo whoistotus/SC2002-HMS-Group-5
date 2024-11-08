@@ -12,7 +12,17 @@ public class Medication
         return medicationName;
     }
 
+    public int getThreshold()
+    {
+        return lowStockThreshold;
+    }
+
     public void setThreshold(int lowStockThreshold){
+        if (lowStockThreshold <= 0)
+        {
+            System.out.println("Invalid threshold.");
+            return;
+        }
         this.lowStockThreshold = lowStockThreshold;
     }
 
