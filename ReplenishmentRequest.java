@@ -1,3 +1,5 @@
+package SC2002_Assignment;
+
 public class ReplenishmentRequest {
     private String medicineName;
     private int quantity;

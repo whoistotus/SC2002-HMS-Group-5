@@ -30,5 +30,17 @@ public class Medication
         return amount;
     }
 
+    public void setQuantity(int amount) {
+        if (amount < 0) {
+            System.out.println("Invalid stock amount.");
+            return;
+        }
+        this.amount = amount;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
 
 }
