@@ -1,8 +1,8 @@
 package SC2002_Assignment;
 
-import java.util.Scanner;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 
 
 
@@ -23,6 +23,7 @@ public class MainApp
             System.out.println("1 - Login");
             System.out.println("2 - Quit");
             int choice = sc.nextInt();
+            sc.nextLine();
 
             if (choice == 1)
             {
