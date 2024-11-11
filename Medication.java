@@ -8,6 +8,14 @@ public class Medication
     private String description;
     private int lowStockThreshold;
 
+    public Medication(String medicationName, int amount, String description, int lowStockThreshold)
+    {
+        this.medicationName = medicationName.trim().toLowerCase(); //standardised to lower case
+        setQuantity(amount);
+        this.description = description;
+        setThreshold(lowStockThreshold);
+    }
+
     public String getName(){
         return medicationName;
     }
@@ -42,5 +50,9 @@ public class Medication
         return description;
     }
 
-
+    @Override
+    public String toString()
+    {
+        return "Medication: " + medicationName + ", Stock: " + amount + ", Threshold: " + lowStockThreshold + ", Description: " + description;
+    }
 }

@@ -1,3 +1,4 @@
+package SC2002_Assignment;
 import java.util.Date;
 
 public class Appointment {

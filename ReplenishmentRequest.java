@@ -6,7 +6,7 @@ public class ReplenishmentRequest {
     private String status; // "Pending" or "Approved"
 
     public ReplenishmentRequest(String medicineName, int quantity) {
-        this.medicineName = medicineName;
+        this.medicineName = medicineName.toLowerCase();
         this.quantity = quantity;
         this.status = "Pending";
     }
