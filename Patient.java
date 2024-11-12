@@ -1,3 +1,5 @@
+package SC2002_Assignment;
+
 import java.util.Date;
 import java.time.LocalDateTime;
 import java.util.ArrayList;

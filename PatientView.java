@@ -1,4 +1,4 @@
-package assignment;
+package SC2002_Assignment;
 
 import java.util.Date;
 import java.time.LocalDateTime;

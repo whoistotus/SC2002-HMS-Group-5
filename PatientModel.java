@@ -1,7 +1,7 @@
-package assignment;
+package SC2002_Assignment;
 
-import java.util.Date;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 

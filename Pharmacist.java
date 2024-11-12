@@ -1,3 +1,5 @@
+package SC2002_Assignment;
+
 import java.util.ArrayList;
 
 public class Pharmacist extends User {
