@@ -3,12 +3,14 @@ package SC2002_Assignment;
 import java.util.Scanner;
 import java.util.List;
 import java.util.InputMismatchException;
+import java.util.ArrayList;
 
 
 public class AdminView {
     private InventoryController inventoryController;
     private AppointmentManager appointmentManager;
     private Medication medication;
+    private List<HospitalStaff> staffs = new ArrayList<>();
 
     Scanner sc = new Scanner(System.in);
 
@@ -44,9 +46,18 @@ public class AdminView {
                 manageMedicationInventory();
             
             case 3:
-                showHospStaff();
+                //needs to be able to show staff with filtering
+
+            case 4:
+                manageStaffList();
+
+            case 5:
+
             case 7:
                 //viewAppointments();
+
+            default:
+                System.out.println("Please input a valid choice");
                 
 
 
@@ -299,5 +310,42 @@ public class AdminView {
         System.out.println("\n=== Inventory Report ===");
         inventoryController.displayInventory();
         System.out.println("===========================");
+    }
+
+    //check if hospital ID is exisiting 
+    public boolean existingHospitalID(String hospitalID)
+    {
+        for (HospitalStaff hospitalStaff : staffs)
+        {
+            if (hospitalStaff.getHospitalID().equalsIgnoreCase(hospitalID))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void manageStaffList()
+    {
+        System.out.println("=======Staff List Management=======");
+        System.out.println("1 - Add Staff");
+        System.out.println("2 - Remove Staff");
+        System.out.println("3 - Update Staff's Details");
+        System.out.println("4 - Return to main menu.");
+
+        int choice = sc.nextInt();
+        sc.nextLine();
+
+        switch(choice)
+        {
+            case 1:
+                try
+                {
+                    System.out.println("Please enter your Hospital ID: ");
+                    String hospitalID = sc.nextLine();
+
+                    if (HospitalStaff.)
+                }
+        }
     }
 }
