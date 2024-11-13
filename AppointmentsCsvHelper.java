@@ -72,8 +72,8 @@ public class AppointmentsCsvHelper {
                     appointment.getAppointmentID(),
                     appointment.getPatientID(),
                     appointment.getDoctorID(),
-                    appointment.getDate(),
-                    appointment.getTime(),
+                    appointment.getAppointmentDate(),
+                    appointment.getAppointmentTime(),
                     appointment.getStatus()
                 );
             }
