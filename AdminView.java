@@ -8,6 +8,7 @@ import java.util.InputMismatchException;
 public class AdminView {
     private InventoryController inventoryController;
     private AppointmentManager appointmentManager;
+    private Medication medication;
 
     Scanner sc = new Scanner(System.in);
 
@@ -15,6 +16,7 @@ public class AdminView {
     {
         this.inventoryController = inventoryController;
         this.appointmentManager = appointmentManager;
+        this.medication = medication;
     }
 
 
@@ -28,8 +30,8 @@ public class AdminView {
         System.out.println("3 - Show Hospital Staff");
         System.out.println("4 - Manage Staff");
         System.out.println("5 - Approve Replenishment Request");
-        System.out.println("7 - Appointment Details");
-        System.out.println("6 - Logout");
+        System.out.println("6 - Appointment Details");
+        System.out.println("7 - Logout");
         int choice = sc.nextInt();
         sc.nextLine();
         
@@ -40,9 +42,12 @@ public class AdminView {
             
             case 2:
                 manageMedicationInventory();
-
+            
+            case 3:
+                showHospStaff();
             case 7:
                 //viewAppointments();
+                
 
 
             
@@ -189,7 +194,7 @@ public class AdminView {
     {
         try
         {
-            System.out.println("Enter Medicine Name for updating: ");
+            System.out.println("Enter Medicine Name for Stock updating: ");
             String name = sc.nextLine().trim().toLowerCase();
 
             if (name.isEmpty())
@@ -208,6 +213,30 @@ public class AdminView {
         } catch (Exception e) {
             System.out.println("Error occured while updating quantity: " + e.getMessage());
         }
+    }
+
+    public void setThreshold(Medication medication, int newThreshold)
+    {
+        try
+        {
+            System.out.println("Enter Medicine Name for Threshold updating: ");
+            String name = sc.nextLine().trim().toLowerCase();
+
+            if (name.isEmpty())
+            {
+                System.out.println("Medication name is empty.");
+                return;
+            }
+
+            System.out.println("Please enter the new threshold to implement: ");
+            int newthreshold = Integer.parseInt(sc.nextLine().trim());
+
+            inventoryController.updateThreshold(name, newthreshold);
+        }catch (NumberFormatException e){
+            System.out.println("Input is invalid. Please input an integer quantity.");
+        } catch (Exception e) {
+            System.out.println("Error occured while updating quantity: " + e.getMessage());
+        } 
     }
 
 

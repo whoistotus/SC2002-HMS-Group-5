@@ -105,4 +105,16 @@ public class InventoryController {
         }
         return null;
     }
+
+        // In InventoryController class
+    public void updateThreshold(String medicationName, int newThreshold) {
+        for (Medication med : medicationList) {
+            if (med.getName().equalsIgnoreCase(medicationName)) {
+                med.setThreshold(newThreshold);
+                return;
+            }
+        }
+        System.out.println("Medication not found: " + medicationName);
+}
+
 }
