@@ -1,19 +1,16 @@
 package SC2002_Assignment;
 
-import java.util.List;
-import java.util.Date;
 import java.util.HashMap;
-
 
 public class AppointmentOutcomeRecord {
     private String patientID;
     private String doctorID;
     private String appointmentID;
-    private String date;
+    private String date; // Changed from Date to String
     private String consultationNotes;
     private ServiceType serviceType;
     private StatusOfPrescription statusOfPrescription;
-    private HashMap<String, Integer> medications; // Medication name as key, quantity as value
+    private HashMap<String, Integer> medications;
 
     // Enums for service type and prescription status
     public enum ServiceType {
@@ -31,8 +28,10 @@ public class AppointmentOutcomeRecord {
         this.date = date;
         this.consultationNotes = consultationNotes;
         this.serviceType = serviceType;
+        this.statusOfPrescription = StatusOfPrescription.PENDING;
         this.medications = new HashMap<>();
     }
+
     // Getters and Setters
     public String getPatientID() {
         return patientID;
@@ -46,7 +45,7 @@ public class AppointmentOutcomeRecord {
         return appointmentID;
     }
 
-    public String getDate() {
+    public String getDate() { // Changed to return String
         return date;
     }
 
@@ -79,8 +78,32 @@ public class AppointmentOutcomeRecord {
         medications.put(medicationName, quantity);
     }
 
-    // Method to remove a medication from the record
-    public void removeMedication(String medicationName) {
-        medications.remove(medicationName);
+    // Convert medications HashMap to a CSV string format
+    public String medicationsToCsv() {
+        StringBuilder medicationsCsv = new StringBuilder();
+        for (String key : medications.keySet()) {
+            medicationsCsv.append(key).append(":").append(medications.get(key)).append(";");
+        }
+        if (medicationsCsv.length() > 0) {
+            medicationsCsv.setLength(medicationsCsv.length() - 1); // Remove trailing semicolon
+        }
+        return medicationsCsv.toString();
+    }
+
+    // Method to parse medications from CSV format
+    public static HashMap<String, Integer> parseMedicationsFromCsv(String csvData) {
+        HashMap<String, Integer> medications = new HashMap<>();
+        if (csvData != null && !csvData.trim().isEmpty()) {
+            String[] items = csvData.split(";");
+            for (String item : items) {
+                String[] pair = item.split(":");
+                if (pair.length == 2) {
+                    String medicationName = pair[0];
+                    int quantity = Integer.parseInt(pair[1]);
+                    medications.put(medicationName, quantity);
+                }
+            }
+        }
+        return medications;
     }
 }
