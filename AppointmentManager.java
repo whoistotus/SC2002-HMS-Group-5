@@ -16,7 +16,8 @@ public class AppointmentManager
     public List<LocalDateTime> getAvailableSlots(Doctor doctor) 
     {
         List<LocalDateTime> availableSlots = new ArrayList<>();
-        
+        availableSlots.add(LocalDateTime.of(2024, 11, 10, 10, 0));
+        availableSlots.add(LocalDateTime.of(2024, 11, 11, 11, 10));
         // remove slots that are already taken by the doctor's appointments
         for (Appointment appointment : appointments) 
         {
@@ -30,7 +31,7 @@ public class AppointmentManager
     }
 
     
-    public boolean scheduleAppointment(PatientModel patient, Doctor doctor, LocalDateTime dateTime) 
+    public boolean scheduleAppointment(String appointmentID, PatientModel patient, Doctor doctor, LocalDateTime dateTime) 
     {
         if (!getAvailableSlots(doctor).contains(dateTime)) 
         {
@@ -38,9 +39,21 @@ public class AppointmentManager
         }
         
         // else slot is avail so create the appointment with pending status
-        Appointment newAppointment = new Appointment(patient, doctor, dateTime, "Pending");
+        Appointment newAppointment = new Appointment(appointmentID, patient, doctor, dateTime, "Pending");
         appointments.add(newAppointment);
         return true;
+    }
+
+    public boolean rescheduleAppointment(Appointment appointment, LocalDateTime newDateTime) 
+    {
+    	for (Appointment appt : appointments) {
+            if (appt.getAppointmentID().equals(appt.getAppointmentID())) {
+                appt.setAppointmentTime(newDateTime);  // update time in the actual object
+                appt.setStatus("Pending");  // reset status
+                return true;
+            }
+        }
+        return false;
     }
 
     // for the doctor to update appointment status
@@ -49,19 +62,18 @@ public class AppointmentManager
         appointment.setStatus(status);
     }
     
-    public boolean cancelAppointment(Appointment appointment) 
+    public boolean cancelAppointment(String appointmentID) 
     {
-        if (appointments.contains(appointment)) 
-        {
-            appointment.setStatus("Cancelled");
-            appointments.remove(appointment);  // removes the appointment from the list
-            return true;
-        } 
-        
-        else 
-        {
-        	return false;
+    	for (Appointment appointment : appointments) 
+    	{
+            if (appointment.getAppointmentID().equals(appointmentID)) 
+            {
+                appointment.setStatus("Cancelled");
+                appointments.remove(appointment);
+                return true;
+            }
         }
+        return false;
     }
 
     // appointments for a specific patient
@@ -70,13 +82,26 @@ public class AppointmentManager
         List<Appointment> patientAppointments = new ArrayList<>();
         for (Appointment appointment : appointments) 
         {
-            if (appointment.getPatient().getPatientId().equals(patientId)) 
+            if (appointment.getPatient().getHospitalID().equals(patientId)) 
             {
                 patientAppointments.add(appointment);
             }
         }
         return patientAppointments;
-    }    
+    }
+
+
+    public Appointment getAppointmentByPatientId(String patientId) 
+    {
+        for (Appointment appointment : appointments) 
+        {
+            if (appointment.getPatientID().equals(patientId)) 
+            {
+                return appointment;
+            }
+        }
+        return null; // Return null if no appointment is found
+    }
 }
 
 /*import java.time.LocalDateTime;
