@@ -6,8 +6,9 @@ public class PharmacistController extends User {
     private static int requestCounter = 1;  // Counter to track the ID generation
     private String hospitalID;
 
-    public PharmacistController(String hospitalID) {
-        this.hospitalID = hospitalID;
+    public PharmacistController(String hospitalID, String password, String userRole) {
+        super(hospitalID, password, userRole); 
+        System.out.println("Hello " + hospitalID);
     }
 
     // Update the status of the prescription in the appointment record
@@ -26,7 +27,7 @@ public class PharmacistController extends User {
         String requestID = String.format("%04d", requestCounter);
         requestCounter++;
         
-        ReplenishmentRequest request = new ReplenishmentRequest(requestID, medicineName, quantity);
+        ReplenishmentRequestModel request = new ReplenishmentRequestModel(requestID, medicineName, quantity);
         
         // Save the request to the CSV file
         request.writeToCSV();
@@ -36,41 +37,52 @@ public class PharmacistController extends User {
 
 
     // Prescribe medicine based on quantities already set by the doctor
-    public String prescribeMed(String appointmentID, List<AppointmentOutcomeRecord> records) {
+    public String prescribeMed(String appointmentID, List<AppointmentOutcomeRecord> records, HashMap<String, Medication> inventory) {
         // Iterate through the list of appointment outcome records to find the specific appointment
         for (AppointmentOutcomeRecord record : records) {
             if (record.getAppointmentID().equals(appointmentID)) {
                 // Check if prescribed medicines are available
-                HashMap<String, Integer> medications = record.getPrescribedMedicines();
-                if (medications == null || medications.isEmpty()) {
+                HashMap<String, Integer> prescribedMedicines = record.getMedications();
+                if (prescribedMedicines == null || prescribedMedicines.isEmpty()) {
                     throw new IllegalStateException("No prescribed medicines found for appointment ID: " + appointmentID);
                 }
-
+    
                 // Process the prescribed medicines (e.g., update their status, quantity, etc.)
-                for (String medicine : medications.keySet()) {
-                    int quantity = medications.get(medicine);
-                    
+                for (String medicineName : prescribedMedicines.keySet()) {
+                    int quantity = prescribedMedicines.get(medicineName);
+    
                     // Check for invalid or zero quantity
                     if (quantity <= 0) {
-                        throw new IllegalArgumentException("Invalid quantity for medicine: " + medicine);
+                        throw new IllegalArgumentException("Invalid quantity for medicine: " + medicineName);
                     }
-
-                    // Logic to process the prescribed medicine, e.g., update inventory or create a record
-                   
-                    medicine.subtractQuantity(quantity);
-                    
-                    System.out.println("Processing medicine: " + medicine + " with quantity: " + quantity);
+    
+                    // Check if the medication exists in the inventory
+                    Medication medication = inventory.get(medicineName.toLowerCase()); // Ensure case-insensitive match
+                    if (medication == null) {
+                        throw new IllegalArgumentException("Medicine not found in inventory: " + medicineName);
+                    }
+    
+                    // Check if there's enough stock in the inventory
+                    if (medication.getQuantity() < quantity) {
+                        throw new IllegalArgumentException("Not enough stock for medicine: " + medicineName);
+                    }
+    
+                    // Subtract the prescribed quantity from the inventory
+                    medication.subtractQuantity(quantity);
+                    System.out.println("Processing medicine: " + medicineName + " with quantity: " + quantity);
                 }
-                
-                updateStatusOfPrescription(appointmentID, AppointmentOutcomeRecord.StatusOfPrescription.DISPENSED, record);
-
+    
+                // Update the status of the prescription to DISPENSED
+                updateStatusOfPrescription(appointmentID, AppointmentOutcomeRecord.StatusOfPrescription.DISPENSED, records);
+    
                 return "Medicines processed successfully for appointment ID: " + appointmentID;
             }
         }
-
+    
         // If appointment ID is not found
         throw new IllegalArgumentException("Appointment ID not found: " + appointmentID);
     }
+    
     
     public AppointmentOutcomeRecord getAppointmentOutcomeRecord(String appointmentID, List<AppointmentOutcomeRecord> records) {
         for (AppointmentOutcomeRecord record : records) {
