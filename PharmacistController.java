@@ -6,8 +6,9 @@ public class PharmacistController extends User {
     private static int requestCounter = 1;  // Counter to track the ID generation
     private String hospitalID;
 
-    public PharmacistController(String hospitalID) {
-        this.hospitalID = hospitalID;
+    public PharmacistController(String hospitalID, String password, String userRole) {
+        super(hospitalID, password, userRole); 
+        System.out.println("Hello " + hospitalID);
     }
 
     // Update the status of the prescription in the appointment record
@@ -26,7 +27,7 @@ public class PharmacistController extends User {
         String requestID = String.format("%04d", requestCounter);
         requestCounter++;
         
-        ReplenishmentRequest request = new ReplenishmentRequest(requestID, medicineName, quantity);
+        ReplenishmentRequestModel request = new ReplenishmentRequestModel(requestID, medicineName, quantity);
         
         // Save the request to the CSV file
         request.writeToCSV();
