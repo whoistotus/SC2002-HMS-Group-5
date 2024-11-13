@@ -75,7 +75,7 @@ public class PharmacistApp {
 
         // Retrieve appointment outcome records
         pharmacistView.viewAppointmentOutcomeRecord(appointmentID);
-        List<AppointmentOutcomeRecord> records = pharmacistController.getAppointmentOutcomeRecord(appointmentID, records);
+        AppointmentOutcomeRecord records = pharmacistController.getAppointmentOutcomeRecord(appointmentID, records);
         
         try {
             String result = pharmacistController.prescribeMed(appointmentID, records);
