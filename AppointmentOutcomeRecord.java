@@ -1,6 +1,9 @@
 package SC2002_Assignment;
 
 import java.util.List;
+import java.util.Date;
+import java.util.HashMap;
+
 
 public class AppointmentOutcomeRecord {
     private String patientID;
