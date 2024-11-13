@@ -1,12 +1,12 @@
 package SC2002_Assignment;
-import java.util.Date;
+
+import java.time.LocalDateTime;
 
 public class Appointment {
     private String appointmentID;
-    private String patientID;
-    private String doctorID;
-    private String date;
-    private String time;
+    private PatientModel patient;
+    private DoctorModel doctor;
+    private LocalDateTime appointmentTime;
     private AppointmentStatus status;
 
     public enum AppointmentStatus {
@@ -17,34 +17,31 @@ public class Appointment {
     }
     
     // Constructor
-    public Appointment(String appointmentID, String patientID, String doctorID, String date, String time, AppointmentStatus status) {
+    public Appointment(String appointmentID, PatientModel patient, DoctorModel doctor, LocalDateTime appointmentTime, AppointmentStatus status) {
         this.appointmentID = appointmentID;
-        this.patientID = patientID;
-        this.doctorID = doctorID;
-        this.date = date;
-        this.time = time;
+        this.patient = patient;
+        this.doctor = doctor;
+        this.appointmentTime = appointmentTime;
         this.status = status;
     }
 
     // Getters and Setters
-    public String getAppointmentID() {
-        return appointmentID;
-    }
-
     public String getPatientID() {
-        return patientID;
+        return patient.getHospitalID();
     }
 
     public String getDoctorID() {
-        return doctorID;
+        return doctor.getDoctorID();
     }
 
-    public String getDate() {
-        return date;
+    public LocalDateTime getAppointmentTime() 
+    { 
+    	return appointmentTime; 
     }
 
-    public String getTime() {
-        return time;
+    public String getAppointmentID()
+    {
+    	return appointmentID;
     }
 
     public AppointmentStatus getStatus() {
@@ -55,14 +52,18 @@ public class Appointment {
         this.status = status;
     }
 
+    public void setAppointmentTime(LocalDateTime newTime) 
+    { 
+    	this.appointmentTime = newTime; 
+    }
+
     @Override
     public String toString() {
         return "Appointment{" +
                 "appointmentID='" + appointmentID + '\'' +
-                ", patientID='" + patientID + '\'' +
-                ", doctorID='" + doctorID + '\'' +
-                ", date=" + date +
-                ", time='" + time + '\'' +
+                ", patientID='" + patient.getHospitalID() + '\'' +
+                ", doctorID='" + doctor.getDoctorID() + '\'' +
+                ", appointmentTime=" + appointmentTime + '\'' +
                 ", status=" + status +
                 '}';
     }
