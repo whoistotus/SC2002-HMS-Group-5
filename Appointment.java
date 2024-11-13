@@ -27,6 +27,17 @@ public class Appointment {
         this.status = status;
     }
 
+    public String toCsv() {
+        return String.join(",",
+                appointmentID,
+                patient.getHospitalID(),
+                doctor.getDoctorID(),
+                appointmentDate,
+                appointmentTime,
+                status.toString()
+        );
+    }
+
     // Getters and Setters
     public String getPatientID() {
         return patient.getHospitalID();
