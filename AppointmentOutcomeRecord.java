@@ -3,30 +3,81 @@ package SC2002_Assignment;
 import java.util.List;
 
 public class AppointmentOutcomeRecord {
-    private String serviceType;
-    private List<Medication> medicines;
-    private String notes;
+    private String patientID;
+    private String doctorID;
+    private String appointmentID;
+    private Date date;
+    private String consultationNotes;
+    private ServiceType serviceType;
+    private StatusOfPrescription statusOfPrescription;
+    private HashMap<String, Integer> medications; // Medication name as key, quantity as value
 
-    public AppointmentOutcomeRecord(String serviceType, List<Medication> medicines, String notes) {
+    // Enums for service type and prescription status
+    public enum ServiceType {
+        CONSULTATION,
+        XRAY,
+        BLOOD_TEST
+    }
+    public enum StatusOfPrescription { PENDING, DISPENSED }
+
+    // Constructor
+    public AppointmentOutcomeRecord(String patientID, String doctorID, String appointmentID, Date date, String consultationNotes, ServiceType serviceType) {
+        this.patientID = patientID;
+        this.doctorID = doctorID;
+        this.appointmentID = appointmentID;
+        this.date = date;
+        this.consultationNotes = consultationNotes;
         this.serviceType = serviceType;
-        this.medicines = medicines;
-        this.notes = notes;
+        this.medications = new HashMap<>();
+    }
+    // Getters and Setters
+    public String getPatientID() {
+        return patientID;
     }
 
-    public String getServiceType() {
+    public String getDoctorID() {
+        return doctorID;
+    }
+
+    public String getAppointmentID() {
+        return appointmentID;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public String getConsultationNotes() {
+        return consultationNotes;
+    }
+
+    public ServiceType getServiceType() {
         return serviceType;
     }
 
-    public List<Medication> getMedicines() {
-        return medicines;
+    public StatusOfPrescription getStatusOfPrescription() {
+        return statusOfPrescription;
     }
 
-    public String getNotes() {
-        return notes;
+    public void setStatusOfPrescription(StatusOfPrescription statusOfPrescription) {
+        this.statusOfPrescription = statusOfPrescription;
     }
 
-    @Override
-    public String toString() {
-        return "Service: " + serviceType + ", Medicines: " + medicines + ", Notes: " + notes;
+    public HashMap<String, Integer> getMedications() {
+        return medications;
+    }
+
+    public void setMedications(HashMap<String, Integer> medications) {
+        this.medications = medications;
+    }
+
+    // Method to add a medication to the record
+    public void addMedication(String medicationName, int quantity) {
+        medications.put(medicationName, quantity);
+    }
+
+    // Method to remove a medication from the record
+    public void removeMedication(String medicationName) {
+        medications.remove(medicationName);
     }
 }
