@@ -100,9 +100,9 @@ public class DoctorView {
             String treatment = scanner.nextLine();
     
             // Update the medical record directly
-            record.addDiagnosis(diagnosis);
-            record.addPrescription(prescription);
-            record.addTreatment(treatment);
+            record.addNewDiagnosis(diagnosis);
+            record.addNewPrescription(prescription);
+            record.addNewTreatment(treatment);
     
             // Save the updated record back to the CSV
             MedicalRecordsCsvHelper.saveMedicalRecord(record);
@@ -111,6 +111,7 @@ public class DoctorView {
             System.out.println("No record found for Patient ID: " + patientID);
         }
     }
+    
     
     public void setAvailability() {
         System.out.print("Enter date (YYYY-MM-DD): ");
@@ -214,7 +215,7 @@ public class DoctorView {
                 }
 
                 // Convert the Date to String format for compatibility with AppointmentOutcomeRecord
-                String formattedDate = dateFormat.format(appointmentDate);
+                String formattedDate = dateFormat.format(AppointmentOutcomeRecord.appointmentDate);
 
                 AppointmentOutcomeRecord outcomeRecord = new AppointmentOutcomeRecord(
                     patientIDToRecord,
