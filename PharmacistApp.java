@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -45,7 +44,7 @@ public class PharmacistApp {
                     monitorInventory();
                     break;
                 case 3:
-                	prescribeMedicine();
+                    prescribeMedicine();
                     break;
                 case 4:
                     replenishMedicine();
@@ -62,38 +61,49 @@ public class PharmacistApp {
     private void viewAppointmentOutcome() {
         System.out.print("Enter Appointment ID: ");
         String appointmentID = scanner.nextLine();
+        // View the appointment outcome record
         pharmacistView.viewAppointmentOutcomeRecord(appointmentID);
     }
 
     private void monitorInventory() {
+        // Display the current inventory of medications
         pharmacistView.displayInventory();
     }
-    
+
     private void prescribeMedicine() {
         System.out.print("Enter Appointment ID: ");
         String appointmentID = scanner.nextLine();
 
-        // Retrieve appointment outcome records
-        pharmacistView.viewAppointmentOutcomeRecord(appointmentID);
-        AppointmentOutcomeRecord records = pharmacistController.getAppointmentOutcomeRecord(appointmentID, records);
-        
+        // Retrieve the appointment outcome record
+        AppointmentOutcomeRecord record = pharmacistController.getAppointmentOutcomeRecord(appointmentID);
+
+        if (record == null) {
+            System.out.println("No appointment found with ID: " + appointmentID);
+            return;
+        }
+
         try {
-            String result = pharmacistController.prescribeMed(appointmentID, records);
+            // Prescribe the medication and update the inventory
+            String result = pharmacistController.prescribeMed(appointmentID, record.getMedications());
             System.out.println(result);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.out.println("Error: " + e.getMessage());
         }
     }
-    
-    private void replenishMedicine ()
-    {
-    	System.out.println("Enter Medicine name:");
-    	String medicineName = scanner.nextLine();
-    	System.out.println("Enter quantity:");
-    	int quantity = scanner.nextInt();
-    	
-    	pharmacistController.submitReplenishmentRequest(medicineName, quantity);
-    }
 
-  
+    private void replenishMedicine() {
+        System.out.print("Enter Medicine name: ");
+        String medicineName = scanner.nextLine();
+
+        System.out.print("Enter quantity: ");
+        int quantity = scanner.nextInt();
+        scanner.nextLine(); // Consume newline character
+
+        try {
+            // Submit the replenishment request for the medicine
+            pharmacistController.submitReplenishmentRequest(medicineName, quantity);
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
 }

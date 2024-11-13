@@ -1,13 +1,23 @@
 package SC2002_Assignment;
 
-import java.util.ArrayList;
-
+import java.util.Map;
 
 public class InventoryView {
 
-    private <List>(Medication medicationstock);
+    // Method to display the inventory
+    public void displayInventory(Map<Medication, Integer> medicationStock) {
+        if (medicationStock == null || medicationStock.isEmpty()) {
+            System.out.println("The inventory is empty.");
+            return;
+        }
 
-    public Map<Medication, Integer> displayInventory(){
+        System.out.println("Inventory:");
+        for (Map.Entry<Medication, Integer> entry : medicationStock.entrySet()) {
+            Medication medication = entry.getKey();
+            Integer quantity = entry.getValue();
 
-    };
+            // Display the medication name and its stock quantity
+            System.out.println(medication.getName() + ": " + quantity + " units available");
+        }
+    }
 }

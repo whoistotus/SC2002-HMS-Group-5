@@ -37,7 +37,7 @@ public class PharmacistController extends User {
 
 
     // Prescribe medicine based on quantities already set by the doctor
-    public String prescribeMed(String appointmentID, List<AppointmentOutcomeRecord> records, HashMap<String, Medication> inventory) {
+    public String prescribeMed(String appointmentID, List<AppointmentOutcomeRecord> records, InventoryController inventoryController) {
         // Iterate through the list of appointment outcome records to find the specific appointment
         for (AppointmentOutcomeRecord record : records) {
             if (record.getAppointmentID().equals(appointmentID)) {
@@ -56,19 +56,9 @@ public class PharmacistController extends User {
                         throw new IllegalArgumentException("Invalid quantity for medicine: " + medicineName);
                     }
     
-                    // Check if the medication exists in the inventory
-                    Medication medication = inventory.get(medicineName.toLowerCase()); // Ensure case-insensitive match
-                    if (medication == null) {
-                        throw new IllegalArgumentException("Medicine not found in inventory: " + medicineName);
-                    }
-    
-                    // Check if there's enough stock in the inventory
-                    if (medication.getQuantity() < quantity) {
-                        throw new IllegalArgumentException("Not enough stock for medicine: " + medicineName);
-                    }
-    
-                    // Subtract the prescribed quantity from the inventory
-                    medication.subtractQuantity(quantity);
+                    // Remove the prescribed quantity from inventory using InventoryController
+                    inventoryController.removeMedication(medicineName, quantity);
+                    
                     System.out.println("Processing medicine: " + medicineName + " with quantity: " + quantity);
                 }
     
