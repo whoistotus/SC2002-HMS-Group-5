@@ -78,7 +78,7 @@ public class AdminController {
         view.viewReplenishmentRequests(model.getReplenishmentRequests());
     }
 
-    public void approveReplenishmentRequest(int requestId) {
+    public void approveReplenishmentRequest(String requestId) {
         if (model.approveReplenishmentRequest(requestId)) {
             System.out.println("Replenishment request approved successfully.");
         } else {
