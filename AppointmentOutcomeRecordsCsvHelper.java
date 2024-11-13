@@ -73,4 +73,61 @@ public class AppointmentOutcomeRecordsCsvHelper {
             e.printStackTrace();
         }
     }
+    // Update a specific appointment outcome record in the CSV file
+    public static void updateAppointmentOutcomeRecord(AppointmentOutcomeRecord updatedRecord) {
+        List<AppointmentOutcomeRecord> records = loadAppointmentOutcomes();  // Load all records from the file
+
+        // Create a temporary list to hold the modified records
+        List<String> lines = new ArrayList<>();
+
+        try (BufferedReader br = new BufferedReader(new FileReader(FILE_PATH))) {
+            String line;
+            boolean updated = false;
+            
+            // Read through the file and update the record if matched
+            while ((line = br.readLine()) != null) {
+                String[] values = line.split(",");
+                if (values[0].equals(updatedRecord.getAppointmentID())) {
+                    // If the record matches, update it with the new status
+                    String updatedLine = String.format("%s,%s,%s,%s,%s,%s,%s:%d;%s", 
+                            updatedRecord.getAppointmentID(),
+                            updatedRecord.getPatientID(),
+                            updatedRecord.getDoctorID(),
+                            dateFormat.format(updatedRecord.getDate()),
+                            updatedRecord.getServiceType(),
+                            updatedRecord.getConsultationNotes(),
+                            formatMedications(updatedRecord.getMedications()),
+                            updatedRecord.getStatusOfPrescription());
+                    
+                    lines.add(updatedLine);  // Add updated record to temporary list
+                    updated = true;
+                } else {
+                    lines.add(line);  // Keep the original line for other records
+                }
+            }
+
+            // If the record was updated, overwrite the file with the new content
+            if (updated) {
+                try (PrintWriter writer = new PrintWriter(new FileWriter(FILE_PATH))) {
+                    // Write all lines back to the file
+                    for (String l : lines) {
+                        writer.println(l);
+                    }
+                }
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Helper method to format medications
+    private static String formatMedications(Map<String, Integer> medications) {
+        StringBuilder formattedMedications = new StringBuilder();
+        for (Map.Entry<String, Integer> entry : medications.entrySet()) {
+            formattedMedications.append(entry.getKey()).append(":").append(entry.getValue()).append(";");
+        }
+        return formattedMedications.toString();
+    }
+
 }
