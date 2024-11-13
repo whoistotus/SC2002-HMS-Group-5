@@ -22,9 +22,9 @@ public class AppointmentsCsvHelper {
                 String time = values[4];
 
                 // Trim and check if status is valid
-                AppointmentStatus status;
+                Appointment.AppointmentStatus status;
                 try {
-                    status = AppointmentStatus.valueOf(values[5].trim().toUpperCase());
+                    status = Appointment.AppointmentStatus.valueOf(values[5].trim().toUpperCase());
                 } catch (IllegalArgumentException e) {
                     System.out.println("Warning: Invalid status '" + values[5] + "' in appointment " + appointmentID);
                     continue; // Skip this appointment if status is invalid

@@ -9,7 +9,7 @@ public class AppointmentOutcomeRecord {
     private String patientID;
     private String doctorID;
     private String appointmentID;
-    private Date date;
+    private String date;
     private String consultationNotes;
     private ServiceType serviceType;
     private StatusOfPrescription statusOfPrescription;
@@ -24,7 +24,7 @@ public class AppointmentOutcomeRecord {
     public enum StatusOfPrescription { PENDING, DISPENSED }
 
     // Constructor
-    public AppointmentOutcomeRecord(String patientID, String doctorID, String appointmentID, Date date, String consultationNotes, ServiceType serviceType) {
+    public AppointmentOutcomeRecord(String patientID, String doctorID, String appointmentID, String date, String consultationNotes, ServiceType serviceType) {
         this.patientID = patientID;
         this.doctorID = doctorID;
         this.appointmentID = appointmentID;
@@ -46,7 +46,7 @@ public class AppointmentOutcomeRecord {
         return appointmentID;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 

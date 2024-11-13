@@ -49,16 +49,16 @@ public class PatientController
         view.viewMedicalRecord(medicalRecord);
     }*/
     
-    public void viewAvailableSlots(DoctorModel doctor) 
+    public void viewAvailableSlots(DoctorModel doctor, String date) 
     {
-        List<LocalDateTime> availableSlots = appointmentManager.getAvailableSlots(doctor);
+        List<String> availableSlots = appointmentManager.getAvailableSlots(doctor, date);
         view.viewAvailableSlots(doctor, availableSlots);
     }
 
-    public void scheduleAppointment(DoctorModel doctor, LocalDateTime dateTime) 
+    public void scheduleAppointment(DoctorModel doctor, String date, String time) 
     {
     	String appointmentID = UUID.randomUUID().toString();
-        boolean success = appointmentManager.scheduleAppointment(appointmentID, model, doctor, dateTime);
+        boolean success = appointmentManager.scheduleAppointment(appointmentID, model, doctor, date, time);
         if (success) 
         {
             view.showMessage("Appointment scheduled successfully with status 'Pending'.");
@@ -71,9 +71,9 @@ public class PatientController
     }
     
     
-    public void rescheduleAppointment(Appointment appointment, LocalDateTime newDateTime) 
+    public void rescheduleAppointment(Appointment appointment, String date, String time) 
     {
-        boolean success = appointmentManager.rescheduleAppointment(appointment, newDateTime);
+        boolean success = appointmentManager.rescheduleAppointment(appointment, date, time);
         if (success) 
         {
             view.showMessage("Appointment rescheduled successfully with status 'Pending'.");

@@ -14,11 +14,11 @@ public class AppointmentManager
     }
 
     // get available slots for a specific doctor
-    public List<LocalDateTime> getAvailableSlots(DoctorModel doctor) 
+    public List<String> getAvailableSlots(DoctorModel doctor, String date) 
     {
-        List<LocalDateTime> availableSlots = new ArrayList<>();
-        availableSlots.add(LocalDateTime.of(2024, 11, 10, 10, 0));
-        availableSlots.add(LocalDateTime.of(2024, 11, 11, 11, 10));
+        List<String> availableSlots = new ArrayList<>();
+        availableSlots.add("10:00");
+        availableSlots.add("11:00");
         // remove slots that are already taken by the doctor's appointments
         for (Appointment appointment : appointments) 
         {
@@ -32,24 +32,25 @@ public class AppointmentManager
     }
 
     
-    public boolean scheduleAppointment(String appointmentID, PatientModel patient, DoctorModel doctor, LocalDateTime dateTime) 
+    public boolean scheduleAppointment(String appointmentID, PatientModel patient, DoctorModel doctor, String date, String time) 
     {
-        if (!getAvailableSlots(doctor).contains(dateTime)) 
+        if (!getAvailableSlots(doctor, date).contains(time)) 
         {
             return false; // means slot not available
         }
         
         // else slot is avail so create the appointment with pending status
-        Appointment newAppointment = new Appointment(appointmentID, patient, doctor, dateTime, Appointment.AppointmentStatus.PENDING);
+        Appointment newAppointment = new Appointment(appointmentID, patient, doctor, date, time, Appointment.AppointmentStatus.PENDING);
         appointments.add(newAppointment);
         return true;
     }
 
-    public boolean rescheduleAppointment(Appointment appointment, LocalDateTime newDateTime) 
+    public boolean rescheduleAppointment(Appointment appointment, String date, String time) 
     {
     	for (Appointment appt : appointments) {
             if (appt.getAppointmentID().equals(appt.getAppointmentID())) {
-                appt.setAppointmentTime(newDateTime);  // update time in the actual object
+                appt.setAppointmentDate(date);
+                appt.setAppointmentTime(time);  // update time in the actual object
                 appt.setStatus(Appointment.AppointmentStatus.PENDING);  // reset status
                 return true;
             }

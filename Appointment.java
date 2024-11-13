@@ -6,7 +6,8 @@ public class Appointment {
     private String appointmentID;
     private PatientModel patient;
     private DoctorModel doctor;
-    private LocalDateTime appointmentTime;
+    private String appointmentDate;
+    private String appointmentTime;
     private AppointmentStatus status;
 
     public enum AppointmentStatus {
@@ -17,10 +18,11 @@ public class Appointment {
     }
     
     // Constructor
-    public Appointment(String appointmentID, PatientModel patient, DoctorModel doctor, LocalDateTime appointmentTime, AppointmentStatus status) {
+    public Appointment(String appointmentID, PatientModel patient, DoctorModel doctor, String AppointmentDate, String appointmentTime, AppointmentStatus status) {
         this.appointmentID = appointmentID;
         this.patient = patient;
         this.doctor = doctor;
+        this.appointmentDate = appointmentDate;
         this.appointmentTime = appointmentTime;
         this.status = status;
     }
@@ -44,9 +46,14 @@ public class Appointment {
         return doctor;
     }
 
-    public LocalDateTime getAppointmentTime() 
+    public String getAppointmentTime() 
     { 
     	return appointmentTime; 
+    }
+
+    public String getAppointmentDate() 
+    { 
+    	return appointmentDate; 
     }
 
     public String getAppointmentID()
@@ -62,7 +69,12 @@ public class Appointment {
         this.status = status;
     }
 
-    public void setAppointmentTime(LocalDateTime newTime) 
+    public void setAppointmentDate(String newDate) 
+    { 
+    	this.appointmentDate = newDate; 
+    }
+
+    public void setAppointmentTime(String newTime) 
     { 
     	this.appointmentTime = newTime; 
     }

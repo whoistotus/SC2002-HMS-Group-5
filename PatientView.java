@@ -47,7 +47,7 @@ public class PatientView
     }
 
     
-	public void viewAvailableSlots(DoctorModel doctor, List<LocalDateTime> availableSlots) 
+	public void viewAvailableSlots(DoctorModel doctor, List<String> availableSlots) 
 	{
         System.out.println("Available slots for Dr. " + doctor.getName() + ":");
 
@@ -57,7 +57,7 @@ public class PatientView
         } 
         else 
         {
-            for (LocalDateTime slot : availableSlots) 
+            for (String slot : availableSlots) 
             {
                 System.out.println("Available on: " + slot);
             }
