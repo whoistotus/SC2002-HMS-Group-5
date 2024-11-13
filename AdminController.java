@@ -20,7 +20,7 @@ public class AdminController {
                 newStaff = new HospitalStaff(hospitalID, password, "Pharmacist", name, gender, age);
                 break;
             default:
-                System.out.println("Invalid user role.");
+                System.out.println("Invalid user role specified.");
                 return;
         }
 
@@ -100,5 +100,3 @@ public class AdminController {
         System.out.println("System initialized with default data.");
     }
 }
-
-//test 
