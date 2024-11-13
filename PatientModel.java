@@ -1,15 +1,14 @@
 package SC2002_Assignment;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 
-public class PatientModel 
+public class PatientModel extends User 
 {
-    private String patientId;
     private String name;
-    private Date dob;
+    private LocalDate dob;
     private String gender;
     private String contactNumber;
     private String email;
@@ -17,9 +16,9 @@ public class PatientModel
     private List<String> medicalRecord;
 
    
-    public PatientModel(String patientId, String name, Date dob, String gender, String contactNumber, String email, String bloodType) 
+    public PatientModel(String hospitalID, String password, String userRole, String name, LocalDate dob, String gender, String contactNumber, String email, String bloodType) 
     {
-        this.patientId = patientId;
+        super(hospitalID, password, userRole);
         this.name = name;
         this.dob = dob;
         this.gender = gender;
@@ -32,17 +31,17 @@ public class PatientModel
     
     
     
-    public String getPatientId() 
+    /*public String getPatientId() 
     {
     	return patientId; 
-    }
+    }*/
     
     public String getName() 
     { 
     	return name; 
     }
     
-    public Date getDob() 
+    public LocalDate getDob() 
     { 
     	return dob; 
     }
