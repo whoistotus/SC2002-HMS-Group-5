@@ -1,7 +1,9 @@
+package SC2002_Assignment;
+
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class ReplenishmentRequestModel {
+public class ReplenishmentRequest{
     
     public enum RequestStatus {
         PENDING,
@@ -15,7 +17,7 @@ public class ReplenishmentRequestModel {
     private RequestStatus status;
 
     // Constructor
-    public ReplenishmentRequestModel(String requestID, String medicineName, int quantity) {
+    public ReplenishmentRequest(String requestID, String medicineName, int quantity) {
         this.requestID = requestID;
         this.medicineName = medicineName;
         this.quantity = quantity;
@@ -40,6 +42,12 @@ public class ReplenishmentRequestModel {
     // Getter for status
     public RequestStatus getStatus() {
         return status;
+    }
+
+    //Setter for status
+    public void setStatus(RequestStatus status)
+    {
+        this.status = status;
     }
 
     // Method to approve the request

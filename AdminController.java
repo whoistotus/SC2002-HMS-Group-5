@@ -1,4 +1,5 @@
 package SC2002_Assignment;
+import java.util.List;
 
 public class AdminController {
     private AdminModel model;
@@ -14,7 +15,7 @@ public class AdminController {
         HospitalStaff newStaff;
         switch (userRole.toLowerCase()) {
             case "doctor":
-                newStaff = new Doctor(hospitalID, password, name, gender, age, null);
+                newStaff = new HospitalStaff(hospitalID, password, "Doctor", name, gender, age);
                 break;
             case "pharmacist":
                 newStaff = new HospitalStaff(hospitalID, password, "Pharmacist", name, gender, age);

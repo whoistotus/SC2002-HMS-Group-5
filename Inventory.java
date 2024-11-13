@@ -1,16 +1,16 @@
-package SC2002_Assignment;
+// package SC2002_Assignment;
 
-import java.util.ArrayList;
+// import java.util.ArrayList;
 
-public class Inventory {
+// public class Inventory {
 
-    private <List>Medication medicationstock;
+//     private <List>Medication medicationstock;
     
-    public Map<Medication, int> displayInventory(){
+//     public Map<Medication, int> displayInventory(){
 
-    }
+//     }
 
-    public int getStockLevel(Medication medication){
+//     public int getStockLevel(Medication medication){
 
-    }
-}
+//     }
+// }

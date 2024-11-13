@@ -105,7 +105,7 @@ public class AdminView {
                     break;
 
                 case 4: 
-                    //setThreshold();
+                    setThreshold();
                     break;
 
                 case 5:
@@ -215,7 +215,7 @@ public class AdminView {
         }
     }
 
-    public void setThreshold(Medication medication, int newThreshold)
+    public void setThreshold()
     {
         try
         {

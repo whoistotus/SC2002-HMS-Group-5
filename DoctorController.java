@@ -1,12 +1,24 @@
+package SC2002_Assignment;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import SC2002_Assignment.Appointment.AppointmentStatus;
+
 import java.util.HashMap;
 
 public class DoctorController {
     private DoctorModel doctorModel;
     private DoctorView doctorView;
     private AppointmentManager appointmentManager;
+
+    public enum AppointmentStatus {
+        PENDING,
+        ACCEPTED,
+        DECLINED,
+        CANCELLED
+    }
 
     public DoctorController(DoctorModel doctorModel, DoctorView doctorView, AppointmentManager appointmentManager) {
         this.doctorModel = doctorModel;
@@ -23,7 +35,7 @@ public class DoctorController {
 
     // Accept appointment
     public void acceptAppointment(Appointment appointment) {
-        appointment.setStatus(AppointmentStatus.ACCEPTED);
+        appointment.setStatus(Appointment.AppointmentStatus.ACCEPTED);
         if (!doctorModel.getAppointments().contains(appointment)) {
             doctorModel.getAppointments().add(appointment);
         }
@@ -32,7 +44,7 @@ public class DoctorController {
     }
     
     public void declineAppointment(Appointment appointment) {
-        appointment.setStatus(AppointmentStatus.DECLINED);
+        appointment.setStatus(Appointment.AppointmentStatus.DECLINED);
         // Remove the appointment from the list if it's declined
         doctorModel.getAppointments().removeIf(app -> app.getAppointmentID().equals(appointment.getAppointmentID()));
         AppointmentsCsvHelper.saveAllAppointments(doctorModel.getAppointments());
@@ -53,7 +65,7 @@ public class DoctorController {
         
         outcome.setMedications(new HashMap<>());
         for (Medication med : meds) {
-            outcome.getMedications().put(med.getMedicationName(), med.getQuantity());
+            outcome.getMedications().put(med.getName(), med.getQuantity());
         }
 
         System.out.println("Appointment outcome recorded: " + outcome);
@@ -69,6 +81,6 @@ public class DoctorController {
     }
 
     public void addTreatmentPlans(MedicalRecord record, String treatment) {
-        record.addTreatment(treatment);
+        record.addNewTreatment(treatment);
     }
 }

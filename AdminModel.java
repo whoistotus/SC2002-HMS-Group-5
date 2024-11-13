@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 
 public class AdminModel {
     private List<HospitalStaff> staffList;
-    private InventoryController inventoryController;
+    protected InventoryController inventoryController;
     private AppointmentManager appointmentManager;
 
     public AdminModel() {
@@ -74,7 +74,7 @@ public class AdminModel {
         return inventoryController.getReplenishmentRequests();
     }
 
-    public boolean approveReplenishmentRequest(int requestId) {
+    public boolean approveReplenishmentRequest(String requestId) {
         return inventoryController.approveReplenishmentRequest(requestId);
     }
 

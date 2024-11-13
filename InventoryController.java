@@ -76,10 +76,10 @@ public class InventoryController {
     }
 
     
-    public boolean approveReplenishmentRequest(int requestId) {
+    public boolean approveReplenishmentRequest(String requestId) {
         for (ReplenishmentRequest request : replenishmentRequests) {
-            if (request.getRequestId() == requestId && request.getStatus().equalsIgnoreCase("Pending")) {
-                request.setStatus("Approved");
+            if (request.getRequestID() == requestId && request.getStatus() == ReplenishmentRequest.RequestStatus.PENDING) {
+                request.setStatus(ReplenishmentRequest.RequestStatus.APPROVED);
                 String lowerCaseMedicineName = request.getMedicineName().toLowerCase(); // Convert to lowercase for case-insensitive comparison
                 Medication medication = findMedicationByName(lowerCaseMedicineName); // Find medication by lowercase name
     
@@ -115,6 +115,11 @@ public class InventoryController {
             }
         }
         System.out.println("Medication not found: " + medicationName);
-}
+    }
+
+    public void getReplenishmentRequests()
+    {
+
+    }
 
 }

@@ -1,3 +1,5 @@
+package SC2002_Assignment;
+
 import java.util.List;
 import java.util.Scanner;
 
@@ -6,20 +8,20 @@ public class PharmacistApp {
     private PharmacistView pharmacistView;
     private Scanner scanner;
 
-    public PharmacistApp(String hospitalID) {
-        this.pharmacistController = new PharmacistController(hospitalID);
+    public PharmacistApp(String hospitalID, String password, String userRole) {
+        this.pharmacistController = new PharmacistController(hospitalID, password, userRole);
         this.pharmacistView = new PharmacistView();
         this.scanner = new Scanner(System.in);
     }
 
-    public static void main(String[] args) {
-        System.out.print("Enter Hospital ID: ");
-        Scanner inputScanner = new Scanner(System.in);
-        String hospitalID = inputScanner.nextLine();
-        PharmacistApp app = new PharmacistApp(hospitalID);
-        app.start();
-        inputScanner.close();
-    }
+    // public static void main(String[] args) {
+    //     System.out.print("Enter Hospital ID: ");
+    //     Scanner inputScanner = new Scanner(System.in);
+    //     String hospitalID = inputScanner.nextLine();
+    //     PharmacistApp app = new PharmacistApp(hospitalID, password, userRole);
+    //     app.start();
+    //     inputScanner.close();
+    // }
 
     public void start() {
         System.out.println("Welcome, " + pharmacistController.getHospitalID() + ".");

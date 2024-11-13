@@ -1,3 +1,5 @@
+package SC2002_Assignment;
+
 import java.util.List;
 import java.util.HashMap;
 
@@ -27,7 +29,7 @@ public class PharmacistController extends User {
         String requestID = String.format("%04d", requestCounter);
         requestCounter++;
         
-        ReplenishmentRequestModel request = new ReplenishmentRequestModel(requestID, medicineName, quantity);
+        ReplenishmentRequest request = new ReplenishmentRequest(requestID, medicineName, quantity);
         
         // Save the request to the CSV file
         request.writeToCSV();
