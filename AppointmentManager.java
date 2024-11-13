@@ -6,6 +6,7 @@ import java.util.List;
 public class AppointmentManager 
 {
     private List<Appointment> appointments;
+    
 
     public AppointmentManager() 
     {
@@ -13,7 +14,7 @@ public class AppointmentManager
     }
 
     // get available slots for a specific doctor
-    public List<LocalDateTime> getAvailableSlots(Doctor doctor) 
+    public List<LocalDateTime> getAvailableSlots(DoctorModel doctor) 
     {
         List<LocalDateTime> availableSlots = new ArrayList<>();
         availableSlots.add(LocalDateTime.of(2024, 11, 10, 10, 0));
@@ -31,7 +32,7 @@ public class AppointmentManager
     }
 
     
-    public boolean scheduleAppointment(String appointmentID, PatientModel patient, Doctor doctor, LocalDateTime dateTime) 
+    public boolean scheduleAppointment(String appointmentID, PatientModel patient, DoctorModel doctor, LocalDateTime dateTime) 
     {
         if (!getAvailableSlots(doctor).contains(dateTime)) 
         {
@@ -39,7 +40,7 @@ public class AppointmentManager
         }
         
         // else slot is avail so create the appointment with pending status
-        Appointment newAppointment = new Appointment(appointmentID, patient, doctor, dateTime, "Pending");
+        Appointment newAppointment = new Appointment(appointmentID, patient, doctor, dateTime, Appointment.AppointmentStatus.PENDING);
         appointments.add(newAppointment);
         return true;
     }
@@ -49,7 +50,7 @@ public class AppointmentManager
     	for (Appointment appt : appointments) {
             if (appt.getAppointmentID().equals(appt.getAppointmentID())) {
                 appt.setAppointmentTime(newDateTime);  // update time in the actual object
-                appt.setStatus("Pending");  // reset status
+                appt.setStatus(Appointment.AppointmentStatus.PENDING);  // reset status
                 return true;
             }
         }
@@ -57,9 +58,9 @@ public class AppointmentManager
     }
 
     // for the doctor to update appointment status
-    public void updateAppointmentStatus(Appointment appointment, String status) 
+    public void updateAppointmentStatus(Appointment appointment, Appointment.AppointmentStatus newStatus) 
     {
-        appointment.setStatus(status);
+        appointment.setStatus(newStatus);
     }
     
     public boolean cancelAppointment(String appointmentID) 
@@ -68,7 +69,7 @@ public class AppointmentManager
     	{
             if (appointment.getAppointmentID().equals(appointmentID)) 
             {
-                appointment.setStatus("Cancelled");
+                appointment.setStatus(Appointment.AppointmentStatus.CANCELLED);
                 appointments.remove(appointment);
                 return true;
             }
