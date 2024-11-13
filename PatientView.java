@@ -47,7 +47,7 @@ public class PatientView
     }
 
     
-	public void viewAvailableSlots(Doctor doctor, List<LocalDateTime> availableSlots) 
+	public void viewAvailableSlots(DoctorModel doctor, List<LocalDateTime> availableSlots) 
 	{
         System.out.println("Available slots for Dr. " + doctor.getName() + ":");
 

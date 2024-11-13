@@ -30,8 +30,18 @@ public class Appointment {
         return patient.getHospitalID();
     }
 
+    public PatientModel getPatient()
+    {
+        return patient;
+    }
+
     public String getDoctorID() {
         return doctor.getDoctorID();
+    }
+    
+    public DoctorModel getDoctor()
+    {
+        return doctor;
     }
 
     public LocalDateTime getAppointmentTime() 

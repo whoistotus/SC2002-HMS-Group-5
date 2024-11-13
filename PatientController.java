@@ -49,13 +49,13 @@ public class PatientController
         view.viewMedicalRecord(medicalRecord);
     }*/
     
-    public void viewAvailableSlots(Doctor doctor) 
+    public void viewAvailableSlots(DoctorModel doctor) 
     {
         List<LocalDateTime> availableSlots = appointmentManager.getAvailableSlots(doctor);
         view.viewAvailableSlots(doctor, availableSlots);
     }
 
-    public void scheduleAppointment(Doctor doctor, LocalDateTime dateTime) 
+    public void scheduleAppointment(DoctorModel doctor, LocalDateTime dateTime) 
     {
     	String appointmentID = UUID.randomUUID().toString();
         boolean success = appointmentManager.scheduleAppointment(appointmentID, model, doctor, dateTime);
