@@ -1,5 +1,6 @@
 package SC2002_Assignment;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -53,16 +54,20 @@ public class DoctorController {
     
 
     // Record outcome of an appointment
-    public void recordAppointmentOutcome(Appointment appointment, AppointmentOutcomeRecord.ServiceType serviceType, List<Medication> meds, String notes) {
+     public void recordAppointmentOutcome(Appointment appointment, AppointmentOutcomeRecord.ServiceType serviceType, List<Medication> meds, String notes) {
+        // Format the Date to String
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String formattedDate = dateFormat.format(new Date());
+
         AppointmentOutcomeRecord outcome = new AppointmentOutcomeRecord(
             appointment.getPatientID(),
             doctorModel.getDoctorID(),
             appointment.getAppointmentID(),
-            new Date(),
+            formattedDate, // Pass the formatted String date
             notes,
             serviceType
         );
-        
+
         outcome.setMedications(new HashMap<>());
         for (Medication med : meds) {
             outcome.getMedications().put(med.getName(), med.getQuantity());

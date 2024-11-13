@@ -5,8 +5,8 @@ import java.util.List;
 public class MedicalRecord {
     private String patientID;
     private String name;
-    private Date dob; 
-    private String gender;
+    private String dob; 
+    private Gender gender;
     private String contactNumber;
     private String bloodType;
     private String email;
@@ -16,7 +16,11 @@ public class MedicalRecord {
     private List<String> currentTreatments;
     private List<String> prescriptions;
 
-    public MedicalRecord(String patientID, String name, Date dob, String gender, 
+    public enum Gender {
+        MALE, FEMALE, OTHER
+    }
+
+    public MedicalRecord(String patientID, String name, String dob, Gender gender, 
                         String contactNumber, String bloodType, String email, 
                         List<String> pastDiagnoses, List<String> pastTreatments, 
                         List<String> currentDiagnoses, List<String> currentTreatments, 
@@ -44,11 +48,11 @@ public class MedicalRecord {
         return name;
     }
 
-    public Date getDOB() {
+    public String getDOB() {
         return dob;
     }
 
-    public String getGender() {
+    public Gender getGender() {
         return gender;
     }
 
@@ -93,28 +97,28 @@ public class MedicalRecord {
         this.email = email;
     }
 
-    // Protected methods for medical updates (as per UML)
-    protected void addNewPrescription(String prescription) {
+    // Methods for medical updates (changed to public)
+    public void addNewPrescription(String prescription) {
         this.prescriptions.add(prescription);
     }
 
-    protected void addNewDiagnosis(String diagnosis) {
+    public void addNewDiagnosis(String diagnosis) {
         this.currentDiagnoses.add(diagnosis);
     }
 
-    protected void addNewTreatment(String treatment) {
+    public void addNewTreatment(String treatment) {
         this.currentTreatments.add(treatment);
     }
 
     // Method to move current diagnosis to past diagnosis
-    protected void moveToPastDiagnosis(String diagnosis) {
+    public void moveToPastDiagnosis(String diagnosis) {
         if (currentDiagnoses.remove(diagnosis)) {
             pastDiagnoses.add(diagnosis);
         }
     }
 
     // Method to move current treatment to past treatment
-    protected void moveToPastTreatment(String treatment) {
+    public void moveToPastTreatment(String treatment) {
         if (currentTreatments.remove(treatment)) {
             pastTreatments.add(treatment);
         }
