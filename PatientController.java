@@ -2,6 +2,7 @@ package SC2002_Assignment;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 public class PatientController 
 {
@@ -19,7 +20,7 @@ public class PatientController
     public void viewMedicalRecord() 
     {
         view.viewMedicalRecord(
-        		model.getPatientId(),
+        		model.getHospitalID(),
                 model.getName(),
                 model.getDob(),
                 model.getGender(),
@@ -56,7 +57,8 @@ public class PatientController
 
     public void scheduleAppointment(Doctor doctor, LocalDateTime dateTime) 
     {
-        boolean success = appointmentManager.scheduleAppointment(model, doctor, dateTime);
+    	String appointmentID = UUID.randomUUID().toString();
+        boolean success = appointmentManager.scheduleAppointment(appointmentID, model, doctor, dateTime);
         if (success) 
         {
             view.showMessage("Appointment scheduled successfully with status 'Pending'.");
@@ -65,6 +67,21 @@ public class PatientController
         else 
         {
             view.showMessage("Failed to schedule appointment. The doctor may not be available at this time.");
+        }
+    }
+    
+    
+    public void rescheduleAppointment(Appointment appointment, LocalDateTime newDateTime) 
+    {
+        boolean success = appointmentManager.rescheduleAppointment(appointment, newDateTime);
+        if (success) 
+        {
+            view.showMessage("Appointment rescheduled successfully with status 'Pending'.");
+        } 
+        
+        else 
+        {
+            view.showMessage("Failed to reschedule appointment. The selected time slot is unavailable.");
         }
     }
 
@@ -80,14 +97,14 @@ public class PatientController
     
     public void viewScheduledAppointmentsStatus() 
     {
-        List<Appointment> appointments = appointmentManager.getAppointmentsForPatient(model.getPatientId());
+        List<Appointment> appointments = appointmentManager.getAppointmentsForPatient(model.getHospitalID());
         view.viewScheduledAppointmentStatus(appointments);
     }
     
     
     public void cancelAppointment(Appointment appointment) 
     {
-        boolean success = appointmentManager.cancelAppointment(appointment);
+        boolean success = appointmentManager.cancelAppointment(appointment.getAppointmentID());
         if (success) 
         {
             view.showMessage("Appointment has been successfully canceled.");
@@ -98,4 +115,10 @@ public class PatientController
             view.showMessage("Failed to cancel the appointment. Appointment not found.");
         }
     }
+    
+    public Appointment getAppointmentByPatientId() 
+    {
+        return appointmentManager.getAppointmentByPatientId(model.getHospitalID());
+    }
+
 }
