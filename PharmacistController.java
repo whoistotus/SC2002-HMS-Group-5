@@ -42,7 +42,7 @@ public class PharmacistController extends User {
         for (AppointmentOutcomeRecord record : records) {
             if (record.getAppointmentID().equals(appointmentID)) {
                 // Check if prescribed medicines are available
-                HashMap<String, Integer> medications = record.getPrescribedMedicines();
+                HashMap<String, Integer> medications = record.getMedications();
                 if (medications == null || medications.isEmpty()) {
                     throw new IllegalStateException("No prescribed medicines found for appointment ID: " + appointmentID);
                 }
@@ -58,7 +58,7 @@ public class PharmacistController extends User {
 
                     // Logic to process the prescribed medicine, e.g., update inventory or create a record
                    
-                    medicine.subtractQuantity(quantity);
+                    medication.subtractQuantity(quantity);
                     
                     System.out.println("Processing medicine: " + medicine + " with quantity: " + quantity);
                 }

@@ -50,6 +50,25 @@ public class Medication
         return description;
     }
 
+    public void subtractQuantity(int quantityToSubtract) {
+        if (quantityToSubtract <= 0) {
+            System.out.println("Invalid quantity to subtract.");
+            return;
+        }
+        
+        if (quantityToSubtract > amount) {
+            System.out.println("Insufficient stock. Available stock: " + amount);
+            return;
+        }
+    
+        amount -= quantityToSubtract;
+        System.out.println("Subtracted " + quantityToSubtract + " from " + medicationName + ". Remaining stock: " + amount);
+    
+        if (amount < lowStockThreshold) {
+            System.out.println("Warning: Stock of " + medicationName + " is below the low stock threshold.");
+        }
+    }
+
     @Override
     public String toString()
     {
