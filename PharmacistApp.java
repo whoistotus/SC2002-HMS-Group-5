@@ -1,32 +1,36 @@
-package SC2002_Assignment;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
-//hiii
 public class PharmacistApp {
-    private Pharmacist pharmacist;
+    private PharmacistController pharmacistController;
+    private PharmacistView pharmacistView;
     private Scanner scanner;
 
-    public PharmacistApp(Pharmacist pharmacist) {
-        this.pharmacist = pharmacist;
+    public PharmacistApp(String hospitalID) {
+        this.pharmacistController = new PharmacistController(hospitalID);
+        this.pharmacistView = new PharmacistView();
         this.scanner = new Scanner(System.in);
     }
-    
+
     public static void main(String[] args) {
-        Pharmacist pharmacist = new Pharmacist(Pharmacist.getHospitalID(), Pharmacist.getName());
-        PharmacistApp app = new PharmacistApp(pharmacist);
+        System.out.print("Enter Hospital ID: ");
+        Scanner inputScanner = new Scanner(System.in);
+        String hospitalID = inputScanner.nextLine();
+        PharmacistApp app = new PharmacistApp(hospitalID);
         app.start();
+        inputScanner.close();
     }
 
     public void start() {
-    	
-    	System.out.println("Welcome, " + Pharmacist.getHospitalID() + ".");
-    	
+        System.out.println("Welcome, " + pharmacistController.getHospitalID() + ".");
+
         while (true) {
-            System.out.println("Pharmacist Menu:");
+            System.out.println("\nPharmacist Menu:");
             System.out.println("1. View Patient Appointment Outcome Record");
             System.out.println("2. Monitor Inventory");
             System.out.println("3. Prescribe Medicine");
-            System.out.println("4. Submit Replenishment Request");
+            System.out.println("4. Replenish Medicine");
             System.out.println("5. Exit");
             System.out.print("Select an option: ");
 
@@ -41,14 +45,14 @@ public class PharmacistApp {
                     monitorInventory();
                     break;
                 case 3:
-                    prescribeMedicine();
+                	prescribeMedicine();
                     break;
                 case 4:
-                    submitReplenishmentRequest();
+                    replenishMedicine();
                     break;
                 case 5:
                     System.out.println("Exiting the application.");
-                    return; // Exit the loop
+                    return;
                 default:
                     System.out.println("Invalid choice. Please try again.");
             }
@@ -56,39 +60,40 @@ public class PharmacistApp {
     }
 
     private void viewAppointmentOutcome() {
-        System.out.println("Enter Patient ID: ");
-        String patientID = scanner.nextLine();
-        System.out.println("Enter Appointment Number: ");
-        String ApptNum = scanner.nextLine();
-        pharmacist.viewAppointmentOutcomeRecord(patientID, ApptNum);
+        System.out.print("Enter Appointment ID: ");
+        String appointmentID = scanner.nextLine();
+        pharmacistView.viewAppointmentOutcomeRecord(appointmentID);
     }
 
     private void monitorInventory() {
-        pharmacist.displayInventory();
+        pharmacistView.displayInventory();
     }
-
+    
     private void prescribeMedicine() {
-        System.out.print("Enter Patient ID: ");
-        String patientID = scanner.nextLine();
-        System.out.print("Enter Appointment Number: ");
-        String ApptNum = scanner.nextLine();
-        System.out.print("Enter Medicine Name: ");
-        String medicineName = scanner.nextLine();
-        System.out.print("Enter Amount: ");
-        int amount = scanner.nextInt();
-        scanner.nextLine(); // Consume newline character
-        pharmacist.prescribeMed(patientID, ApptNum, medicineName, amount);
+        System.out.print("Enter Appointment ID: ");
+        String appointmentID = scanner.nextLine();
+
+        // Retrieve appointment outcome records
+        pharmacistView.viewAppointmentOutcomeRecord(appointmentID);
+        List<AppointmentOutcomeRecord> records = pharmacistController.getAppointmentOutcomeRecord(appointmentID, records);
+        
+        try {
+            String result = pharmacistController.prescribeMed(appointmentID, records);
+            System.out.println(result);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    
+    private void replenishMedicine ()
+    {
+    	System.out.println("Enter Medicine name:");
+    	String medicineName = scanner.nextLine();
+    	System.out.println("Enter quantity:");
+    	int quantity = scanner.nextInt();
+    	
+    	pharmacistController.submitReplenishmentRequest(medicineName, quantity);
     }
 
-    private void submitReplenishmentRequest() {
-        System.out.print("Enter Medicine Name: ");
-        String medicineName = scanner.nextLine();
-        System.out.print("Enter Quantity: ");
-        int quantity = scanner.nextInt();
-        scanner.nextLine(); // Consume newline character
-        InventoryController inventoryManager = new InventoryController();
-        pharmacist.submitReplenishmentRequest(medicineName, quantity, inventoryManager);
-    }
-
-
+  
 }
