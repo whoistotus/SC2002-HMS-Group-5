@@ -6,6 +6,7 @@ import java.util.List;
 
 public class AppointmentsCsvHelper {
     private static final String FILE_PATH = "data/Appointments.csv";
+    
 
     // Loads all appointments from the CSV file
     public static List<Appointment> loadAppointments() {
@@ -55,7 +56,7 @@ public class AppointmentsCsvHelper {
         List<Appointment> appointments = loadAppointments();
         List<Appointment> pendingAppointments = new ArrayList<>();
         for (Appointment appointment : appointments) {
-            if (appointment.getDoctorID().equals(doctorID) && appointment.getStatus() == AppointmentStatus.PENDING) {
+            if (appointment.getDoctorID().equals(doctorID) && appointment.getStatus() == Appointment.AppointmentStatus.PENDING) {
                 pendingAppointments.add(appointment);
             }
         }
@@ -82,7 +83,7 @@ public class AppointmentsCsvHelper {
     }
 
     // Updates the status of a specific appointment and saves the changes
-    public static void updateAppointmentStatus(String appointmentID, AppointmentStatus newStatus) {
+    public static void updateAppointmentStatus(String appointmentID, Appointment.AppointmentStatus newStatus) {
         List<Appointment> appointments = loadAppointments();
         for (Appointment appointment : appointments) {
             if (appointment.getAppointmentID().equals(appointmentID)) {

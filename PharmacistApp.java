@@ -1,6 +1,7 @@
 package SC2002_Assignment;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 public class PharmacistApp {
@@ -23,9 +24,8 @@ public class PharmacistApp {
     //     inputScanner.close();
     // }
 
-    public void start() {
-        System.out.println("Welcome, " + pharmacistController.getHospitalID() + ".");
-
+    public void start(List<AppointmentOutcomeRecord> records, Map<Medication, Integer> medicationStock, InventoryController inventoryController) {
+    
         while (true) {
             System.out.println("\nPharmacist Menu:");
             System.out.println("1. View Patient Appointment Outcome Record");
@@ -34,19 +34,19 @@ public class PharmacistApp {
             System.out.println("4. Replenish Medicine");
             System.out.println("5. Exit");
             System.out.print("Select an option: ");
-
+    
             int choice = scanner.nextInt();
             scanner.nextLine(); // Consume newline character
-
+    
             switch (choice) {
                 case 1:
-                    viewAppointmentOutcome();
+                    viewAppointmentOutcome(records);
                     break;
                 case 2:
-                    monitorInventory();
+                    monitorInventory(medicationStock);
                     break;
                 case 3:
-                    prescribeMedicine();
+                    prescribeMedicine(records, inventoryController);
                     break;
                 case 4:
                     replenishMedicine();
@@ -60,39 +60,49 @@ public class PharmacistApp {
         }
     }
 
-    private void viewAppointmentOutcome() {
+    private void viewAppointmentOutcome(List<AppointmentOutcomeRecord> records) {
         System.out.print("Enter Appointment ID: ");
         String appointmentID = scanner.nextLine();
-        // View the appointment outcome record
-        pharmacistView.viewAppointmentOutcomeRecord(appointmentID);
+        
+        // Fetch the appointment outcome record
+        AppointmentOutcomeRecord record = pharmacistController.getAppointmentOutcomeRecord(appointmentID, records);
+        
+        // View the appointment outcome record if found
+        if (record != null) {
+            pharmacistView.viewAppointmentOutcomeRecord(record);
+        } else {
+            System.out.println("Appointment outcome record not found for ID: " + appointmentID);
+        }
     }
+    
 
-    private void monitorInventory() {
+    private void monitorInventory(Map<Medication, Integer> medicationStock) {
         // Display the current inventory of medications
-        pharmacistView.displayInventory();
+        pharmacistView.displayInventory(medicationStock);
     }
 
-    private void prescribeMedicine() {
+
+    private void prescribeMedicine(List<AppointmentOutcomeRecord> records, InventoryController inventoryController) {
         System.out.print("Enter Appointment ID: ");
         String appointmentID = scanner.nextLine();
-
+    
         // Retrieve the appointment outcome record
-        AppointmentOutcomeRecord record = pharmacistController.getAppointmentOutcomeRecord(appointmentID);
-
+        AppointmentOutcomeRecord record = pharmacistController.getAppointmentOutcomeRecord(appointmentID, records);
+    
         if (record == null) {
             System.out.println("No appointment found with ID: " + appointmentID);
             return;
         }
-
+    
         try {
             // Prescribe the medication and update the inventory
-            String result = pharmacistController.prescribeMed(appointmentID, record.getMedications());
+            String result = pharmacistController.prescribeMed(appointmentID, records, inventoryController);
             System.out.println(result);
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
         }
     }
-
+    
     private void replenishMedicine() {
         System.out.print("Enter Medicine name: ");
         String medicineName = scanner.nextLine();
