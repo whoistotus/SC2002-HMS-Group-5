@@ -20,30 +20,30 @@ public class AdminController {
                 newStaff = new HospitalStaff(hospitalID, password, "Pharmacist", name, gender, age);
                 break;
             default:
-                view.displayMessage("Invalid user role specified.");
+                System.out.println("Invalid user role.");
                 return;
         }
 
         if (model.addStaffMember(newStaff)) {
-            view.displayMessage("Staff member added successfully.");
+            System.out.println("Staff member added successfully.");
         } else {
-            view.displayMessage("Staff with ID " + hospitalID + " already exists.");
+            System.out.println("Staff with ID " + hospitalID + " already exists.");
         }
     }
 
     public void removeStaff(String hospitalID) {
         if (model.removeStaffMember(hospitalID)) {
-            view.displayMessage("Staff member removed successfully.");
+            System.out.println("Staff member removed successfully.");
         } else {
-            view.displayMessage("Staff member with ID " + hospitalID + " not found.");
+            System.out.println("Staff member with ID " + hospitalID + " not found.");
         }
     }
 
     public void updateStaffInfo(String hospitalID, String name, String userRole, String gender, int age) {
         if (model.updateStaffMember(hospitalID, name, userRole, gender, age)) {
-            view.displayMessage("Staff information updated successfully.");
+            System.out.println("Staff information updated successfully.");
         } else {
-            view.displayMessage("Staff member with ID " + hospitalID + " not found.");
+            System.out.println("Staff member with ID " + hospitalID + " not found.");
         }
     }
 
@@ -79,9 +79,9 @@ public class AdminController {
 
     public void approveReplenishmentRequest(int requestId) {
         if (model.approveReplenishmentRequest(requestId)) {
-            view.displayMessage("Replenishment request approved successfully.");
+            System.out.println("Replenishment request approved successfully.");
         } else {
-            view.displayMessage("Failed to approve replenishment request.");
+            System.out.println("Failed to approve replenishment request.");
         }
     }
 
@@ -97,6 +97,6 @@ public class AdminController {
     // System Initialization
     public void initializeSystem(List<HospitalStaff> initialStaff, List<Medication> initialMedications) {
         model.initializeSystem(initialStaff, initialMedications);
-        view.displayMessage("System initialized with default data.");
+        System.out.println("System initialized with default data.");
     }
 }
