@@ -1,3 +1,6 @@
+import java.io.FileWriter;
+import java.io.IOException;
+
 public class ReplenishmentRequestModel {
     
     public enum RequestStatus {
@@ -12,7 +15,7 @@ public class ReplenishmentRequestModel {
     private RequestStatus status;
 
     // Constructor
-    public ReplenishmentRequest(String requestID, String medicineName, int quantity) {
+    public ReplenishmentRequestModel(String requestID, String medicineName, int quantity) {
         this.requestID = requestID;
         this.medicineName = medicineName;
         this.quantity = quantity;
