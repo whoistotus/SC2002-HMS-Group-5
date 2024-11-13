@@ -1,13 +1,13 @@
 package SC2002_Assignment;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 public class PatientView
 {
 
-	public void viewMedicalRecord(String patientId, String name, Date dob, String gender, 
+	public void viewMedicalRecord(String patientId, String name, LocalDate dob, String gender, 
             String contactNumber, String email, String bloodType, 
             List<String> medicalRecord) 
     {
@@ -39,7 +39,7 @@ public class PatientView
         {
             for (Appointment appointment : appointments) 
             {
-                System.out.println("Appointment with Dr. " + appointment.getDoctor() +
+                System.out.println("Appointment with " + appointment.getDoctor().getName() +
                                    " on " + appointment.getAppointmentTime() +
                                    " - Status: " + appointment.getStatus());
             }
@@ -76,8 +76,8 @@ public class PatientView
         {
             System.out.println("Appointment Outcome:");
             System.out.println("Service: " + outcome.getServiceType());
-            System.out.println("Outcome Description: " + outcome.getNotes());
-            System.out.println("Prescription: " + outcome.getMedicines());
+            System.out.println("Outcome Description: " + outcome.getConsultationNotes());
+            System.out.println("Prescription: " + outcome.getMedications());
         }
     }
     
@@ -86,5 +86,4 @@ public class PatientView
         System.out.println(message);
     }
 }
-
 
