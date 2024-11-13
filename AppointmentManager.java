@@ -10,7 +10,7 @@ public class AppointmentManager
 
     public AppointmentManager() 
     {
-        this.appointments = new ArrayList<>();
+        this.appointments = AppointmentsCsvHelper.loadAppointments();
     }
 
     // get available slots for a specific doctor
@@ -42,6 +42,7 @@ public class AppointmentManager
         // else slot is avail so create the appointment with pending status
         Appointment newAppointment = new Appointment(appointmentID, patient, doctor, date, time, Appointment.AppointmentStatus.PENDING);
         appointments.add(newAppointment);
+        AppointmentsCsvHelper.addAppointment(newAppointment);
         return true;
     }
 
