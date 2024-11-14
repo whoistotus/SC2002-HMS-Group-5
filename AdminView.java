@@ -47,13 +47,6 @@ public class AdminView {
                 showHospStaff();
             case 7:
                 //viewAppointments();
-                
-
-
-            
-
-                
-
         }
     }
 
