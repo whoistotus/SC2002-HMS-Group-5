@@ -2,29 +2,21 @@ package SC2002_Assignment;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DoctorModel {
-    private String doctorID;
+import SC2002_Assignment.User;
+
+public class DoctorModel extends User {
     private String name;
     private String specialization;
     private List<DoctorAvailability> availability;
     private List<Appointment> appointments;
 
     // Constructor
-    public DoctorModel(String doctorID, String name, String specialization) {
-        this.doctorID = doctorID;
+    public DoctorModel(String hospitalID, String password, String userRole, String name, String specialization) {
+        super(hospitalID, password, userRole); // Call User constructor
         this.name = name;
         this.specialization = specialization;
         this.availability = new ArrayList<>();
         this.appointments = new ArrayList<>();
-    }
-
-    // Getters and Setters
-    public String getDoctorID() {
-        return doctorID;
-    }
-
-    public void setDoctorID(String doctorID) {
-        this.doctorID = doctorID;
     }
 
     public String getName() {

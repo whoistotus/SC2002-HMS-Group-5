@@ -38,7 +38,7 @@ public class Appointment {
     }
 
     public String getDoctorID() {
-        return doctor.getDoctorID();
+        return doctor.getHospitalID(); // Use hospitalID from User class
     }
     
     public DoctorModel getDoctor()
@@ -84,7 +84,7 @@ public class Appointment {
         return "Appointment{" +
                 "appointmentID='" + appointmentID + '\'' +
                 ", patientID='" + patient.getHospitalID() + '\'' +
-                ", doctorID='" + doctor.getDoctorID() + '\'' +
+                ", doctorID='" + doctor.getHospitalID() + '\'' +
                 ", appointmentTime=" + appointmentTime + '\'' +
                 ", status=" + status +
                 '}';

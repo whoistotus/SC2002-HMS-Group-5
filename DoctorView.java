@@ -112,7 +112,6 @@ public class DoctorView {
         }
     }
     
-    
     public void setAvailability() {
         System.out.print("Enter date (YYYY-MM-DD): ");
         String date = scanner.nextLine();
@@ -121,7 +120,7 @@ public class DoctorView {
         System.out.print("Enter end time (HH:MM): ");
         String endTime = scanner.nextLine();
 
-        DoctorAvailability availability = new DoctorAvailability(doctorModel.getDoctorID(), date, startTime, endTime);
+        DoctorAvailability availability = new DoctorAvailability(doctorModel.getHospitalID(), date, startTime, endTime);
         List<DoctorAvailability> availabilityList = new ArrayList<>(doctorModel.getAvailability());
         availabilityList.add(availability);
         doctorModel.setAvailability(availabilityList);
@@ -131,7 +130,7 @@ public class DoctorView {
 
     public void acceptAppointment() {
         System.out.println("Pending Appointments:");
-        List<Appointment> pendingAppointments = AppointmentsCsvHelper.getPendingAppointmentsForDoctor(doctorModel.getDoctorID());
+        List<Appointment> pendingAppointments = AppointmentsCsvHelper.getPendingAppointmentsForDoctor(doctorModel.getHospitalID());
 
         if (pendingAppointments.isEmpty()) {
             System.out.println("No pending appointments.");
@@ -157,7 +156,7 @@ public class DoctorView {
 
     public void declineAppointment() {
         System.out.println("Pending Appointments:");
-        List<Appointment> pendingAppointments = AppointmentsCsvHelper.getPendingAppointmentsForDoctor(doctorModel.getDoctorID());
+        List<Appointment> pendingAppointments = AppointmentsCsvHelper.getPendingAppointmentsForDoctor(doctorModel.getHospitalID());
 
         if (pendingAppointments.isEmpty()) {
             System.out.println("No pending appointments.");

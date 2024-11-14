@@ -29,10 +29,11 @@ public class DoctorController {
 
     // Set availability
     public void setAvailability(String date, String startTime, String endTime) {
-        DoctorAvailability availability = new DoctorAvailability(doctorModel.getDoctorID(), date, startTime, endTime);
+        DoctorAvailability availability = new DoctorAvailability(doctorModel.getHospitalID(), date, startTime, endTime);
         doctorModel.getAvailability().add(availability);
         System.out.println("Availability set for date: " + date + ", from " + startTime + " to " + endTime);
     }
+
 
     // Accept appointment
     public void acceptAppointment(Appointment appointment) {
@@ -54,16 +55,15 @@ public class DoctorController {
     
 
     // Record outcome of an appointment
-     public void recordAppointmentOutcome(Appointment appointment, AppointmentOutcomeRecord.ServiceType serviceType, List<Medication> meds, String notes) {
-        // Format the Date to String
+    public void recordAppointmentOutcome(Appointment appointment, AppointmentOutcomeRecord.ServiceType serviceType, List<Medication> meds, String notes) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String formattedDate = dateFormat.format(new Date());
 
         AppointmentOutcomeRecord outcome = new AppointmentOutcomeRecord(
             appointment.getPatientID(),
-            doctorModel.getDoctorID(),
+            doctorModel.getHospitalID(), // Replacing getDoctorID() with getHospitalID()
             appointment.getAppointmentID(),
-            formattedDate, // Pass the formatted String date
+            formattedDate,
             notes,
             serviceType
         );
