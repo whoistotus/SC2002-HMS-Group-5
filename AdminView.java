@@ -3,7 +3,9 @@ package SC2002_Assignment;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 public class AdminView {
@@ -45,7 +47,7 @@ public class AdminView {
         System.out.println("2 - Manage Medication");
         System.out.println("3 - Show Hospital Staff");
         System.out.println("4 - Manage Staff");
-        System.out.println("5 - Approve Replenishment Requests");
+        System.out.println("5 - Manage Replenishment Requests");
         System.out.println("6 - Appointment Details");
         System.out.println("7 - Logout");
         int choice = sc.nextInt();
@@ -72,9 +74,15 @@ public class AdminView {
             case 5:
                 ManageReplenishmentReq();
                 break;
-            case 7:
-                //viewAppointments();
+
+            case 6:
+                showAppointmentDetails();
                 break;
+            
+            case 7: 
+                System.out.println("Logging out....");
+                break;
+
 
             default:
                 System.out.println("Please input a valid choice");
@@ -350,6 +358,7 @@ public class AdminView {
         System.out.println("2 - Remove Staff");
         System.out.println("3 - Update Staff's Details");
         System.out.println("4 - Return to main menu.");
+        System.out.println("====================================");
 
         int choice = sc.nextInt();
         sc.nextLine();
@@ -1010,4 +1019,53 @@ public class AdminView {
             }
         }
     }
+
+    public void showAppointmentDetails() {
+        System.out.println("====== Appointment List ===========");
+        
+        // Load all appointments from the CSV file
+        List<Appointment> appointments = AppointmentsCsvHelper.loadAppointments();
+        List<AppointmentOutcomeRecord> appointmentOutcomes = AppointmentOutcomeRecordsCsvHelper.loadAppointmentOutcomes();
+        
+        // Check if appointments list is empty
+        if (appointments.isEmpty()) {
+            System.out.println("No appointments found.");
+            return;
+        }
+        
+        // Create a map for fast lookup of outcomes by AppointmentID
+        Map<String, AppointmentOutcomeRecord> outcomeMap = new HashMap<>();
+        for (AppointmentOutcomeRecord outcome : appointmentOutcomes) {
+            outcomeMap.put(outcome.getAppointmentID(), outcome);
+        }
+        
+        // Display each appointment's details
+        for (Appointment appointment : appointments) {
+            System.out.println("Appointment ID: " + appointment.getAppointmentID());
+            System.out.println("Patient ID: " + appointment.getPatientID());
+            System.out.println("Doctor ID: " + appointment.getDoctorID());
+            System.out.println("Date and Time: " + appointment.getAppointmentTime());
+            System.out.println("Status: " + appointment.getStatus());
+            
+            // Check if the appointment is completed and display the outcome record if available
+            if (appointment.getStatus() == Appointment.AppointmentStatus.COMPLETED) {
+                AppointmentOutcomeRecord outcomeRecord = outcomeMap.get(appointment.getAppointmentID());
+                if (outcomeRecord != null) {
+                    System.out.println("Outcome Record:");
+                    System.out.println(" - Service Type: " + outcomeRecord.getServiceType());
+                    System.out.println(" - Consultation Notes: " + outcomeRecord.getConsultationNotes());
+                    System.out.println(" - Medications:");
+                    for (Map.Entry<String, Integer> med : outcomeRecord.getMedications().entrySet()) {
+                        System.out.println("   * " + med.getKey() + ": " + med.getValue());
+                    }
+                    System.out.println(" - Status of Prescription: " + outcomeRecord.getStatusOfPrescription());
+                } else {
+                    System.out.println("No outcome record available for this appointment.");
+                }
+            }
+            System.out.println("------------------------------");
+        }
+    }
+
+    
 }

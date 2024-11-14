@@ -14,7 +14,8 @@ public class Appointment {
         PENDING,
         ACCEPTED,
         DECLINED,
-        CANCELLED
+        CANCELLED,
+        COMPLETED
     }
     
     // Constructor

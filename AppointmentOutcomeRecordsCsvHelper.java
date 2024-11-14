@@ -39,9 +39,7 @@ public class AppointmentOutcomeRecordsCsvHelper {
                 AppointmentOutcomeRecord.StatusOfPrescription prescriptionStatus = AppointmentOutcomeRecord.StatusOfPrescription.valueOf(values[7].toUpperCase());
 
                 // Create AppointmentOutcomeRecord object
-                AppointmentOutcomeRecord outcome = new AppointmentOutcomeRecord(
-                    patientID, doctorID, appointmentID, date, consultationNotes, serviceType
-                );
+                AppointmentOutcomeRecord outcome = new AppointmentOutcomeRecord(patientID, doctorID, appointmentID, date, consultationNotes, serviceType);
                 outcome.setMedications(medications);
                 outcome.setStatusOfPrescription(prescriptionStatus);
 
