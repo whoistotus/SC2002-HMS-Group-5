@@ -1,4 +1,4 @@
-package SC2002_Assignment;
+import SC2002_Assignment.User;
 
 public class LoginResult {
     private boolean success;
