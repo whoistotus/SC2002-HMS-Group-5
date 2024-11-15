@@ -12,7 +12,7 @@ public class LoginManager {
     private static final String SALT = "HMS2024";
     private Map<String, User> credentialsMap;
     private User currentUser;
-    private static final String PASSWORD_FILE = "SC2002_Assignment/data/passwords.csv";
+    private static final String PASSWORD_FILE = "data/passwords.csv";
 
     public LoginManager() {
         this.credentialsMap = new HashMap<>();

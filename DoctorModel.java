@@ -1,7 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
 
-import SC2002_Assignment.User;
 
 public class DoctorModel extends User {
     private String name;

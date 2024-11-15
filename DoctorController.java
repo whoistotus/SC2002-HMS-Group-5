@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import SC2002_Assignment.Appointment.AppointmentStatus;
 
 import java.util.HashMap;
 
