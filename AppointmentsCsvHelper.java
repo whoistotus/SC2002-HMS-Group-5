@@ -47,26 +47,88 @@ public class AppointmentsCsvHelper {
 
     // Retrieves an appointment by its ID
     public static Appointment getAppointmentById(String appointmentID) {
-        List<Appointment> appointments = loadAppointments();
-        for (Appointment appointment : appointments) {
-            if (appointment.getAppointmentID().equals(appointmentID)) {
-                return appointment;
+        try (BufferedReader br = new BufferedReader(new FileReader(FILE_PATH))) {
+            String line;
+            br.readLine(); // Skip header row
+            while ((line = br.readLine()) != null) {
+                String[] values = line.split(",");
+                String currentAppointmentID = values[0].trim();
+                
+                // Only proceed if the appointment ID matches the one we're looking for
+                if (currentAppointmentID.equals(appointmentID)) {
+                    String patientID = values[1].trim();
+                    String doctorID = values[2].trim();
+                    String date = values[3].trim();
+                    String time = values[4].trim();
+    
+                    Appointment.AppointmentStatus status;
+                    try {
+                        status = Appointment.AppointmentStatus.valueOf(values[5].trim().toUpperCase());
+                    } catch (IllegalArgumentException e) {
+                        System.out.println("Warning: Invalid status '" + values[5] + "' in appointment " + appointmentID);
+                        return null;
+                    }
+    
+                    PatientModel patient = PatientListCsvHelper.getPatientById(patientID);
+                    DoctorModel doctor = DoctorAvailabilityCsvHelper.getDoctorById(doctorID);
+    
+                    // Check if patient and doctor exist
+                    if (patient != null && doctor != null) {
+                        return new Appointment(appointmentID, patient, doctor, date, time, status);
+                    } else {
+                        System.out.println("Could not load appointment: Patient or Doctor not found for " + appointmentID);
+                        return null;
+                    }
+                }
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        return null;
+        return null; // Return null if no matching appointment was found
     }
 
+    
     // Retrieves all pending appointments for a specific doctor
     public static List<Appointment> getPendingAppointmentsForDoctor(String doctorID) {
-        List<Appointment> appointments = loadAppointments();
         List<Appointment> pendingAppointments = new ArrayList<>();
-        for (Appointment appointment : appointments) {
-            if (appointment.getDoctorID().equals(doctorID) && appointment.getStatus() == Appointment.AppointmentStatus.PENDING) {
-                pendingAppointments.add(appointment);
+        
+        try (BufferedReader br = new BufferedReader(new FileReader(FILE_PATH))) {
+            String line;
+            br.readLine(); // Skip header
+            while ((line = br.readLine()) != null) {
+                String[] values = line.split(",");
+                String currentAppointmentID = values[0].trim();
+                String currentPatientID = values[1].trim();
+                String currentDoctorID = values[2].trim();
+                String date = values[3].trim();
+                String time = values[4].trim();
+                
+                if (currentDoctorID.equals(doctorID)) {
+                    // If the doctor ID matches, check for pending status
+                    try {
+                        Appointment.AppointmentStatus status = Appointment.AppointmentStatus.valueOf(values[5].trim().toUpperCase());
+                        if (status == Appointment.AppointmentStatus.PENDING) {
+                            PatientModel patient = PatientListCsvHelper.getPatientById(currentPatientID);
+                            DoctorModel doctor = DoctorAvailabilityCsvHelper.getDoctorById(currentDoctorID);
+                            
+                            if (patient != null && doctor != null) {
+                                pendingAppointments.add(new Appointment(currentAppointmentID, patient, doctor, date, time, status));
+                            } else {
+                                System.out.println("Could not load appointment: Patient or Doctor not found for " + currentAppointmentID);
+                            }
+                        }
+                    } catch (IllegalArgumentException e) {
+                        System.out.println("Warning: Invalid status in appointment " + currentAppointmentID);
+                    }
+                }
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        
         return pendingAppointments;
     }
+    
 
     // Saves the entire list of appointments back to the CSV file
     /*public static void saveAllAppointments(List<Appointment> appointments) {

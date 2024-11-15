@@ -5,7 +5,7 @@ import java.util.List;
 public class DoctorModel extends User {
     private String name;
     private String specialization;
-    private List<DoctorAvailability> availability;
+    private List<DoctorAvailability> availabilityList;
     private List<Appointment> appointments;
 
     // Constructor
@@ -13,7 +13,7 @@ public class DoctorModel extends User {
         super(hospitalID, password, userRole); // Call User constructor
         this.name = name;
         this.specialization = specialization;
-        this.availability = new ArrayList<>();
+        this.availabilityList = new ArrayList<>();
         this.appointments = new ArrayList<>();
     }
 
@@ -34,11 +34,32 @@ public class DoctorModel extends User {
     }
 
     public List<DoctorAvailability> getAvailability() {
-        return availability;
+        return availabilityList;
+    }
+
+    public void addAvailability(DoctorAvailability availability) {
+        availabilityList.add(availability);
+        // Optionally merge overlapping or adjacent slots here
+        availabilityList = mergeAvailabilitySlots(availabilityList);
+    }
+
+    private List<DoctorAvailability> mergeAvailabilitySlots(List<DoctorAvailability> availabilityList) {
+        // Implement merging logic here to handle overlapping time slots
+        // You can use the merge logic we discussed earlier
+        // Return the merged list
+        return availabilityList;
+    }
+
+    public List<DoctorAvailability> getAvailabilityList() {
+        return availabilityList;
     }
 
     public void setAvailability(List<DoctorAvailability> availability) {
-        this.availability = availability;
+        this.availabilityList = availability;
+    }
+
+    public void addAppointment(Appointment appointment) {
+        this.appointments.add(appointment);
     }
 
     public List<Appointment> getAppointments() {
@@ -48,4 +69,6 @@ public class DoctorModel extends User {
     public void setAppointments(List<Appointment> appointments) {
         this.appointments = appointments;
     }
+
+
 }

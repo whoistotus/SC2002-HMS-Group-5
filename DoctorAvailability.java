@@ -15,6 +15,10 @@ public class DoctorAvailability {
         initializeTimeSlots();
     }
 
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
+    }
+
     // Initialize each hour in the available range as true (available)
     private void initializeTimeSlots() {
         timeSlots = new boolean[24]; // Representing hours from 0 to 23

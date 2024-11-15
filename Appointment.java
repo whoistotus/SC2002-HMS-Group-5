@@ -76,6 +76,10 @@ public class Appointment {
     	this.appointmentTime = newTime; 
     }
 
+    public String getDate()
+    {
+        return appointmentDate;
+    }
     public String toCsv() {
         return String.join(",",
                 appointmentID,

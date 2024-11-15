@@ -1,0 +1,6 @@
+patientID,doctorID,appointmentID,date,consultationNotes,serviceType,medications ,statusOfPrescription
+P1001,D001,AP001,11/5/2024,rest,CONSULTATION,test;2,Pending
+P1001,D001,AP001,11/11/2024,test,CONSULTATION,test:2,Pending
+P1001,D001,AP001,11/11/2024,yay,CONSULTATION,medicine2:3;medicine:3,Pending
+P1001,D001,AP001,11/11/2024,test,XRAY,med1:2;med4:4,Pending
+P1001,D001,AP001,11/11/2024,note,XRAY,,Pending

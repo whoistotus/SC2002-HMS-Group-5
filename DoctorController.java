@@ -30,8 +30,13 @@ public class DoctorController {
     public void setAvailability(String date, String startTime, String endTime) {
         DoctorAvailability availability = new DoctorAvailability(doctorModel.getHospitalID(), date, startTime, endTime);
         doctorModel.getAvailability().add(availability);
+    
+        // Save updated availability to CSV
+        DoctorAvailabilityCsvHelper.saveDoctorAvailability(doctorModel.getAvailability());
+    
         System.out.println("Availability set for date: " + date + ", from " + startTime + " to " + endTime);
     }
+    
 
 
     // Accept appointment

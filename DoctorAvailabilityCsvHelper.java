@@ -12,6 +12,11 @@ public class DoctorAvailabilityCsvHelper {
             String line;
             br.readLine(); // Skip header
             while ((line = br.readLine()) != null) {
+                if (line.trim().isEmpty()) {
+                    // Skip empty lines
+                    continue;
+                }
+                
                 String[] values = line.split(",");
                 
                 // Ensure the line has the correct number of columns
@@ -19,12 +24,12 @@ public class DoctorAvailabilityCsvHelper {
                     System.out.println("Warning: Skipping malformed line: " + line);
                     continue;
                 }
-
+    
                 String doctorID = values[0].trim();
                 String date = values[1].trim();
                 String startTime = values[2].trim();
                 String endTime = values[3].trim();
-
+    
                 DoctorAvailability availability = new DoctorAvailability(doctorID, date, startTime, endTime);
                 availabilityList.add(availability);
             }
@@ -33,22 +38,23 @@ public class DoctorAvailabilityCsvHelper {
         }
         return availabilityList;
     }
-
+    
     public static void saveDoctorAvailability(List<DoctorAvailability> availabilityList) {
-        try (PrintWriter writer = new PrintWriter(new FileWriter(FILE_PATH))) {
-            writer.println("DoctorID,Date,StartTime,EndTime"); // Header
+        try (PrintWriter writer = new PrintWriter(new FileWriter(FILE_PATH, false))) {
+            writer.println("DoctorID,Date,StartTime,EndTime"); // Write header
             for (DoctorAvailability availability : availabilityList) {
                 writer.printf("%s,%s,%s,%s%n",
-                    availability.getDoctorID(),
-                    availability.getDate(),
-                    availability.getStartTime(),
-                    availability.getEndTime()
-                );
+                        availability.getDoctorID(),
+                        availability.getDate(),
+                        availability.getStartTime(),
+                        availability.getEndTime());
             }
+            System.out.println("Doctor availability successfully saved to CSV.");
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+    
 
 
     public static boolean updateDoctorAvailability(String doctorId, String date, String time) {
@@ -85,10 +91,17 @@ public class DoctorAvailabilityCsvHelper {
             br.readLine(); // Skip header
             while ((line = br.readLine()) != null) {
                 String[] data = line.split(",");
-                String doctorID = data[0];
-                String name = data[1];
-                String specialization = data[2];
-
+    
+                // Ensure the line has the expected number of columns (assuming 3 here)
+                if (data.length < 3) {
+                    System.out.println("Warning: Skipping malformed line: " + line);
+                    continue;
+                }
+    
+                String doctorID = data[0].trim();
+                String name = data[1].trim();
+                String specialization = data[2].trim();
+    
                 // Create and add DoctorModel object
                 DoctorModel doctor = new DoctorModel(doctorID, "defaultPassword", "Doctor", name, specialization);
                 doctors.add(doctor);
@@ -98,6 +111,7 @@ public class DoctorAvailabilityCsvHelper {
         }
         return doctors;
     }
+    
 
     public static DoctorModel getDoctorById(String doctorID) {
         List<DoctorModel> doctors = loadDoctors();
