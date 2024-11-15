@@ -1,5 +1,3 @@
-package SC2002_Assignment;
-
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,30 +41,5 @@ public class PatientListCsvHelper {
             }
         }
         return null;
-    }
-
-
-    public static List<String> getMedicalRecord(String patientId)
-    {
-        List<String> medicalRecords = new ArrayList<>();
-
-        try(BufferedReader br = new BufferedReader(new FileReader(FILE_PATH)))
-        {
-            String line;
-
-            while ((line = br.readLine()) != null) {
-                String[] data = line.split(",");
-                if (data[0].equals(patientId)) {
-                    // assuming medical records start at index 6
-                    for (int i = 6; i < data.length; i++) {
-                        medicalRecords.add(data[i]);
-                    }
-                    break;
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return medicalRecords;
     }
 }
