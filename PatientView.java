@@ -44,36 +44,6 @@ public class PatientView
             System.out.println("- " + prescription);
         }
     }
-
-    public void updatePersonalInformation() {
-        Scanner scanner = new Scanner(System.in);
-    
-        System.out.println("What would you like to update?");
-        System.out.println("1. Contact Number");
-        System.out.println("2. Email");
-        System.out.println("3. Exit");
-        System.out.print("Enter your choice: ");
-        int choice = scanner.nextInt();
-        scanner.nextLine(); // Consume newline
-    
-        switch (choice) {
-            case 1:
-                System.out.print("Enter new contact number: ");
-                String newContactNumber = scanner.nextLine();
-                controller.updateContactNumber(newContactNumber);
-                break;
-            case 2:
-                System.out.print("Enter new email: ");
-                String newEmail = scanner.nextLine();
-                controller.updateEmail(newEmail);
-                break;
-            case 3:
-                System.out.println("Exiting...");
-                break;
-            default:
-                System.out.println("Invalid choice. Please try again.");
-        }
-    }
     
 
     /*public void viewAvailableSlots(DoctorModel doctor, List<String> availableSlots) 
@@ -105,9 +75,9 @@ public class PatientView
     }
     
    
-	public void viewScheduledAppointmentStatus(List<Appointment> appointments) 
+	public void viewScheduledAppointments(List<Appointment> appointments) 
 	{
-        System.out.println("Scheduled Appointments and Their Status:");
+        System.out.println("Your Scheduled Appointments:");
 
         if (appointments.isEmpty()) 
         {
@@ -116,14 +86,18 @@ public class PatientView
         
         else 
         {
-            for (Appointment appointment : appointments) 
-            {
-                System.out.println("Appointment with " + appointment.getDoctor().getName() +
-                                   " on " + appointment.getAppointmentTime() +
-                                   " - Status: " + appointment.getStatus());
-            }
+                for (Appointment appointment : appointments) 
+                {
+                    System.out.println("Appointment ID: " + appointment.getAppointmentID() + 
+                                   " | Doctor: " + appointment.getDoctor().getName() +
+                                   " | Date: " + appointment.getAppointmentDate() +
+                                   " | Time: " + appointment.getAppointmentTime() +
+                                   " | Status: " + appointment.getStatus());
+                }
         }
+            
     }
+
     
     public void viewAppointmentOutcome(AppointmentOutcomeRecord outcome) 
     {

@@ -23,7 +23,8 @@ public class PatientListCsvHelper {
                     String gender = values[3];
                     String bloodType = values[4];
                     String email = values[5];
-                    patients.add(new PatientModel(patientID, "password", "Patient", name, dob, gender, "Contact Number", email, bloodType));
+                    String contactNumber = values[6];
+                    patients.add(new PatientModel(patientID, "password", "Patient", name, dob, gender, contactNumber, email, bloodType));
                 }
             }
         } catch (IOException e) {
@@ -31,6 +32,19 @@ public class PatientListCsvHelper {
         }
         return patients;
     }
+
+    public static boolean addPatientToCsv(PatientModel patient) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter("data/PatientList.csv", true))) {
+            // Write patient details as a new line in the CSV
+            bw.write(patient.toCsv());
+            bw.newLine();
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
 
     // Get a specific patient by patient ID
     public static PatientModel getPatientById(String patientID) {
@@ -75,8 +89,8 @@ public class PatientListCsvHelper {
             while ((line = br.readLine()) != null) {
                 String[] values = line.split(",");
                 if (values[0].equals(patientID)) {
-                    values[4] = contactNumber; // Update contact number
-                    values[5] = email; // Update email
+                    if (contactNumber != null) values[6] = contactNumber; // Update contact number
+                    if (email != null) values[5] = email; // Update email
                 }
                 rows.add(values);
             }
@@ -93,4 +107,5 @@ public class PatientListCsvHelper {
             e.printStackTrace();
         }
     }
+    
 }

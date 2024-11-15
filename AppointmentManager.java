@@ -4,6 +4,7 @@ import java.util.List;
 public class AppointmentManager 
 {
     private List<Appointment> appointments;
+    private static int appointmentCounter = 0;
     
 
     public AppointmentManager() 
@@ -42,14 +43,21 @@ public class AppointmentManager
         appointments.add(newAppointment);
         return true;
     }*/
+
+    private static synchronized String generateAppointmentID() {
+        appointmentCounter++;
+        return String.format("AP%04d", appointmentCounter);
+    }
     
-    public boolean scheduleAppointment(String appointmentID, PatientModel patient, DoctorModel doctor, String date, String time) {
+    public boolean scheduleAppointment(PatientModel patient, DoctorModel doctor, String date, String time) {
         // Check availability using DoctorAvailabilityCsvHelper
         List<String> availableSlots = DoctorAvailabilityCsvHelper.getAvailableSlots(doctor.getHospitalID(), date);
     
         if (!availableSlots.contains(time)) {
             return false; // Slot unavailable
         }
+
+        String appointmentID = generateAppointmentID(); // Generate ID
     
         // Create and add appointment
         Appointment newAppointment = new Appointment(appointmentID, patient, doctor, date, time, Appointment.AppointmentStatus.PENDING);
@@ -117,8 +125,10 @@ public class AppointmentManager
     {
         appointment.setStatus(newStatus);
     }
+
+
     
-    public boolean cancelAppointment(String appointmentID) 
+    /*public boolean cancelAppointment(String appointmentID) 
     {
     	for (Appointment appointment : appointments) 
     	{
@@ -130,7 +140,32 @@ public class AppointmentManager
             }
         }
         return false;
+    }*/
+
+    public boolean cancelAppointment(String appointmentID) {
+        for (Appointment appointment : appointments) {
+            if (appointment.getAppointmentID().equals(appointmentID)) {
+                // Free the doctor's time slot in DoctorAvailability.csv
+                DoctorAvailabilityCsvHelper.updateDoctorAvailability(
+                    appointment.getDoctor().getHospitalID(),
+                    appointment.getAppointmentDate(),
+                    appointment.getAppointmentTime()
+                );
+    
+                // Remove appointment
+                appointments.remove(appointment);
+    
+                // Update Appointments.csv
+                AppointmentsCsvHelper.updateAllAppointments(appointments);
+    
+                System.out.println("Appointment canceled successfully.");
+                return true;
+            }
+        }
+        System.out.println("Appointment not found.");
+        return false;
     }
+    
 
     // appointments for a specific patient
     public List<Appointment> getAppointmentsForPatient(String patientId) 

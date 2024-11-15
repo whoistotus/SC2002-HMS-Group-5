@@ -1,5 +1,5 @@
 import java.util.List;
-import java.util.UUID;
+import java.util.Scanner;
 //nihao
 public class PatientController 
 {
@@ -35,6 +35,36 @@ public class PatientController
         view.showMessage("Email updated successfully.");
     }
 
+    public void updatePersonalInformation() {
+        Scanner scanner = new Scanner(System.in);
+    
+        System.out.println("What would you like to update?");
+        System.out.println("1. Contact Number");
+        System.out.println("2. Email");
+        System.out.println("3. Exit");
+        System.out.print("Enter your choice: ");
+        int choice = scanner.nextInt();
+        scanner.nextLine(); // Consume newline
+    
+        switch (choice) {
+            case 1:
+                System.out.print("Enter new contact number: ");
+                String newContactNumber = scanner.nextLine();
+                updateContactNumber(newContactNumber);
+                break;
+            case 2:
+                System.out.print("Enter new email: ");
+                String newEmail = scanner.nextLine();
+                updateEmail(newEmail);
+                break;
+            case 3:
+                System.out.println("Exiting...");
+                break;
+            default:
+                System.out.println("Invalid choice. Please try again.");
+        }
+    }
+
     public void viewAvailableSlots() {
         List<DoctorAvailability> slots = DoctorAvailabilityCsvHelper.loadDoctorAvailability();
         view.viewAvailableSlots(slots);
@@ -48,8 +78,8 @@ public class PatientController
             return;
         }
     
-        String appointmentID = UUID.randomUUID().toString();
-        boolean success = appointmentManager.scheduleAppointment(appointmentID, model, doctor, date, time);
+        
+        boolean success = appointmentManager.scheduleAppointment(model, doctor, date, time);
         if (success) {
             view.showMessage("Appointment scheduled successfully with status 'Pending'.");
         } else {
@@ -77,14 +107,18 @@ public class PatientController
     }
     
 
-    public void viewScheduledAppointmentsStatus() {
+    public void viewScheduledAppointments() {
         List<Appointment> appointments = AppointmentsCsvHelper.getAppointmentsForPatient(model.getHospitalID());
-        view.viewScheduledAppointmentStatus(appointments);
+        if (appointments.isEmpty()) {
+            view.showMessage("No scheduled appointments found.");
+        } else {
+            view.viewScheduledAppointments(appointments);
+        }
     }
     
-    public void cancelAppointment(Appointment appointment) 
+    public void cancelAppointment(String appointmentID) 
     {
-        boolean success = appointmentManager.cancelAppointment(appointment.getAppointmentID());
+        boolean success = appointmentManager.cancelAppointment(appointmentID);
         if (success) 
         {
             view.showMessage("Appointment has been successfully canceled.");
