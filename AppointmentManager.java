@@ -104,10 +104,7 @@ public class AppointmentManager
         return null; // Return null if no appointment is found
     }
 
-    public void getAllAppointments()
-    {
-        
-    }
+    
 }
 
 /*import java.time.LocalDateTime;
