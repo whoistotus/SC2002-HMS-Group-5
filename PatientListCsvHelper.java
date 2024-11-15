@@ -16,7 +16,7 @@ public class PatientListCsvHelper {
             br.readLine(); // Skip header
             while ((line = br.readLine()) != null) {
                 String[] values = line.split(",");
-                if (values.length >= 6) {
+                if (values.length >= 8) {
                     String patientID = values[0];
                     String name = values[1];
                     String dob = values[2];
@@ -24,7 +24,8 @@ public class PatientListCsvHelper {
                     String bloodType = values[4];
                     String email = values[5];
                     String contactNumber = values[6];
-                    patients.add(new PatientModel(patientID, "password", "Patient", name, dob, gender, contactNumber, email, bloodType));
+                    String password = values [7];
+                    patients.add(new PatientModel(patientID, name, dob, gender, bloodType, email, contactNumber, password, "Patient"));
                 }
             }
         } catch (IOException e) {
