@@ -41,7 +41,7 @@ public class DoctorView {
                 case 1 -> viewPatientMedicalRecords();
                 case 2 -> updatePatientMedicalRecords();
                 case 3 -> setAvailability();
-                case 4 -> viewPersonalSchedule();
+                case 4 -> viewScheduledAppointments();
                 case 5 -> acceptAppointment();
                 case 6 -> declineAppointment();
                 case 7 -> recordAppointmentOutcome();
@@ -55,36 +55,40 @@ public class DoctorView {
         }
     }
 
-    public void viewPersonalSchedule() {
-        System.out.println("\n=== Personal Scheduled Appointments ===");
+    public void viewScheduledAppointments() {
+        System.out.println("\n=== View Scheduled Appointments ===");
+        System.out.println("Doctor: " + doctorModel.getName() + " (ID: " + doctorModel.getHospitalID() + ")");
     
-        List<Appointment> acceptedAppointments = doctorModel.getAppointments().stream()
+        // Load appointments directly from the CSV
+        List<Appointment> appointments = AppointmentsCsvHelper.loadAppointments();
+    
+        // Filter for accepted appointments for the current doctor
+        List<Appointment> acceptedAppointments = appointments.stream()
             .filter(appointment -> appointment.getDoctorID().equals(doctorModel.getHospitalID()) &&
                                    appointment.getStatus() == Appointment.AppointmentStatus.ACCEPTED)
             .distinct()
             .collect(Collectors.toList());
-        
+    
         if (acceptedAppointments.isEmpty()) {
-            System.out.println("No upcoming appointments.");
-            return;
+            System.out.println("No upcoming accepted appointments.");
+        } else {
+            System.out.println("+---------------------------------------------------------------+");
+            System.out.println("| Appointment ID | Patient ID | Date       | Time  | Status     |");
+            System.out.println("+---------------------------------------------------------------+");
+    
+            for (Appointment appointment : acceptedAppointments) {
+                System.out.printf("| %-14s | %-10s | %-10s | %-5s | %-10s |\n",
+                                  appointment.getAppointmentID(),
+                                  appointment.getPatientID(),
+                                  appointment.getAppointmentDate(),
+                                  appointment.getAppointmentTime(),
+                                  appointment.getStatus());
+            }
+    
+            System.out.println("+---------------------------------------------------------------+");
         }
-    
-        // Display appointments in a table format
-        System.out.println("+---------------------------------------------------------------+");
-        System.out.println("| Appointment ID | Patient ID | Date       | Time  | Status     |");
-        System.out.println("+---------------------------------------------------------------+");
-    
-        for (Appointment appointment : acceptedAppointments) {
-            System.out.printf("| %-14s | %-10s | %-10s | %-5s | %-10s |\n",
-                              appointment.getAppointmentID(),
-                              appointment.getPatientID(),
-                              appointment.getAppointmentDate(),
-                              appointment.getAppointmentTime(),
-                              appointment.getStatus());
-        }
-    
-        System.out.println("+---------------------------------------------------------------+");
     }
+    
     
 
     public void viewPatientMedicalRecords() {
@@ -354,41 +358,72 @@ public class DoctorView {
         }
     }
     
-    
 
     public void viewDoctorAvailability() {
-    System.out.println("\n=== View Doctor Availability ===");
-    System.out.println("Doctor: " + doctorModel.getName() + " (ID: " + doctorModel.getHospitalID() + ")");
-    System.out.println("Here is your scheduled availability:");
-
-    List<DoctorAvailability> availabilityList = new ArrayList<>(doctorModel.getAvailability());
-
-    if (availabilityList.isEmpty()) {
-        System.out.println("No availability set.");
-    } else {
-        // Sort the availability list by date and start time
-        availabilityList.sort(Comparator.comparing(DoctorAvailability::getDate)
-                                        .thenComparing(DoctorAvailability::getStartTime));
-
-        // Merge overlapping or adjacent time slots
-        List<DoctorAvailability> mergedAvailability = mergeAvailabilitySlots(availabilityList);
-
-        // Display the merged availability
-        System.out.println("+-------------------------------------------+");
-        System.out.println("|   Date       | Start Time | End Time      |");
-        System.out.println("+-------------------------------------------+");
-        
-        for (DoctorAvailability avail : mergedAvailability) {
-            System.out.printf("| %s |   %s   |   %s   |\n",
-                avail.getDate(), avail.getStartTime(), avail.getEndTime());
+        System.out.println("\n=== View Doctor Availability ===");
+        System.out.println("Doctor: " + doctorModel.getName() + " (ID: " + doctorModel.getHospitalID() + ")");
+    
+        // Step 1: Display Scheduled Appointments
+        System.out.println("\n--- Scheduled Appointments ---");
+        List<Appointment> appointments = AppointmentsCsvHelper.loadAppointments()
+                .stream()
+                .filter(appointment -> appointment.getDoctorID().equals(doctorModel.getHospitalID()) &&
+                                       appointment.getStatus() == Appointment.AppointmentStatus.ACCEPTED)
+                .distinct()  // Remove duplicates
+                .collect(Collectors.toList());
+    
+        if (appointments.isEmpty()) {
+            System.out.println("No scheduled appointments.");
+        } else {
+            System.out.println("+---------------------------------------------------------------+");
+            System.out.println("| Appointment ID | Patient ID | Date       | Time  | Status     |");
+            System.out.println("+---------------------------------------------------------------+");
+    
+            for (Appointment appointment : appointments) {
+                System.out.printf("| %-14s | %-10s | %-10s | %-5s | %-10s |\n",
+                                  appointment.getAppointmentID(),
+                                  appointment.getPatientID(),
+                                  appointment.getAppointmentDate(),
+                                  appointment.getAppointmentTime(),
+                                  appointment.getStatus());
+            }
+    
+            System.out.println("+---------------------------------------------------------------+");
         }
-        
-        System.out.println("+-------------------------------------------+");
+    
+        // Step 2: Display Available Slots
+        System.out.println("\n--- Available Slots ---");
+        List<DoctorAvailability> availabilityList = DoctorAvailabilityCsvHelper.loadDoctorAvailability()
+                .stream()
+                .filter(availability -> availability.getDoctorID().equals(doctorModel.getHospitalID()))
+                .collect(Collectors.toList());
+    
+        if (availabilityList.isEmpty()) {
+            System.out.println("No availability set.");
+        } else {
+            // Sort and merge the availability slots by date and time
+            List<DoctorAvailability> mergedAvailability = mergeAvailabilitySlots(availabilityList);
+    
+            // Display the merged availability
+            System.out.println("+-------------------------------------------+");
+            System.out.println("|   Date       | Start Time | End Time      |");
+            System.out.println("+-------------------------------------------+");
+    
+            for (DoctorAvailability avail : mergedAvailability) {
+                System.out.printf("| %s |   %s   |   %s   |\n",
+                    avail.getDate(), avail.getStartTime(), avail.getEndTime());
+            }
+    
+            System.out.println("+-------------------------------------------+");
+        }
+    
+        System.out.println("\nPress Enter to return to the main menu...");
+        scanner.nextLine(); // Wait for the user to press Enter
     }
     
-    System.out.println("\nPress Enter to return to the main menu...");
-    scanner.nextLine(); // Wait for the user to press Enter
-        }
+    
+    
+    
 
         // Helper method to merge overlapping or adjacent time slots
         private List<DoctorAvailability> mergeAvailabilitySlots(List<DoctorAvailability> availabilityList) {

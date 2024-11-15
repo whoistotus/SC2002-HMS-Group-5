@@ -16,11 +16,11 @@ public class DoctorRoleMain {
             System.out.println("1. View Patient Medical Records");
             System.out.println("2. Update Patient Medical Records");
             System.out.println("3. Set Availability for Appointments");
-            System.out.println("4. View Personal Schedule");
+            System.out.println("4. View Upcoming Scheduled Appointments");
             System.out.println("5. Accept Appointment Request");
             System.out.println("6. Decline Appointment Request");
             System.out.println("7. Record Appointment Outcome");
-            System.out.println("8. View Doctor Availability");
+            System.out.println("8. View Personal Schedule");
             System.out.println("9. Exit");
             System.out.print("Choose a test case to execute (1-9): ");
 
@@ -70,7 +70,7 @@ public class DoctorRoleMain {
 
     private static void testViewPersonalSchedule(DoctorView doctorView) {
         System.out.println("\n--- Test Case 11: View Personal Schedule ---");
-        doctorView.viewPersonalSchedule();
+        doctorView.viewScheduledAppointments();
     }
 
     private static void testAcceptAppointment(DoctorView doctorView) {
