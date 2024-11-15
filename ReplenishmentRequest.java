@@ -1,4 +1,4 @@
-package SC2002_Assignment;
+
 
 import java.io.FileWriter;
 import java.io.IOException;

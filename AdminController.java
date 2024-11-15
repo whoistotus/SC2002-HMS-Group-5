@@ -1,4 +1,5 @@
-package SC2002_Assignment;
+
+import java.io.IOException;
 import java.util.List;
 
 public class AdminController {
@@ -11,40 +12,45 @@ public class AdminController {
     }
 
     // Staff Management Methods
-    public void addStaff(String hospitalID, String password, String userRole, String name, String gender, int age) {
-        HospitalStaff newStaff;
-        switch (userRole.toLowerCase()) {
-            case "doctor":
-                newStaff = new HospitalStaff(hospitalID, password, "Doctor", name, gender, age);
-                break;
-            case "pharmacist":
-                newStaff = new HospitalStaff(hospitalID, password, "Pharmacist", name, gender, age);
-                break;
-            default:
-                System.out.println("Invalid user role specified.");
-                return;
-        }
-
-        if (model.addStaffMember(newStaff)) {
-            System.out.println("Staff member added successfully.");
-        } else {
-            System.out.println("Staff with ID " + hospitalID + " already exists.");
+    public void addStaff(String hospitalID, String password, String userRole, 
+                        String name, String gender, int age) {
+        try {
+            HospitalStaff newStaff = new HospitalStaff(hospitalID, password, userRole, name, gender, age);
+            if (model.addStaffMember(newStaff)) {
+                AdminCSVWriter.addStaffToCSV(newStaff);
+                System.out.println("Staff member added successfully.");
+            } else {
+                System.out.println("Staff with ID " + hospitalID + " already exists.");
+            }
+        } catch (IOException e) {
+            System.out.println("Error writing to staff file: " + e.getMessage());
         }
     }
 
     public void removeStaff(String hospitalID) {
-        if (model.removeStaffMember(hospitalID)) {
-            System.out.println("Staff member removed successfully.");
-        } else {
-            System.out.println("Staff member with ID " + hospitalID + " not found.");
+        try {
+            if (model.removeStaffMember(hospitalID)) {
+                AdminCSVWriter.removeStaffFromCSV(hospitalID);
+                System.out.println("Staff member removed successfully.");
+            } else {
+                System.out.println("Staff member with ID " + hospitalID + " not found.");
+            }
+        } catch (IOException e) {
+            System.out.println("Error updating staff file: " + e.getMessage());
         }
     }
 
-    public void updateStaffInfo(String hospitalID, String name, String userRole, String gender, int age) {
-        if (model.updateStaffMember(hospitalID, name, userRole, gender, age)) {
-            System.out.println("Staff information updated successfully.");
-        } else {
-            System.out.println("Staff member with ID " + hospitalID + " not found.");
+    public void updateStaffInfo(String hospitalID, String name, String userRole, 
+                            String gender, int age) {
+        try {
+            if (model.updateStaffMember(hospitalID, name, userRole, gender, age)) {
+                AdminCSVWriter.updateStaffInCSV(hospitalID, name, userRole, gender, age);
+                System.out.println("Staff information updated successfully.");
+            } else {
+                System.out.println("Staff member with ID " + hospitalID + " not found.");
+            }
+        } catch (IOException e) {
+            System.out.println("Error updating staff file: " + e.getMessage());
         }
     }
 

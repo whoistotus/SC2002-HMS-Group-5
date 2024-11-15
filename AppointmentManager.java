@@ -1,4 +1,3 @@
-package SC2002_Assignment;
 
 import java.util.ArrayList;
 import java.util.List;

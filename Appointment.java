@@ -1,5 +1,3 @@
-package SC2002_Assignment;
-
  
 public class Appointment {
     private String appointmentID;
@@ -13,7 +11,8 @@ public class Appointment {
         PENDING,
         ACCEPTED,
         DECLINED,
-        CANCELLED
+        CANCELLED,
+        COMPLETED
     }
     
     // Constructor

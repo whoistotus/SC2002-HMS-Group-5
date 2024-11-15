@@ -1,4 +1,4 @@
-package SC2002_Assignment;
+
 
 enum Status
 {

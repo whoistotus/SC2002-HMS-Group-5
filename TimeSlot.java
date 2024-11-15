@@ -1,4 +1,4 @@
-package SC2002_Assignment;
+
 
 public class TimeSlot {
     private String startTime;

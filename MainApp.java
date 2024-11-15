@@ -1,4 +1,4 @@
-package SC2002_Assignment;
+
 
 import java.util.Scanner;
 import java.io.IOException;
