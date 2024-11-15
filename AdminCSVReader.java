@@ -51,7 +51,7 @@ public class AdminCSVReader {
 
     private void processStaffLine(String line) {
         String[] values = line.split(",");
-        if (values.length != 5) {
+        if (values.length != 6) {
             throw new IllegalArgumentException("Invalid line format. Expected 5 values, got " + values.length);
         }
 

@@ -2,8 +2,7 @@ import java.io.*;
 import java.util.*;
 
 public class AdminCSVWriter {
-    private static final String CSV_PATH = "SC2002_Assignment" + File.separator + 
-                                         "data" + File.separator + "StaffList.csv";
+    private static final String CSV_PATH = "data/staff.csv";
 
     public static void addStaffToCSV(HospitalStaff staff) throws IOException {
         try (FileWriter fw = new FileWriter(CSV_PATH, true);
@@ -53,7 +52,7 @@ public class AdminCSVWriter {
     }
 
     public static void updateStaffInCSV(String hospitalID, String name, String role, 
-                                      String gender, int age) throws IOException {
+                                      String gender, int age, String password) throws IOException {
         List<String> lines = new ArrayList<>();
         boolean found = false;
 
@@ -66,8 +65,8 @@ public class AdminCSVWriter {
                 String[] values = line.split(",");
                 if (values[0].trim().equalsIgnoreCase(hospitalID)) {
                     found = true;
-                    line = String.format("%s,%s,%s,%s,%d",
-                        hospitalID, name, role, gender, age);
+                    line = String.format("%s,%s,%s,%s,%d,%s",
+                        hospitalID, name, role, gender, age, password);
                 }
                 lines.add(line);
             }

@@ -1,10 +1,16 @@
-
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.List;
 
 public class AdminController {
     private AdminModel model;
     private AdminView view;
+    private static final String STAFF_CSV_PATH = "data/StaffList.csv";
 
     public AdminController(AdminModel model, AdminView view) {
         this.model = model;
@@ -14,41 +20,119 @@ public class AdminController {
     // Staff Management Methods
     public void addStaff(String hospitalID, String password, String userRole, 
                         String name, String gender, int age) {
+        // Validate input
+        if (hospitalID == null || hospitalID.trim().isEmpty() ||
+            password == null || password.trim().isEmpty() ||
+            name == null || name.trim().isEmpty()) {
+            System.out.println("Error: Required fields cannot be empty");
+            return;
+        }
+
         try {
+            // Create new staff member
             HospitalStaff newStaff = new HospitalStaff(hospitalID, password, userRole, name, gender, age);
+            
+            // Check if staff already exists
             if (model.addStaffMember(newStaff)) {
-                AdminCSVWriter.addStaffToCSV(newStaff);
-                System.out.println("Staff member added successfully.");
+                // Write to CSV file
+                try (FileWriter fw = new FileWriter(STAFF_CSV_PATH, true);
+                     BufferedWriter bw = new BufferedWriter(fw);
+                     PrintWriter out = new PrintWriter(bw)) {
+                    
+                    // Format: hospitalID,password,userRole,name,gender,age
+                    out.println(String.format("%s,%s,%s,%s,%d,%s",
+                        hospitalID,
+                        name,
+                        userRole,
+                        gender,
+                        age,
+                        password));
+                        
+                    System.out.println("Staff member added successfully to StaffList.csv");
+                }
             } else {
-                System.out.println("Staff with ID " + hospitalID + " already exists.");
+                System.out.println("Error: Staff with ID " + hospitalID + " already exists");
             }
         } catch (IOException e) {
-            System.out.println("Error writing to staff file: " + e.getMessage());
+            System.out.println("Error writing to StaffList.csv: " + e.getMessage());
         }
     }
 
-    public void removeStaff(String hospitalID) {
+    public void removeStaff(String staffId) {
         try {
-            if (model.removeStaffMember(hospitalID)) {
-                AdminCSVWriter.removeStaffFromCSV(hospitalID);
-                System.out.println("Staff member removed successfully.");
-            } else {
-                System.out.println("Staff member with ID " + hospitalID + " not found.");
+            List<String[]> allStaff = new ArrayList<>();
+            boolean found = false;
+            
+            // Read and filter staff
+            try (BufferedReader reader = new BufferedReader(new FileReader(STAFF_CSV_PATH))) {
+                String line;
+                allStaff.add(reader.readLine().split(",")); // Keep header
+                
+                while ((line = reader.readLine()) != null) {
+                    String[] data = line.split(",");
+                    if (!data[0].equals(staffId)) {
+                        allStaff.add(data);
+                    } else {
+                        found = true;
+                    }
+                }
             }
+            
+            if (!found) {
+                System.out.println("Staff member with ID " + staffId + " not found.");
+                return;
+            }
+            
+            // Write updated list
+            try (PrintWriter writer = new PrintWriter(new FileWriter(STAFF_CSV_PATH))) {
+                for (String[] staff : allStaff) {
+                    writer.println(String.join(",", staff));
+                }
+                System.out.println("Staff member removed successfully.");
+            }
+            
         } catch (IOException e) {
             System.out.println("Error updating staff file: " + e.getMessage());
         }
     }
 
-    public void updateStaffInfo(String hospitalID, String name, String userRole, 
-                            String gender, int age) {
+    public void updateStaffInfo(String staffId, String name, String role, String gender, int age, String password) {
         try {
-            if (model.updateStaffMember(hospitalID, name, userRole, gender, age)) {
-                AdminCSVWriter.updateStaffInCSV(hospitalID, name, userRole, gender, age);
-                System.out.println("Staff information updated successfully.");
-            } else {
-                System.out.println("Staff member with ID " + hospitalID + " not found.");
+            List<String[]> allStaff = new ArrayList<>();
+            boolean found = false;
+            
+            // Read existing staff
+            try (BufferedReader reader = new BufferedReader(new FileReader(STAFF_CSV_PATH))) {
+                String line;
+                allStaff.add(reader.readLine().split(",")); // Keep header
+                
+                while ((line = reader.readLine()) != null) {
+                    String[] data = line.split(",");
+                    if (!data[0].equals(staffId)) {
+                        allStaff.add(data);
+                    } else {
+                        // Update staff info
+                        allStaff.add(new String[]{
+                            staffId, name, role, gender, String.valueOf(age), password
+                        });
+                        found = true;
+                    }
+                }
             }
+            
+            if (!found) {
+                System.out.println("Staff member with ID " + staffId + " not found.");
+                return;
+            }
+            
+            // Write updated list
+            try (PrintWriter writer = new PrintWriter(new FileWriter(STAFF_CSV_PATH))) {
+                for (String[] staff : allStaff) {
+                    writer.println(String.join(",", staff));
+                }
+                System.out.println("Staff information updated successfully.");
+            }
+            
         } catch (IOException e) {
             System.out.println("Error updating staff file: " + e.getMessage());
         }
@@ -78,10 +162,6 @@ public class AdminController {
 
     public void updateMedicationStock(String name, int quantity) {
         model.updateStockLevel(name, quantity);
-    }
-
-    public void viewReplenishmentRequests() {
-        view.viewReplenishmentRequests(model.getReplenishmentRequests());
     }
 
     public void approveReplenishmentRequest(String requestId) {

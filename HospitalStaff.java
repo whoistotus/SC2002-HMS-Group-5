@@ -5,8 +5,8 @@ public class HospitalStaff extends User
     private String name;
     private String gender;
     private String userRole;
-    private String hospitalID;
     private int age;
+    private String password;
 
     static int staffCounter = 0;
 
@@ -77,16 +77,4 @@ public class HospitalStaff extends User
         }
         
     }
-
-    public String getHospitalID()
-    {
-        return hospitalID;
-    }
-
-    public void setHospitalID(String HospitalID)
-    {
-        this.hospitalID = HospitalID;
-    }
-
-
 }

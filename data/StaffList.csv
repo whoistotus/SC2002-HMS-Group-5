@@ -1,7 +1,6 @@
 staffid,name,role,gender,age,password
-D001,John Smith,Doctor,Male,45,password
 D002,Sarah Johnson,Doctor,Female,38,password
-D003,Michael Chang,Doctor,Male,52,password
+D003,Titus Low,Doctor,Male,23,password
 P001,Emily Brown,Pharmacist,Female,29,password
 D004,David Wilson,Doctor,Male,41,password
 P002,Lisa Anderson,Pharmacist,Female,33,password
