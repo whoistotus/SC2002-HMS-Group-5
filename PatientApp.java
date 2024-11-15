@@ -5,6 +5,13 @@ public class PatientApp{
     public static void main(String[] args) {
         // Initialize necessary components for testing
         PatientModel patient = new PatientModel("P1001", "password", "Patient", "Alice", "1990-01-01", "Female", "1234567890", "alice@example.com", "O+");
+        boolean success = PatientListCsvHelper.addPatientToCsv(patient);
+
+        if (success) {
+            System.out.println("New patient added successfully!");
+        } else {
+            System.out.println("Failed to add the patient to the system.");
+        }
         PatientView view = new PatientView();
         AppointmentManager appointmentManager = new AppointmentManager();
         PatientController controller = new PatientController(patient, view, appointmentManager);
@@ -33,21 +40,15 @@ public class PatientApp{
 
                 case 2:
                     // Test Case 2: Update Personal Information
-                    System.out.print("Enter new contact number: ");
-                    String newContact = scanner.nextLine();
-                    controller.updateContactNumber(newContact);
-
-                    System.out.print("Enter new email address: ");
-                    String newEmail = scanner.nextLine();
-                    controller.updateEmail(newEmail);
+                    controller.updatePersonalInformation();
                     break;
 
                 case 3:
                     // Test Case 3: View Available Appointment Slots
-                    System.out.print("Enter Doctor ID: ");
-                    String doctorId = scanner.nextLine();
-                    System.out.print("Enter Date (YYYY-MM-DD): ");
-                    String date = scanner.nextLine();
+                    //System.out.print("Enter Doctor ID: ");
+                    //String doctorId = scanner.nextLine();
+                    //System.out.print("Enter Date (YYYY-MM-DD): ");
+                    //String date = scanner.nextLine();
                     controller.viewAvailableSlots();
                     break;
 

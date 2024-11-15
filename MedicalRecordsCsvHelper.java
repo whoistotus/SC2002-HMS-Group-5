@@ -122,18 +122,31 @@ public class MedicalRecordsCsvHelper {
     }
 
     public static void updatePatientContactInfo(String patientID, String contactNumber, String email) {
-        List<MedicalRecord> records = loadMedicalRecords();
-    
-        for (MedicalRecord record : records) {
-            if (record.getPatientID().equals(patientID)) {
-                record.setContactNumber(contactNumber);
-                record.setEmail(email);
-                break;
+        List<String[]> records = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader(FILE_PATH))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] values = line.split(",");
+                if (values[0].equals(patientID)) {
+                    if (contactNumber != null) values[4] = contactNumber; // Update contact number
+                    if (email != null) values[5] = email; // Update email
+                }
+                records.add(values);
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     
-        saveAllMedicalRecords(records); // Save updated records
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_PATH))) {
+            for (String[] record : records) {
+                bw.write(String.join(",", record));
+                bw.newLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
+    
 
     // Convert a MedicalRecord object to CSV string
     private static String recordToCsv(MedicalRecord record) {

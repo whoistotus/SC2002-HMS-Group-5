@@ -1,5 +1,5 @@
 import java.util.List;
-import java.util.UUID;
+import java.util.Scanner;
 //nihao
 public class PatientController 
 {
@@ -33,6 +33,36 @@ public class PatientController
         PatientListCsvHelper.updatePatientContactInfo(model.getHospitalID(), model.getContactNumber(), newEmail);
         MedicalRecordsCsvHelper.updatePatientContactInfo(model.getHospitalID(), model.getContactNumber(), newEmail);
         view.showMessage("Email updated successfully.");
+    }
+
+    public void updatePersonalInformation() {
+        Scanner scanner = new Scanner(System.in);
+    
+        System.out.println("What would you like to update?");
+        System.out.println("1. Contact Number");
+        System.out.println("2. Email");
+        System.out.println("3. Exit");
+        System.out.print("Enter your choice: ");
+        int choice = scanner.nextInt();
+        scanner.nextLine(); // Consume newline
+    
+        switch (choice) {
+            case 1:
+                System.out.print("Enter new contact number: ");
+                String newContactNumber = scanner.nextLine();
+                updateContactNumber(newContactNumber);
+                break;
+            case 2:
+                System.out.print("Enter new email: ");
+                String newEmail = scanner.nextLine();
+                updateEmail(newEmail);
+                break;
+            case 3:
+                System.out.println("Exiting...");
+                break;
+            default:
+                System.out.println("Invalid choice. Please try again.");
+        }
     }
 
     public void viewAvailableSlots() {

@@ -90,6 +90,19 @@ public class PatientModel extends User
         return AppointmentsCsvHelper.getAppointmentById(appointmentID);
     }
     
+    public String toCsv() {
+        return String.join(",",
+                getHospitalID(),
+                getPassword(),
+                getName(),
+                getDob(),
+                getGender(),
+                getContactNumber(),
+                getEmail(),
+                getBloodType()
+        );
+    }
+    
     
 }
     
