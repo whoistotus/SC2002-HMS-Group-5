@@ -1,7 +1,6 @@
 package SC2002_Assignment;
 
-import java.time.LocalDateTime;
-
+ 
 public class Appointment {
     private String appointmentID;
     private PatientModel patient;
@@ -18,7 +17,7 @@ public class Appointment {
     }
     
     // Constructor
-    public Appointment(String appointmentID, PatientModel patient, DoctorModel doctor, String AppointmentDate, String appointmentTime, AppointmentStatus status) {
+    public Appointment(String appointmentID, PatientModel patient, DoctorModel doctor, String appointmentDate, String appointmentTime, AppointmentStatus status) {
         this.appointmentID = appointmentID;
         this.patient = patient;
         this.doctor = doctor;

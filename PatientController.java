@@ -17,7 +17,7 @@ public class PatientController
         this.appointmentManager = appointmentManager;
     }
 
-    public void viewMedicalRecord() 
+    /*public void viewMedicalRecord() 
     {
         view.viewMedicalRecord(
         		model.getHospitalID(),
@@ -29,6 +29,11 @@ public class PatientController
                 model.getBloodType(),
                 model.getMedicalRecord()
         );
+    }*/
+
+    public void viewMedicalRecord() {
+        List<String> medicalRecord = PatientListCsvHelper.getMedicalRecord(model.getHospitalID());
+        view.viewMedicalRecord(medicalRecord);
     }
 
     public void updateContactNumber(String newContactNumber) 
@@ -55,7 +60,7 @@ public class PatientController
         view.viewAvailableSlots(doctor, availableSlots);
     }
 
-    public void scheduleAppointment(DoctorModel doctor, String date, String time) 
+    /*public void scheduleAppointment(DoctorModel doctor, String date, String time) 
     {
     	String appointmentID = UUID.randomUUID().toString();
         boolean success = appointmentManager.scheduleAppointment(appointmentID, model, doctor, date, time);
@@ -67,6 +72,16 @@ public class PatientController
         else 
         {
             view.showMessage("Failed to schedule appointment. The doctor may not be available at this time.");
+        }
+    }*/
+
+    public void scheduleAppointment(DoctorModel doctor, String date, String time) {
+        String appointmentID = UUID.randomUUID().toString();
+        if (appointmentManager.scheduleAppointment(appointmentID, model, doctor, date, time)) {
+            DoctorAvailabilityCsvHelper.updateDoctorAvailability(doctor.getHospitalID(), date, time);
+            view.showMessage("Appointment scheduled successfully.");
+        } else {
+            view.showMessage("Failed to schedule appointment. The time slot may not be available.");
         }
     }
     
@@ -95,12 +110,16 @@ public class PatientController
         }
     }*/
     
-    public void viewScheduledAppointmentsStatus() 
+    /*public void viewScheduledAppointmentsStatus() 
     {
         List<Appointment> appointments = appointmentManager.getAppointmentsForPatient(model.getHospitalID());
         view.viewScheduledAppointmentStatus(appointments);
+    }*/
+
+    public void viewScheduledAppointmentsStatus() {
+        List<Appointment> appointments = AppointmentsCsvHelper.getAppointmentsForPatient(model.getHospitalID());
+        view.viewScheduledAppointmentStatus(appointments);
     }
-    
     
     public void cancelAppointment(Appointment appointment) 
     {
