@@ -11,6 +11,8 @@ public class User
         this.hospitalID = hospitalID;
         this.userRole = userRole;
         this.password = password; 
+
+        
     }
 
     // public boolean login(String enteredID, String enteredPassword)

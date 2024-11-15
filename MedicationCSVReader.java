@@ -2,8 +2,8 @@ import java.io.*;
 import java.util.*;
 
 public class MedicationCSVReader {
-    private static final String CSV_PATH = "SC2002_Assignment" + File.separator + 
-                                         "data" + File.separator + "MedicationInventory.csv";
+    private static final String CSV_PATH = "data/MedicationList.csv";
+    
     private List<Medication> medicationList;
 
     public MedicationCSVReader() throws FileNotFoundException {

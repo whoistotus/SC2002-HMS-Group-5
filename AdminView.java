@@ -1,5 +1,3 @@
-
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,7 +6,7 @@ import java.util.Map;
 import java.util.Scanner;
 
 public class AdminView {
-    private static final String STAFF_DATA_PATH = "SC2002_Assignment" + File.separator + "data" + File.separator + "StaffList.csv";
+    private static final String STAFF_DATA_PATH = "data/StaffList.csv";
     private InventoryController inventoryController;
     private AppointmentManager appointmentManager;
     private Medication medication;
@@ -27,6 +25,8 @@ public class AdminView {
         this.inventoryController = inventoryController;
         this.appointmentManager = appointmentManager;
         this.medication = medication;
+        AdminModel model = new AdminModel();
+        this.adminController = new AdminController(model, this);
         
         try {
             this.admincsvReader = new AdminCSVReader(STAFF_DATA_PATH);
@@ -35,7 +35,6 @@ public class AdminView {
             System.out.println("Error initializing readers: " + e.getMessage());
         }
     }
-
 
 
     public void showMenu()
@@ -165,7 +164,7 @@ public class AdminView {
             }
         }
     }
-    
+    //medication methods start  
     private void addMedication() {
         try {
             System.out.println("Enter Medication Name: ");
@@ -275,8 +274,9 @@ public class AdminView {
             System.out.println("Error updating threshold: " + e.getMessage());
         }
     }
+    //medication methods end
 
-
+    //Appointment methods start
     public void viewAppointments(String patientID)
     {
         System.out.println("===== Appointment Details ========");
@@ -305,6 +305,7 @@ public class AdminView {
             System.out.println(appointment.toString());
         }
     }
+    //Appointment methods end
 
     public void viewReplenishmentRequests(List<ReplenishmentRequest> requests) {
         System.out.println("\n=== Replenishment Requests ===");
@@ -507,70 +508,31 @@ public class AdminView {
 
     private void removeStaff() {
         boolean continueRemoving = true;
-    
         while (continueRemoving) {
+            System.out.println("\n=== Remove Staff ===");
+            System.out.println("Enter Hospital ID (or 'exit' to return): ");
+            String hospitalID = sc.nextLine().trim();
+
+            if (hospitalID.equalsIgnoreCase("exit")) {
+                break;
+            }
+
             try {
-                // Display current staff list before removal
-                System.out.println("\nCurrent Staff List:");
-                adminController.viewHospitalStaffs();  
-                // Hospital ID input
-                String hospitalID;
-                while (true) {
-                    System.out.println("\nEnter 1 to exit or");
-                    System.out.println("Please enter the Hospital ID of the staff to remove: ");
-                    hospitalID = sc.nextLine().trim();
-    
-                    if (hospitalID.equals("1")) {
-                        return;
-                    }
-                    if (hospitalID.isEmpty()) {
-                        System.out.println("Hospital ID cannot be empty. Please try again.");
-                        continue;
-                    }
-                    if (!existingHospitalID(hospitalID)) {
-                        System.out.println("Staff with Hospital ID " + hospitalID + " does not exist.");
-                        System.out.println("Please check the ID and try again.");
-                        continue;
-                    }
-    
-                    // Confirm removal
-                    System.out.println("\nAre you sure you want to remove staff with Hospital ID " + hospitalID + "? (Y/N): ");
-                    String confirmation = sc.nextLine().trim().toLowerCase();
-                    if (!confirmation.equals("y")) {
-                        System.out.println("Removal cancelled.");
-                        break;
-                    }
-    
-                    // Remove the staff member
+                // Confirm removal
+                System.out.println("\nAre you sure you want to remove staff with Hospital ID " + hospitalID + "? (Y/N): ");
+                String confirmation = sc.nextLine().trim().toLowerCase();
+                if (confirmation.equals("y")) {
                     adminController.removeStaff(hospitalID);
-                    System.out.println("\nStaff removed successfully!");
-                    break;
+                } else {
+                    System.out.println("Removal cancelled.");
                 }
-    
-                // Ask if user wants to remove another staff member
-                while (true) {
-                    System.out.println("\nDo you want to remove another staff member? (Y/N): ");
-                    String response = sc.nextLine().trim().toLowerCase();
-                    if (response.equals("n")) {
-                        continueRemoving = false;
-                        break;
-                    } else if (response.equals("y")) {
-                        break;
-                    } else {
-                        System.out.println("Invalid input. Please enter Y or N.");
-                    }
-                }
-    
             } catch (Exception e) {
-                System.out.println("An error occurred: " + e.getMessage());
-                System.out.println("Please try again.");
-                
-                // Ask if user wants to try again after an error
-                System.out.println("\nDo you want to try again? (Y/N): ");
-                String response = sc.nextLine().trim().toLowerCase();
-                if (!response.equals("y")) {
-                    continueRemoving = false;
-                }
+                System.out.println("Error removing staff: " + e.getMessage());
+            }
+
+            System.out.println("\nRemove another staff member? (Y/N): ");
+            if (!sc.nextLine().trim().toLowerCase().equals("y")) {
+                continueRemoving = false;
             }
         }
     }
@@ -580,156 +542,68 @@ public class AdminView {
     
         while (continueUpdating) {
             try {
-                // Display current staff list before update
                 System.out.println("\nCurrent Staff List:");
-                adminController.viewHospitalStaffs(); 
+                List<HospitalStaff> staffList = admincsvReader.getAllStaff();
+                displayFilteredStaff(staffList);
     
-                // Hospital ID input
-                String hospitalID;
-                while (true) {
-                    System.out.println("\nEnter 1 to exit or");
-                    System.out.println("Please enter the Hospital ID of the staff to update: ");
-                    hospitalID = sc.nextLine().trim();
+                System.out.println("\nEnter 1 to exit or");
+                System.out.println("Please enter the Hospital ID of the staff to update: ");
+                String hospitalID = sc.nextLine().trim();
     
-                    if (hospitalID.equals("1")) {
-                        return;
-                    }
-                    if (hospitalID.isEmpty()) {
-                        System.out.println("Hospital ID cannot be empty. Please try again.");
-                        continue;
-                    }
-                    if (!existingHospitalID(hospitalID)) {
-                        System.out.println("Staff with Hospital ID " + hospitalID + " does not exist.");
-                        continue;
-                    }              
-                    break;
+                if (hospitalID.equals("1")) return;
+                
+                // Validate ID exists
+                List<HospitalStaff> foundStaff = admincsvReader.filterByStaffId(hospitalID);
+                if (foundStaff.isEmpty()) {
+                    System.out.println("Staff member not found.");
+                    continue;
                 }
     
-                // Staff Name input
-                String newStaffName;
-                while (true) {
-                    System.out.println("\nEnter 1 to exit or");
-                    System.out.println("Please enter the new Staff Name (press Enter to keep current name): ");
-                    newStaffName = sc.nextLine().trim();
+                System.out.println("Enter new name (or press Enter to keep current): ");
+                String name = sc.nextLine().trim();
+                if (name.isEmpty()) name = foundStaff.get(0).getName();
     
-                    if (newStaffName.equals("1")) {
-                        return;
-                    }
-                    if (newStaffName.isEmpty()) {
-                        newStaffName = hospitalStaff.getName(); // Assuming this method exists
-                    }
-                    break;
+                System.out.println("Enter new role (Doctor/Pharmacist) (or press Enter to keep current): ");
+                String role = sc.nextLine().trim();
+                if (role.isEmpty()) {
+                    role = foundStaff.get(0).getuserRole();
+                } else if (!role.equalsIgnoreCase("doctor") && !role.equalsIgnoreCase("pharmacist")) {
+                    System.out.println("Invalid role. Please enter Doctor or Pharmacist.");
+                    continue;
                 }
     
-                // Staff Role input
-                String newStaffRole;
-                while (true) {
-                    System.out.println("\nEnter 1 to exit or");
-                    System.out.println("Please enter the new Staff Role (Doctor/Pharmacist) (press Enter to keep current role): ");
-                    newStaffRole = sc.nextLine().trim().toLowerCase();
-    
-                    if (newStaffRole.equals("1")) {
-                        return;
-                    }
-                    if (newStaffRole.isEmpty()) {
-                        newStaffRole = hospitalStaff.getuserRole(); // Assuming this method exists
-                        break;
-                    }
-                    if (!newStaffRole.equals("doctor") && !newStaffRole.equals("pharmacist")) {
-                        System.out.println("Invalid role. Please enter either 'Doctor' or 'Pharmacist'.");
-                        continue;
-                    }
-                    break;
+                System.out.println("Enter new gender (Male/Female) (or press Enter to keep current): ");
+                String gender = sc.nextLine().trim();
+                if (gender.isEmpty()) {
+                    gender = foundStaff.get(0).getGender();
+                } else if (!gender.equalsIgnoreCase("male") && !gender.equalsIgnoreCase("female")) {
+                    System.out.println("Invalid gender. Please enter Male or Female.");
+                    continue;
                 }
     
-                // Gender input
-                String gender;
-                while (true) {
-                    System.out.println("\nEnter 1 to exit or");
-                    System.out.println("Please enter the new gender (Male/Female) (press Enter to keep current gender): ");
-                    gender = sc.nextLine().trim().toLowerCase();
-    
-                    if (gender.equals("1")) {
-                        return;
-                    }
-                    if (gender.isEmpty()) {
-                        gender = hospitalStaff.getGender(); // Assuming this method exists
-                        break;
-                    }
-                    if (!gender.equals("male") && !gender.equals("female")) {
-                        System.out.println("Invalid gender. Please enter either 'Male' or 'Female'.");
-                        continue;
-                    }
-                    break;
-                }
-    
-                // Age input
-                int age;
-                while (true) {
-                    System.out.println("\nEnter 1 to exit or");
-                    System.out.println("Please enter the new age (press Enter to keep current age): ");
-                    String ageInput = sc.nextLine().trim();
-    
-                    if (ageInput.equals("1")) {
-                        return;
-                    }
-                    if (ageInput.isEmpty()) {
-                        age = hospitalStaff.getAge(); // Assuming this method exists
-                        break;
-                    }
+                int age = foundStaff.get(0).getAge();
+                System.out.println("Enter new age (or press Enter to keep current): ");
+                String ageInput = sc.nextLine().trim();
+                if (!ageInput.isEmpty()) {
                     try {
                         age = Integer.parseInt(ageInput);
                         if (age < 18 || age > 100) {
-                            System.out.println("Age must be between 18 and 100. Please try again.");
+                            System.out.println("Age must be between 18 and 100.");
                             continue;
                         }
-                        break;
                     } catch (NumberFormatException e) {
-                        System.out.println("Invalid age format. Please enter a number.");
+                        System.out.println("Invalid age format.");
+                        continue;
                     }
                 }
     
-                // Display summary of changes
-                System.out.println("\nSummary of changes:");
-                System.out.println("Name: " + newStaffName);
-                System.out.println("Role: " + newStaffRole);
-                System.out.println("Gender: " + gender);
-                System.out.println("Age: " + age);
+                adminController.updateStaffInfo(hospitalID, name, role, gender, age, "password");
     
-                // Confirm update
-                System.out.println("\nDo you want to save these changes? (Y/N): ");
-                String confirmation = sc.nextLine().trim().toLowerCase();
-                if (confirmation.equals("y")) {
-                    adminController.updateStaffInfo(hospitalID, newStaffName, newStaffRole, gender, age);
-                    System.out.println("\nStaff details updated successfully!");
-                } else {
-                    System.out.println("\nUpdate cancelled.");
-                }
-    
-                // Ask if user wants to update another staff member
-                while (true) {
-                    System.out.println("\nDo you want to update another staff member? (Y/N): ");
-                    String response = sc.nextLine().trim().toLowerCase();
-                    if (response.equals("n")) {
-                        continueUpdating = false;
-                        break;
-                    } else if (response.equals("y")) {
-                        break;
-                    } else {
-                        System.out.println("Invalid input. Please enter Y or N.");
-                    }
-                }
+                System.out.println("\nUpdate another staff member? (Y/N): ");
+                continueUpdating = sc.nextLine().trim().toLowerCase().equals("y");
     
             } catch (Exception e) {
-                System.out.println("An error occurred: " + e.getMessage());
-                System.out.println("Please try again.");
-                
-                // Ask if user wants to try again after an error
-                System.out.println("\nDo you want to try again? (Y/N): ");
-                String response = sc.nextLine().trim().toLowerCase();
-                if (!response.equals("y")) {
-                    continueUpdating = false;
-                }
+                System.out.println("Error updating staff details: " + e.getMessage());
             }
         }
     }

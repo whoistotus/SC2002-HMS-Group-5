@@ -68,22 +68,8 @@ public class AdminModel {
         inventoryController.updateStockLevel(name, quantity);
     }
 
-    public List<ReplenishmentRequest> getReplenishmentRequests() {
-        return inventoryController.getReplenishmentRequests();
-    }
-
     public boolean approveReplenishmentRequest(String requestId) {
         return inventoryController.approveReplenishmentRequest(requestId);
-    }
-
-    // Appointment Management Methods
-    public List<Appointment> getAppointmentsForPatient(String patientID) {
-        return appointmentManager.getAppointmentsForPatient(patientID);
-    }
-
-    public List<Appointment> getAllAppointments() {
-        // Assuming this method exists in AppointmentManager
-        return appointmentManager.getAllAppointments();
     }
 
     // System Initialization
