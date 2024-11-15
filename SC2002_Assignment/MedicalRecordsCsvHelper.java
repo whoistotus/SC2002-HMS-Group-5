@@ -1,6 +1,9 @@
+package SC2002_Assignment;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+
+import SC2002_Assignment.MedicalRecord.Gender;
 
 public class MedicalRecordsCsvHelper {
     private static final String FILE_PATH = "data/MedicalRecords.csv";

@@ -1,3 +1,5 @@
+import SC2002_Assignment.User;
+
 public class LoginResult {
     private boolean success;
     private String message;
