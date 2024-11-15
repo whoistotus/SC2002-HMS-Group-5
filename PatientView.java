@@ -105,9 +105,9 @@ public class PatientView
     }
     
    
-	public void viewScheduledAppointmentStatus(List<Appointment> appointments) 
+	public void viewScheduledAppointments(List<Appointment> appointments) 
 	{
-        System.out.println("Scheduled Appointments and Their Status:");
+        System.out.println("Your Scheduled Appointments:");
 
         if (appointments.isEmpty()) 
         {
@@ -116,14 +116,17 @@ public class PatientView
         
         else 
         {
-            for (Appointment appointment : appointments) 
-            {
-                System.out.println("Appointment with " + appointment.getDoctor().getName() +
-                                   " on " + appointment.getAppointmentTime() +
-                                   " - Status: " + appointment.getStatus());
-            }
+                for (Appointment appointment : appointments) 
+                {
+                    System.out.println("Doctor: " + appointment.getDoctor().getName() + 
+                                       " | Date: " + appointment.getAppointmentDate() +
+                                       " | Time: " + appointment.getAppointmentTime() + 
+                                       " | Status: " + appointment.getStatus());
+                }
         }
+            
     }
+
     
     public void viewAppointmentOutcome(AppointmentOutcomeRecord outcome) 
     {

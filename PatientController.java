@@ -77,9 +77,13 @@ public class PatientController
     }
     
 
-    public void viewScheduledAppointmentsStatus() {
+    public void viewScheduledAppointments() {
         List<Appointment> appointments = AppointmentsCsvHelper.getAppointmentsForPatient(model.getHospitalID());
-        view.viewScheduledAppointmentStatus(appointments);
+        if (appointments.isEmpty()) {
+            view.showMessage("No scheduled appointments found.");
+        } else {
+            view.viewScheduledAppointments(appointments);
+        }
     }
     
     public void cancelAppointment(Appointment appointment) 

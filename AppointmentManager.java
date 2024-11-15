@@ -117,8 +117,10 @@ public class AppointmentManager
     {
         appointment.setStatus(newStatus);
     }
+
+
     
-    public boolean cancelAppointment(String appointmentID) 
+    /*public boolean cancelAppointment(String appointmentID) 
     {
     	for (Appointment appointment : appointments) 
     	{
@@ -130,7 +132,32 @@ public class AppointmentManager
             }
         }
         return false;
+    }*/
+
+    public boolean cancelAppointment(String appointmentID) {
+        for (Appointment appointment : appointments) {
+            if (appointment.getAppointmentID().equals(appointmentID)) {
+                // Free the doctor's time slot in DoctorAvailability.csv
+                DoctorAvailabilityCsvHelper.updateDoctorAvailability(
+                    appointment.getDoctor().getHospitalID(),
+                    appointment.getAppointmentDate(),
+                    appointment.getAppointmentTime()
+                );
+    
+                // Remove appointment
+                appointments.remove(appointment);
+    
+                // Update Appointments.csv
+                AppointmentsCsvHelper.updateAllAppointments(appointments);
+    
+                System.out.println("Appointment canceled successfully.");
+                return true;
+            }
+        }
+        System.out.println("Appointment not found.");
+        return false;
     }
+    
 
     // appointments for a specific patient
     public List<Appointment> getAppointmentsForPatient(String patientId) 
