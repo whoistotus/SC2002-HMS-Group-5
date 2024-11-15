@@ -50,33 +50,4 @@ public class DoctorAvailabilityCsvHelper {
             e.printStackTrace();
         }
     }
-
-
-    public static boolean updateDoctorAvailability(String doctorId, String date, String time) {
-        List<String[]> updatedEntries = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader("data/DoctorAvailability.csv"))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                String[] data = line.split(",");
-                if (!(data[0].equals(doctorId) && data[1].equals(date) && data[2].equals(time))) {
-                    updatedEntries.add(data);
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
-    
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter("data/DoctorAvailability.csv"))) {
-            for (String[] entry : updatedEntries) {
-                bw.write(String.join(",", entry));
-                bw.newLine();
-            }
-            return true;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-    
 }
