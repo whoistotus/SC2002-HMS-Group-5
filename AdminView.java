@@ -919,7 +919,7 @@ public class AdminView {
             System.out.println("Appointment ID: " + appointment.getAppointmentID());
             System.out.println("Patient ID: " + appointment.getPatientID());
             System.out.println("Doctor ID: " + appointment.getDoctorID());
-            System.out.println("Date and Time: " + appointment.getAppointmentTime());
+            System.out.println("Date and Time: " + appointment.getAppointmentDate()+ " , " + appointment.getAppointmentTime());
             System.out.println("Status: " + appointment.getStatus());
             
             // Check if the appointment is completed and display the outcome record if available
