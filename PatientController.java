@@ -14,63 +14,33 @@ public class PatientController
         this.appointmentManager = appointmentManager;
     }
 
-    /*public void viewMedicalRecord() 
-    {
-        view.viewMedicalRecord(
-        		model.getHospitalID(),
-                model.getName(),
-                model.getDob(),
-                model.getGender(),
-                model.getContactNumber(),
-                model.getEmail(),
-                model.getBloodType(),
-                model.getMedicalRecord()
-        );
-    }*/
 
-    public void viewMedicalRecord() {
-        // Retrieve medical records from the CSV using the patient's ID
-        List<String> medicalRecords = PatientListCsvHelper.getMedicalRecord(model.getHospitalID());
-    
-        if (medicalRecords.isEmpty()) {
-            view.showMessage("No medical records found for Patient ID: " + model.getHospitalID());
-        } else {
-            view.viewMedicalRecord(
-                model.getHospitalID(),
-                model.getName(),
-                model.getDob(), 
-                model.getGender(),
-                model.getContactNumber(),
-                model.getEmail(),
-                model.getBloodType(),
-                medicalRecords
-            );
-        }
+    public void viewMedicalRecord(String patientID) {
+        MedicalRecord record = MedicalRecordsCsvHelper.getMedicalRecordById(patientID);
+        view.viewMedicalRecord(record);
     }
 
     public void updateContactNumber(String newContactNumber) 
     {
         model.setContactNumber(newContactNumber);
+        PatientListCsvHelper.updatePatientContactInfo(model.getHospitalID(), newContactNumber, model.getEmail());
+        MedicalRecordsCsvHelper.updatePatientContactInfo(model.getHospitalID(), newContactNumber, model.getEmail());
         view.showMessage("Contact number updated successfully.");
     }
 
-    public void updateEmail(String newEmail) 
-    {
+    public void updateEmail(String newEmail) {
         model.setEmail(newEmail);
+        PatientListCsvHelper.updatePatientContactInfo(model.getHospitalID(), model.getContactNumber(), newEmail);
+        MedicalRecordsCsvHelper.updatePatientContactInfo(model.getHospitalID(), model.getContactNumber(), newEmail);
         view.showMessage("Email updated successfully.");
     }
 
-
-    /*public void viewMedicalRecord() {
-        List<String> medicalRecord = model.getMedicalRecord();
-        view.viewMedicalRecord(medicalRecord);
-    }*/
-    
-    public void viewAvailableSlots(DoctorModel doctor, String date) 
-    {
-        List<String> availableSlots = appointmentManager.getAvailableSlots(doctor, date);
-        view.viewAvailableSlots(doctor, availableSlots);
+    public void viewAvailableSlots() {
+        List<DoctorAvailability> slots = DoctorAvailabilityCsvHelper.loadDoctorAvailability();
+        view.viewAvailableSlots(slots);
     }
+    
+    
 
     /*public void scheduleAppointment(DoctorModel doctor, String date, String time) 
     {
@@ -111,22 +81,6 @@ public class PatientController
             view.showMessage("Failed to reschedule appointment. The selected time slot is unavailable.");
         }
     }
-
-    /*public void viewAppointments() 
-    {
-        List<Appointment> appointments = appointmentManager.getAppointmentsForPatient(model.getPatientId());
-        
-        for (Appointment appointment : appointments) 
-        {
-            System.out.println(appointment);
-        }
-    }*/
-    
-    /*public void viewScheduledAppointmentsStatus() 
-    {
-        List<Appointment> appointments = appointmentManager.getAppointmentsForPatient(model.getHospitalID());
-        view.viewScheduledAppointmentStatus(appointments);
-    }*/
 
     public void viewScheduledAppointmentsStatus() {
         List<Appointment> appointments = AppointmentsCsvHelper.getAppointmentsForPatient(model.getHospitalID());

@@ -67,4 +67,30 @@ public class PatientListCsvHelper {
         }
         return medicalRecords;
     }
+
+    public static void updatePatientContactInfo(String patientID, String contactNumber, String email) {
+        List<String[]> rows = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader(FILE_PATH))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] values = line.split(",");
+                if (values[0].equals(patientID)) {
+                    values[4] = contactNumber; // Update contact number
+                    values[5] = email; // Update email
+                }
+                rows.add(values);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_PATH))) {
+            for (String[] row : rows) {
+                bw.write(String.join(",", row));
+                bw.newLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

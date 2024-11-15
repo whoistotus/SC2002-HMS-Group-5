@@ -3,58 +3,75 @@ import java.util.*;
 
 public class PatientView
 {
-    /*private PatientModel patientModel;
-    public void PatientMenu() {
-        while (true) {
-            System.out.println("Patient Menu for " + patientModel.getName());
-            System.out.println("1. View Medical Records");
-            System.out.println("2. Schedule Appointment");
-            System.out.println("3. Reschedule Appointment");
-            System.out.println("4. Cancel Appointment");
-            System.out.println("5. View Available Appointment Slots");
-            System.out.println("6. View Appointment Outcome");
-            System.out.println("7. Record Appointment Outcome");
-            System.out.println("8. Exit");
-            System.out.print("Choose an option: ");
+    public void viewMedicalRecord(MedicalRecord record) {
+        if (record == null) {
+            System.out.println("No medical record found for the patient.");
+            return;
+        }
+    
+        System.out.println("Medical Record for Patient: " + record.getPatientID());
+        System.out.println("==============================");
+        System.out.println("Name: " + record.getName());
+        System.out.println("Date of Birth: " + record.getDOB());
+        System.out.println("Gender: " + record.getGender());
+        System.out.println("Contact Number: " + record.getContactNumber());
+        System.out.println("Blood Type: " + record.getBloodType());
+        System.out.println("Email: " + record.getEmail());
+    
+        System.out.println("\nPast Diagnoses:");
+        for (String diagnosis : record.getPastDiagnoses()) {
+            System.out.println("- " + diagnosis);
+        }
+    
+        System.out.println("\nPast Treatments:");
+        for (String treatment : record.getPastTreatments()) {
+            System.out.println("- " + treatment);
+        }
+    
+        System.out.println("\nCurrent Diagnoses:");
+        for (String diagnosis : record.getCurrentDiagnoses()) {
+            System.out.println("- " + diagnosis);
+        }
+    
+        System.out.println("\nCurrent Treatments:");
+        for (String treatment : record.getCurrentTreatments()) {
+            System.out.println("- " + treatment);
+        }
+    
+        System.out.println("\nPrescriptions:");
+        for (String prescription : record.getPrescriptions()) {
+            System.out.println("- " + prescription);
+        }
+    }
 
-            int choice = scanner.nextInt();
-            scanner.nextLine();  // Consume newline
+    /*public void viewAvailableSlots(DoctorModel doctor, List<String> availableSlots) 
+	{
+        System.out.println("Available slots for Dr. " + doctor.getName() + ":");
 
-            switch (choice) {
-                case 1 -> viewMedicalRecords();
-                case 2 -> updatePatientMedicalRecords();
-                case 3 -> setAvailability();
-                case 4 -> viewPersonalSchedule();
-                case 5 -> acceptAppointment();
-                case 6 -> declineAppointment();
-                case 7 -> recordAppointmentOutcome();
-                case 8 -> {
-                    System.out.println("Exiting...");
-                    return;
-                }
-                default -> System.out.println("Invalid choice. Please try again.");
+        if (availableSlots.isEmpty()) 
+        {
+            System.out.println("No available slots.");
+        } 
+        else 
+        {
+            for (String slot : availableSlots) 
+            {
+                System.out.println("Available on: " + slot);
             }
         }
     }*/
 
-	public void viewMedicalRecord(String patientId, String name, String dob, String gender, 
-            String contactNumber, String email, String bloodType, 
-            List<String> medicalRecord) 
-    {
-    	System.out.println("Medical Record for Patient ID:" + patientId);
-    	System.out.println("Name: " + name);
-        System.out.println("Date of Birth: " + dob);
-        System.out.println("Gender: " + gender);
-        System.out.println("Contact Number: " + contactNumber);
-        System.out.println("Email: " + email);
-        System.out.println("Blood Type: " + bloodType);
-        System.out.println("Medical Records: ");
-        for (String record : medicalRecord) 
-        {
-            System.out.println(record);
+    public void viewAvailableSlots(List<DoctorAvailability> slots) {
+        System.out.println("Available Appointment Slots:");
+        if (slots.isEmpty()) {
+            System.out.println("No available slots at the moment.");
+        } else {
+            for (DoctorAvailability slot : slots) {
+                System.out.println(slot.toString());
+            }
         }
     }
-
+    
    
 	public void viewScheduledAppointmentStatus(List<Appointment> appointments) 
 	{
@@ -77,22 +94,7 @@ public class PatientView
     }
 
     
-	public void viewAvailableSlots(DoctorModel doctor, List<String> availableSlots) 
-	{
-        System.out.println("Available slots for Dr. " + doctor.getName() + ":");
-
-        if (availableSlots.isEmpty()) 
-        {
-            System.out.println("No available slots.");
-        } 
-        else 
-        {
-            for (String slot : availableSlots) 
-            {
-                System.out.println("Available on: " + slot);
-            }
-        }
-    }
+	
 
     
     public void viewAppointmentOutcome(AppointmentOutcomeRecord outcome) 

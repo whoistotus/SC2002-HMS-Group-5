@@ -121,6 +121,20 @@ public class MedicalRecordsCsvHelper {
         }
     }
 
+    public static void updatePatientContactInfo(String patientID, String contactNumber, String email) {
+        List<MedicalRecord> records = loadMedicalRecords();
+    
+        for (MedicalRecord record : records) {
+            if (record.getPatientID().equals(patientID)) {
+                record.setContactNumber(contactNumber);
+                record.setEmail(email);
+                break;
+            }
+        }
+    
+        saveAllMedicalRecords(records); // Save updated records
+    }
+
     // Convert a MedicalRecord object to CSV string
     private static String recordToCsv(MedicalRecord record) {
         return String.join(",",
