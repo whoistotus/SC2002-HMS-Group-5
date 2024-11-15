@@ -93,4 +93,54 @@ public class AppointmentsCsvHelper {
         }
         saveAllAppointments(appointments);  // Save updated appointments list back to the CSV
     }
+
+
+    public static boolean updateAllAppointments(List<Appointment> appointments) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter("data/Appointments.csv"))) {
+            bw.write("AppointmentID,PatientID,DoctorID,Date,Time,Status");
+            bw.newLine();
+            for (Appointment appointment : appointments) {
+                bw.write(appointment.toCsv());
+                bw.newLine();
+            }
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+
+
+    public static boolean addAppointment(Appointment appointment) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter("data/Appointments.csv", true))) {
+            bw.write(appointment.toCsv());
+            bw.newLine();
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
+    public static List<Appointment> getAppointmentsForPatient(String patientId) {
+        List<Appointment> patientAppointments = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader("data/Appointments.csv"))) {
+            String line;
+            br.readLine(); // Skip header
+            while ((line = br.readLine()) != null) {
+                String[] data = line.split(",");
+                if (data[1].equals(patientId)) {
+                    Appointment.AppointmentStatus status = Appointment.AppointmentStatus.valueOf(data[5].trim().toUpperCase());
+                    patientAppointments.add(new Appointment(data[0], data[1], data[2], data[3], data[4], status));
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return patientAppointments;
+    }
+    
+    
 }
