@@ -41,46 +41,41 @@ public class PatientController
     }
     
     
-
-    /*public void scheduleAppointment(DoctorModel doctor, String date, String time) 
-    {
-    	String appointmentID = UUID.randomUUID().toString();
-        boolean success = appointmentManager.scheduleAppointment(appointmentID, model, doctor, date, time);
-        if (success) 
-        {
-            view.showMessage("Appointment scheduled successfully with status 'Pending'.");
-        } 
-        
-        else 
-        {
-            view.showMessage("Failed to schedule appointment. The doctor may not be available at this time.");
+    public void scheduleAppointment(String doctorID, String date, String time) {
+        DoctorModel doctor = DoctorAvailabilityCsvHelper.getDoctorById(doctorID);
+        if (doctor == null) {
+            view.showMessage("Invalid Doctor ID!");
+            return;
         }
-    }*/
-
-    public void scheduleAppointment(DoctorModel doctor, String date, String time) {
+    
         String appointmentID = UUID.randomUUID().toString();
-        if (appointmentManager.scheduleAppointment(appointmentID, model, doctor, date, time)) {
-            DoctorAvailabilityCsvHelper.updateDoctorAvailability(doctor.getHospitalID(), date, time);
-            view.showMessage("Appointment scheduled successfully.");
+        boolean success = appointmentManager.scheduleAppointment(appointmentID, model, doctor, date, time);
+        if (success) {
+            view.showMessage("Appointment scheduled successfully with status 'Pending'.");
         } else {
-            view.showMessage("Failed to schedule appointment. The time slot may not be available.");
+            view.showMessage("Failed to schedule appointment. The selected time slot is unavailable.");
         }
     }
     
     
-    public void rescheduleAppointment(Appointment appointment, String date, String time) 
-    {
-        boolean success = appointmentManager.rescheduleAppointment(appointment, date, time);
-        if (success) 
-        {
-            view.showMessage("Appointment rescheduled successfully with status 'Pending'.");
-        } 
-        
-        else 
-        {
-            view.showMessage("Failed to reschedule appointment. The selected time slot is unavailable.");
+    
+    public void rescheduleAppointment(String appointmentID, String newDate, String newTime) {
+        // Fetch the appointment
+        Appointment appointment = model.getAppointmentById(appointmentID);
+        if (appointment == null) {
+            view.showMessage("Appointment not found!");
+            return;
+        }
+    
+        // Attempt to reschedule
+        boolean success = appointmentManager.rescheduleAppointment(appointmentID, newDate, newTime);
+        if (success) {
+            view.showMessage("Appointment rescheduled successfully!");
+        } else {
+            view.showMessage("Failed to reschedule. The new slot may be unavailable.");
         }
     }
+    
 
     public void viewScheduledAppointmentsStatus() {
         List<Appointment> appointments = AppointmentsCsvHelper.getAppointmentsForPatient(model.getHospitalID());

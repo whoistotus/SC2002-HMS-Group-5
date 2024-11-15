@@ -83,6 +83,13 @@ public class PatientModel extends User
     { 
     	this.email = email; 
     }
+
+
+
+    public Appointment getAppointmentById(String appointmentID) {
+        return AppointmentsCsvHelper.getAppointmentById(appointmentID);
+    }
+    
     
 }
     

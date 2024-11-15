@@ -108,5 +108,21 @@ public class DoctorAvailabilityCsvHelper {
         }
         return null;
     }
+
+    public static List<String> getAvailableSlots(String doctorID, String date) {
+        List<String> availableSlots = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader("data/DoctorAvailability.csv"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] data = line.split(",");
+                if (data[0].equals(doctorID) && data[1].equals(date)) {
+                    availableSlots.add(data[2].trim()); // Add time slot
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return availableSlots;
+    }
     
 }

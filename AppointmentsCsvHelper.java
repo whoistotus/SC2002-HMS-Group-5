@@ -69,7 +69,7 @@ public class AppointmentsCsvHelper {
     }
 
     // Saves the entire list of appointments back to the CSV file
-    public static void saveAllAppointments(List<Appointment> appointments) {
+    /*public static void saveAllAppointments(List<Appointment> appointments) {
         try (PrintWriter writer = new PrintWriter(new FileWriter(FILE_PATH))) {
             writer.println("AppointmentID,PatientID,DoctorID,Date,Time,Status");
             for (Appointment appointment : appointments) {
@@ -85,7 +85,44 @@ public class AppointmentsCsvHelper {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }*/
+
+    public static boolean saveAllAppointments(List<Appointment> appointments) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_PATH))) {
+            bw.write("AppointmentID,PatientID,DoctorID,Date,Time,Status");
+            bw.newLine();
+            for (Appointment appointment : appointments) {
+                bw.write(appointment.toCsv());
+                bw.newLine();
+            }
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
+
+    // Update a specific appointment in the CSV
+    public static boolean updateAppointment(Appointment updatedAppointment) {
+        List<Appointment> appointments = loadAppointments();
+        boolean found = false;
+
+        for (Appointment appointment : appointments) {
+            if (appointment.getAppointmentID().equals(updatedAppointment.getAppointmentID())) {
+                appointment.setAppointmentDate(updatedAppointment.getAppointmentDate());
+                appointment.setAppointmentTime(updatedAppointment.getAppointmentTime());
+                appointment.setStatus(updatedAppointment.getStatus());
+                found = true;
+                break;
+            }
+        }
+
+        if (found) {
+            return saveAllAppointments(appointments);
+        }
+        return false; // Return false if the appointment was not found
+    }
+
 
     // Updates the status of a specific appointment and saves the changes
     public static void updateAppointmentStatus(String appointmentID, Appointment.AppointmentStatus newStatus) {
@@ -116,18 +153,16 @@ public class AppointmentsCsvHelper {
     }
     
 
-
     public static boolean addAppointment(Appointment appointment) {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter("data/Appointments.csv", true))) {
-            bw.write(appointment.toCsv());
-            bw.newLine();
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("data/Appointments.csv", true))) {
+            writer.write(appointment.toCsv());
+            writer.newLine();
             return true;
         } catch (IOException e) {
             e.printStackTrace();
             return false;
         }
     }
-
 
     public static List<Appointment> getAppointmentsForPatient(String patientId) {
         List<Appointment> patientAppointments = new ArrayList<>();

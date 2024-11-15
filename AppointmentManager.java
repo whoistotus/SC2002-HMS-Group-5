@@ -30,7 +30,7 @@ public class AppointmentManager
     }
 
     
-    public boolean scheduleAppointment(String appointmentID, PatientModel patient, DoctorModel doctor, String date, String time) 
+    /*public boolean scheduleAppointment(String appointmentID, PatientModel patient, DoctorModel doctor, String date, String time) 
     {
         if (!getAvailableSlots(doctor, date).contains(time)) 
         {
@@ -41,9 +41,31 @@ public class AppointmentManager
         Appointment newAppointment = new Appointment(appointmentID, patient, doctor, date, time, Appointment.AppointmentStatus.PENDING);
         appointments.add(newAppointment);
         return true;
+    }*/
+    
+    public boolean scheduleAppointment(String appointmentID, PatientModel patient, DoctorModel doctor, String date, String time) {
+        // Check availability using DoctorAvailabilityCsvHelper
+        List<String> availableSlots = DoctorAvailabilityCsvHelper.getAvailableSlots(doctor.getHospitalID(), date);
+    
+        if (!availableSlots.contains(time)) {
+            return false; // Slot unavailable
+        }
+    
+        // Create and add appointment
+        Appointment newAppointment = new Appointment(appointmentID, patient, doctor, date, time, Appointment.AppointmentStatus.PENDING);
+        appointments.add(newAppointment);
+    
+        // Update Doctor's Availability
+        DoctorAvailabilityCsvHelper.updateDoctorAvailability(doctor.getHospitalID(), date, time);
+    
+        // Update Appointments.csv
+        AppointmentsCsvHelper.addAppointment(newAppointment);
+    
+        return true;
     }
+    
 
-    public boolean rescheduleAppointment(Appointment appointment, String date, String time) 
+    /*public boolean rescheduleAppointment(Appointment appointment, String date, String time) 
     {
     	for (Appointment appt : appointments) {
             if (appt.getAppointmentID().equals(appt.getAppointmentID())) {
@@ -54,7 +76,41 @@ public class AppointmentManager
             }
         }
         return false;
+    }*/
+
+    public boolean rescheduleAppointment(String appointmentID, String newDate, String newTime) {
+        Appointment appointment = AppointmentsCsvHelper.getAppointmentById(appointmentID);
+        if (appointment == null) {
+            System.out.println("Appointment not found!");
+            return false;
+        }
+    
+        String doctorID = appointment.getDoctorID();
+    
+        // Check if the new slot is available
+        if (!DoctorAvailabilityCsvHelper.getAvailableSlots(doctorID, newDate).contains(newTime)) {
+            System.out.println("New time slot is unavailable!");
+            return false;
+        }
+    
+        // Free the old time slot
+        DoctorAvailabilityCsvHelper.updateDoctorAvailability(doctorID, appointment.getAppointmentDate(), appointment.getAppointmentTime());
+    
+        // Update the appointment details
+        appointment.setAppointmentDate(newDate);
+        appointment.setAppointmentTime(newTime);
+        appointment.setStatus(Appointment.AppointmentStatus.PENDING);
+    
+        // Update the appointment in Appointments.csv
+        AppointmentsCsvHelper.updateAppointment(appointment);
+    
+        // Mark the new time slot as unavailable
+        DoctorAvailabilityCsvHelper.updateDoctorAvailability(doctorID, newDate, newTime);
+    
+        System.out.println("Appointment rescheduled successfully.");
+        return true;
     }
+    
 
     // for the doctor to update appointment status
     public void updateAppointmentStatus(Appointment appointment, Appointment.AppointmentStatus newStatus) 

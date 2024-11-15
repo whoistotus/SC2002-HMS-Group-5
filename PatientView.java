@@ -3,6 +3,7 @@ import java.util.*;
 
 public class PatientView
 {
+    PatientController controller;
     public void viewMedicalRecord(MedicalRecord record) {
         if (record == null) {
             System.out.println("No medical record found for the patient.");
@@ -43,6 +44,37 @@ public class PatientView
             System.out.println("- " + prescription);
         }
     }
+
+    public void updatePersonalInformation() {
+        Scanner scanner = new Scanner(System.in);
+    
+        System.out.println("What would you like to update?");
+        System.out.println("1. Contact Number");
+        System.out.println("2. Email");
+        System.out.println("3. Exit");
+        System.out.print("Enter your choice: ");
+        int choice = scanner.nextInt();
+        scanner.nextLine(); // Consume newline
+    
+        switch (choice) {
+            case 1:
+                System.out.print("Enter new contact number: ");
+                String newContactNumber = scanner.nextLine();
+                controller.updateContactNumber(newContactNumber);
+                break;
+            case 2:
+                System.out.print("Enter new email: ");
+                String newEmail = scanner.nextLine();
+                controller.updateEmail(newEmail);
+                break;
+            case 3:
+                System.out.println("Exiting...");
+                break;
+            default:
+                System.out.println("Invalid choice. Please try again.");
+        }
+    }
+    
 
     /*public void viewAvailableSlots(DoctorModel doctor, List<String> availableSlots) 
 	{
@@ -92,10 +124,6 @@ public class PatientView
             }
         }
     }
-
-    
-	
-
     
     public void viewAppointmentOutcome(AppointmentOutcomeRecord outcome) 
     {
@@ -112,6 +140,41 @@ public class PatientView
             System.out.println("Prescription: " + outcome.getMedications());
         }
     }
+
+    public void scheduleAppointment() {
+        Scanner scanner = new Scanner(System.in);
+    
+        System.out.print("Enter Doctor ID: ");
+        String doctorID = scanner.nextLine();
+    
+        System.out.print("Enter appointment date (YYYY-MM-DD): ");
+        String date = scanner.nextLine();
+    
+        System.out.print("Enter appointment time (HH:MM): ");
+        String time = scanner.nextLine();
+    
+        // Pass input back to controller
+        controller.scheduleAppointment(doctorID, date, time);
+    }
+    
+    
+
+    public void rescheduleAppointment() {
+        Scanner scanner = new Scanner(System.in);
+    
+        System.out.print("Enter Appointment ID to reschedule: ");
+        String appointmentID = scanner.nextLine();
+    
+        System.out.print("Enter new appointment date (YYYY-MM-DD): ");
+        String newDate = scanner.nextLine();
+    
+        System.out.print("Enter new appointment time (HH:MM): ");
+        String newTime = scanner.nextLine();
+    
+        // Pass input back to controller
+        controller.rescheduleAppointment(appointmentID, newDate, newTime);
+    }
+
     
     public void showMessage(String message)
     {
