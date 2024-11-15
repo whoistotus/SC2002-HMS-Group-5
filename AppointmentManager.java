@@ -4,6 +4,7 @@ import java.util.List;
 public class AppointmentManager 
 {
     private List<Appointment> appointments;
+    private static int appointmentCounter = 0;
     
 
     public AppointmentManager() 
@@ -42,14 +43,21 @@ public class AppointmentManager
         appointments.add(newAppointment);
         return true;
     }*/
+
+    private static synchronized String generateAppointmentID() {
+        appointmentCounter++;
+        return String.format("AP%04d", appointmentCounter);
+    }
     
-    public boolean scheduleAppointment(String appointmentID, PatientModel patient, DoctorModel doctor, String date, String time) {
+    public boolean scheduleAppointment(PatientModel patient, DoctorModel doctor, String date, String time) {
         // Check availability using DoctorAvailabilityCsvHelper
         List<String> availableSlots = DoctorAvailabilityCsvHelper.getAvailableSlots(doctor.getHospitalID(), date);
     
         if (!availableSlots.contains(time)) {
             return false; // Slot unavailable
         }
+
+        String appointmentID = generateAppointmentID(); // Generate ID
     
         // Create and add appointment
         Appointment newAppointment = new Appointment(appointmentID, patient, doctor, date, time, Appointment.AppointmentStatus.PENDING);

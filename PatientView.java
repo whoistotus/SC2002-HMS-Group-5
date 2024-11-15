@@ -118,10 +118,11 @@ public class PatientView
         {
                 for (Appointment appointment : appointments) 
                 {
-                    System.out.println("Doctor: " + appointment.getDoctor().getName() + 
-                                       " | Date: " + appointment.getAppointmentDate() +
-                                       " | Time: " + appointment.getAppointmentTime() + 
-                                       " | Status: " + appointment.getStatus());
+                    System.out.println("Appointment ID: " + appointment.getAppointmentID() + 
+                                   " | Doctor: " + appointment.getDoctor().getName() +
+                                   " | Date: " + appointment.getAppointmentDate() +
+                                   " | Time: " + appointment.getAppointmentTime() +
+                                   " | Status: " + appointment.getStatus());
                 }
         }
             

@@ -48,8 +48,8 @@ public class PatientController
             return;
         }
     
-        String appointmentID = UUID.randomUUID().toString();
-        boolean success = appointmentManager.scheduleAppointment(appointmentID, model, doctor, date, time);
+        
+        boolean success = appointmentManager.scheduleAppointment(model, doctor, date, time);
         if (success) {
             view.showMessage("Appointment scheduled successfully with status 'Pending'.");
         } else {
