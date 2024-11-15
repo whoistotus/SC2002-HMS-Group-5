@@ -8,6 +8,8 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import SC2002_Assignment.Appointment;
+
 public class DoctorView {
 
     private DoctorModel doctorModel;

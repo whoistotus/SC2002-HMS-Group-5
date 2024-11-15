@@ -1,5 +1,6 @@
 package SC2002_Assignment;
 
+
 public class HospitalStaff extends User
 {
     private String name;
