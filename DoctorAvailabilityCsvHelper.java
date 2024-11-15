@@ -1,3 +1,5 @@
+package SC2002_Assignment;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
