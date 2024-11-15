@@ -12,13 +12,13 @@ public class AppointmentOutcomeRecordsCsvHelper {
             br.readLine(); // Skip header
             while ((line = br.readLine()) != null) {
                 String[] values = line.split(",");
-                String appointmentID = values[0];
-                String patientID = values[1];
-                String doctorID = values[2];
+                String appointmentID = values[2];
+                String patientID = values[0];
+                String doctorID = values[1];
                 String date = values[3];
-                AppointmentOutcomeRecord.ServiceType serviceType = AppointmentOutcomeRecord.ServiceType.valueOf(values[4].toUpperCase());
-                String consultationNotes = values[5];
-                
+                AppointmentOutcomeRecord.ServiceType serviceType = AppointmentOutcomeRecord.ServiceType.valueOf(values[5].toUpperCase());
+                String consultationNotes = values[4];
+                             
                 // Parse medications
                 HashMap<String, Integer> medications = AppointmentOutcomeRecord.parseMedicationsFromCsv(values[6]);
                 

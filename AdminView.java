@@ -48,6 +48,8 @@ public class AdminView {
         System.out.println("5 - Manage Replenishment Requests");
         System.out.println("6 - Appointment Details");
         System.out.println("7 - Logout");
+        System.out.println("======================");
+        System.out.println("Please enter your choice: ");
         int choice = sc.nextInt();
         sc.nextLine();
         
