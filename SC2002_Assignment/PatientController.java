@@ -76,8 +76,7 @@ public class PatientController
     }*/
 
     public void scheduleAppointment(DoctorModel doctor, String date, String time) {
-        String appointmentID = UUID.randomUUID().toString();
-        if (appointmentManager.scheduleAppointment(appointmentID, model, doctor, date, time)) {
+        if (appointmentManager.scheduleAppointment(model, doctor, date, time)) {
             DoctorAvailabilityCsvHelper.updateDoctorAvailability(doctor.getHospitalID(), date, time);
             view.showMessage("Appointment scheduled successfully.");
         } else {

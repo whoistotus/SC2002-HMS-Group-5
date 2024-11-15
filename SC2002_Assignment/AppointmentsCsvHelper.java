@@ -31,15 +31,8 @@ public class AppointmentsCsvHelper {
                     continue; // Skip this appointment if status is invalid
                 }
 
-                PatientModel patient = PatientListCsvHelper.getPatientById(patientID);
-                DoctorModel doctor = DoctorAvailabilityCsvHelper.getDoctorById(doctorID);
-
-                if (patient != null && doctor != null) {
-                    Appointment appointment = new Appointment(appointmentID, patient, doctor, date, time, status);
-                    appointments.add(appointment);
-                } else {
-                    System.out.println("Could not load appointment: Patient or Doctor not found for " + appointmentID);
-                }
+                Appointment appointment = new Appointment(appointmentID, patientID, doctorID, date, time, status);
+                appointments.add(appointment);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -138,23 +131,9 @@ public class AppointmentsCsvHelper {
             br.readLine(); // Skip header
             while ((line = br.readLine()) != null) {
                 String[] data = line.split(",");
-                /*if (data[1].equals(patientId)) {
+                if (data[1].equals(patientId)) {
                     Appointment.AppointmentStatus status = Appointment.AppointmentStatus.valueOf(data[5].trim().toUpperCase());
                     patientAppointments.add(new Appointment(data[0], data[1], data[2], data[3], data[4], status));
-                }*/
-
-                if (data[1].equals(patientId)) { // match the patient ID
-                    // fetch PatientModel and DoctorModel
-                    PatientModel patient = PatientListCsvHelper.getPatientById(data[1]);
-                    DoctorModel doctor = DoctorAvailabilityCsvHelper.getDoctorById(data[2]);
-    
-                    if (patient != null && doctor != null) {
-                        // Convert status from String to AppointmentStatus enum
-                        Appointment.AppointmentStatus status = Appointment.AppointmentStatus.valueOf(data[5].trim().toUpperCase());
-    
-                        // Create and add the Appointment object
-                        patientAppointments.add(new Appointment(data[0], patient, doctor, data[3], data[4], status));
-                    }
                 }
             }
         } catch (IOException e) {
