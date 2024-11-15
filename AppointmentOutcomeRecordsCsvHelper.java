@@ -1,11 +1,8 @@
 import java.io.*;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class AppointmentOutcomeRecordsCsvHelper {
     private static final String FILE_PATH = "data/AppointmentOutcomeRecords.csv";
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
     // Load all appointment outcome records from CSV
     public static List<AppointmentOutcomeRecord> loadAppointmentOutcomes() {
@@ -39,58 +36,45 @@ public class AppointmentOutcomeRecordsCsvHelper {
         }
         return outcomes;
     }
-    // Save all appointment outcome records to CSV
+
+    // Save an appointment outcome record to CSV
     public static void saveAppointmentOutcome(AppointmentOutcomeRecord outcome) {
         try (PrintWriter writer = new PrintWriter(new FileWriter(FILE_PATH, true))) { // Append mode
-            // Format medications as "medName1:quantity1;medName2:quantity2"
             String formattedMedications = formatMedications(outcome.getMedications());
-
             writer.printf("%s,%s,%s,%s,%s,%s,%s,%s%n",
+                outcome.getAppointmentID(),
                 outcome.getPatientID(),
                 outcome.getDoctorID(),
-                outcome.getAppointmentID(),
                 outcome.getDate(),
-                outcome.getConsultationNotes(),
                 outcome.getServiceType(),
+                outcome.getConsultationNotes(),
                 formattedMedications,
-                "Pending" // Set status to Pending by default
+                outcome.getStatusOfPrescription()
             );
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
     // Update a specific appointment outcome record in the CSV file
     public static void updateAppointmentOutcomeRecord(AppointmentOutcomeRecord updatedRecord) {
-        List<AppointmentOutcomeRecord> records = loadAppointmentOutcomes();  // Load all records from the file
-
+        List<AppointmentOutcomeRecord> records = loadAppointmentOutcomes();
         List<String> lines = new ArrayList<>();
         boolean updated = false;
 
-        // Go through each record and update if it matches the appointment ID
         for (AppointmentOutcomeRecord record : records) {
             if (record.getAppointmentID().equals(updatedRecord.getAppointmentID())) {
-                // Replace with updated record
-                String updatedLine = String.format("%s,%s,%s,%s,%s,%s,%s,%s",
-                        updatedRecord.getPatientID(),
-                        updatedRecord.getDoctorID(),
-                        updatedRecord.getAppointmentID(),
-                        updatedRecord.getDate(),
-                        updatedRecord.getConsultationNotes(),
-                        updatedRecord.getServiceType(),
-                        formatMedications(updatedRecord.getMedications()),
-                        updatedRecord.getStatusOfPrescription());
+                String updatedLine = formatRecordToCsv(updatedRecord);
                 lines.add(updatedLine);
                 updated = true;
             } else {
-                // Keep the original line for other records
                 lines.add(formatRecordToCsv(record));
             }
         }
 
-        // If the record was updated, overwrite the file with the new content
         if (updated) {
             try (PrintWriter writer = new PrintWriter(new FileWriter(FILE_PATH))) {
-                writer.println("patientID,doctorID,appointmentID,date,consultationNotes,serviceType,medications,statusOfPrescription");
+                writer.println("appointmentID,patientID,doctorID,date,serviceType,consultationNotes,medications,statusOfPrescription");
                 for (String line : lines) {
                     writer.println(line);
                 }
@@ -100,29 +84,29 @@ public class AppointmentOutcomeRecordsCsvHelper {
         }
     }
 
+    // Helper to format a record as a CSV string
     private static String formatRecordToCsv(AppointmentOutcomeRecord record) {
         return String.format("%s,%s,%s,%s,%s,%s,%s,%s",
+                record.getAppointmentID(),
                 record.getPatientID(),
                 record.getDoctorID(),
-                record.getAppointmentID(),
                 record.getDate(),
-                record.getConsultationNotes(),
                 record.getServiceType(),
+                record.getConsultationNotes(),
                 formatMedications(record.getMedications()),
                 record.getStatusOfPrescription()
         );
     }
 
-    // Helper method to format medications
+    // Helper to format medications as a CSV-compatible string
     private static String formatMedications(HashMap<String, Integer> medications) {
         StringBuilder formattedMedications = new StringBuilder();
         for (Map.Entry<String, Integer> entry : medications.entrySet()) {
             formattedMedications.append(entry.getKey()).append(":").append(entry.getValue()).append(";");
         }
         if (formattedMedications.length() > 0) {
-            formattedMedications.setLength(formattedMedications.length() - 1); // Remove the trailing semicolon
+            formattedMedications.setLength(formattedMedications.length() - 1); // Remove trailing semicolon
         }
         return formattedMedications.toString();
     }
-
 }
