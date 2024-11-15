@@ -78,5 +78,15 @@ public class DoctorAvailabilityCsvHelper {
             return false;
         }
     }
+
+    public static DoctorModel getDoctorById(String doctorID) {
+        List<DoctorModel> doctors = loadDoctors();
+        for (DoctorModel doctor : doctors) {
+            if (doctor.getHospitalID().equals(doctorID)) {
+                return doctor;
+            }
+        }
+        return null;
+    }
     
 }
