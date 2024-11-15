@@ -79,6 +79,27 @@ public class DoctorAvailabilityCsvHelper {
         }
     }
 
+    public static List<DoctorModel> loadDoctors() {
+        List<DoctorModel> doctors = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader(DOCTOR_FILE_PATH))) {
+            String line;
+            br.readLine(); // Skip header
+            while ((line = br.readLine()) != null) {
+                String[] data = line.split(",");
+                String doctorID = data[0];
+                String name = data[1];
+                String specialization = data[2];
+
+                // Create and add DoctorModel object
+                DoctorModel doctor = new DoctorModel(doctorID, name, specialization);
+                doctors.add(doctor);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return doctors;
+    }
+
     public static DoctorModel getDoctorById(String doctorID) {
         List<DoctorModel> doctors = loadDoctors();
         for (DoctorModel doctor : doctors) {

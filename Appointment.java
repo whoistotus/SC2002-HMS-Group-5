@@ -77,6 +77,17 @@ public class Appointment {
     	this.appointmentTime = newTime; 
     }
 
+    public String toCsv() {
+        return String.join(",",
+                appointmentID,
+                patient.getHospitalID(), 
+                doctor.getHospitalID(), 
+                appointmentDate,
+                appointmentTime,
+                status.toString()
+        );
+    }
+
     @Override
     public String toString() {
         return "Appointment{" +

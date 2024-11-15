@@ -1,10 +1,41 @@
-
-
+import java.util.*;
 import java.time.LocalDate;
-import java.util.List;
 
 public class PatientView
 {
+    /*private PatientModel patientModel;
+    public void PatientMenu() {
+        while (true) {
+            System.out.println("Patient Menu for " + patientModel.getName());
+            System.out.println("1. View Medical Records");
+            System.out.println("2. Schedule Appointment");
+            System.out.println("3. Reschedule Appointment");
+            System.out.println("4. Cancel Appointment");
+            System.out.println("5. View Available Appointment Slots");
+            System.out.println("6. View Appointment Outcome");
+            System.out.println("7. Record Appointment Outcome");
+            System.out.println("8. Exit");
+            System.out.print("Choose an option: ");
+
+            int choice = scanner.nextInt();
+            scanner.nextLine();  // Consume newline
+
+            switch (choice) {
+                case 1 -> viewMedicalRecords();
+                case 2 -> updatePatientMedicalRecords();
+                case 3 -> setAvailability();
+                case 4 -> viewPersonalSchedule();
+                case 5 -> acceptAppointment();
+                case 6 -> declineAppointment();
+                case 7 -> recordAppointmentOutcome();
+                case 8 -> {
+                    System.out.println("Exiting...");
+                    return;
+                }
+                default -> System.out.println("Invalid choice. Please try again.");
+            }
+        }
+    }*/
 
 	public void viewMedicalRecord(String patientId, String name, LocalDate dob, String gender, 
             String contactNumber, String email, String bloodType, 
