@@ -1,5 +1,4 @@
 
-
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -81,7 +80,7 @@ public class DoctorAvailabilityCsvHelper {
 
     public static List<DoctorModel> loadDoctors() {
         List<DoctorModel> doctors = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader(DOCTOR_FILE_PATH))) {
+        try (BufferedReader br = new BufferedReader(new FileReader("data/DoctorAvailability.csv"))) {
             String line;
             br.readLine(); // Skip header
             while ((line = br.readLine()) != null) {
@@ -91,7 +90,7 @@ public class DoctorAvailabilityCsvHelper {
                 String specialization = data[2];
 
                 // Create and add DoctorModel object
-                DoctorModel doctor = new DoctorModel(doctorID, name, specialization);
+                DoctorModel doctor = new DoctorModel(doctorID, "defaultPassword", "Doctor", name, specialization);
                 doctors.add(doctor);
             }
         } catch (IOException e) {

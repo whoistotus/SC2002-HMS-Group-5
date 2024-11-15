@@ -1,6 +1,5 @@
 
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,7 +7,7 @@ import java.util.List;
 public class PatientModel extends User 
 {
     private String name;
-    private LocalDate dob;
+    private String dob;
     private String gender;
     private String contactNumber;
     private String email;
@@ -16,7 +15,7 @@ public class PatientModel extends User
     private List<String> medicalRecord;
 
    
-    public PatientModel(String hospitalID, String password, String userRole, String name, LocalDate dob, String gender, String contactNumber, String email, String bloodType) 
+    public PatientModel(String hospitalID, String password, String userRole, String name, String dob, String gender, String contactNumber, String email, String bloodType) 
     {
         super(hospitalID, password, userRole);
         this.name = name;
@@ -41,7 +40,7 @@ public class PatientModel extends User
     	return name; 
     }
     
-    public LocalDate getDob() 
+    public String getDob() 
     { 
     	return dob; 
     }

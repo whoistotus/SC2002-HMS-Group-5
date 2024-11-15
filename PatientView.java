@@ -1,5 +1,5 @@
+
 import java.util.*;
-import java.time.LocalDate;
 
 public class PatientView
 {
@@ -37,7 +37,7 @@ public class PatientView
         }
     }*/
 
-	public void viewMedicalRecord(String patientId, String name, LocalDate dob, String gender, 
+	public void viewMedicalRecord(String patientId, String name, String dob, String gender, 
             String contactNumber, String email, String bloodType, 
             List<String> medicalRecord) 
     {

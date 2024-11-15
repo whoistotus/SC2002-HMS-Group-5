@@ -1,6 +1,3 @@
-
-
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 //nihao
@@ -32,8 +29,23 @@ public class PatientController
     }*/
 
     public void viewMedicalRecord() {
-        List<String> medicalRecord = PatientListCsvHelper.getMedicalRecord(model.getHospitalID());
-        view.viewMedicalRecord(medicalRecord);
+        // Retrieve medical records from the CSV using the patient's ID
+        List<String> medicalRecords = PatientListCsvHelper.getMedicalRecord(model.getHospitalID());
+    
+        if (medicalRecords.isEmpty()) {
+            view.showMessage("No medical records found for Patient ID: " + model.getHospitalID());
+        } else {
+            view.viewMedicalRecord(
+                model.getHospitalID(),
+                model.getName(),
+                model.getDob(), 
+                model.getGender(),
+                model.getContactNumber(),
+                model.getEmail(),
+                model.getBloodType(),
+                medicalRecords
+            );
+        }
     }
 
     public void updateContactNumber(String newContactNumber) 

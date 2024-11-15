@@ -3,8 +3,6 @@
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Date;
-import java.util.HashMap;
 
 
 public class PatientListCsvHelper {
@@ -25,7 +23,7 @@ public class PatientListCsvHelper {
                     String gender = values[3];
                     String bloodType = values[4];
                     String email = values[5];
-                    patients.add(new Patient(patientID, name, dob, gender, bloodType, email));
+                    patients.add(new PatientModel(patientID, "password", "Patient", name, dob, gender, "Contact Number", email, bloodType));
                 }
             }
         } catch (IOException e) {

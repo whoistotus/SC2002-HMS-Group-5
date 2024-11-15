@@ -1,4 +1,3 @@
- 
 public class Appointment {
     private String appointmentID;
     private PatientModel patient;
