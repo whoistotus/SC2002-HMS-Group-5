@@ -71,8 +71,9 @@ public class DoctorView {
         System.out.print("Enter Patient ID to view record: ");
         String patientID = scanner.nextLine();
         MedicalRecord record = MedicalRecordsCsvHelper.getMedicalRecordById(patientID);
+    
         if (record != null) {
-            System.out.println("Medical Record: " + record);
+            record.viewMedicalRecord();  // Use the viewMedicalRecord method to display the details
         } else {
             PatientModel patient = PatientListCsvHelper.getPatientById(patientID);
             if (patient != null) {
@@ -82,6 +83,7 @@ public class DoctorView {
             }
         }
     }
+    
 
     public void updatePatientMedicalRecords() {
         System.out.print("Enter Patient ID to update record: ");
@@ -182,24 +184,24 @@ public class DoctorView {
         System.out.print("Enter Appointment ID: ");
         String appointmentIDToRecord = scanner.nextLine();
         Appointment appointmentToRecord = AppointmentsCsvHelper.getAppointmentById(appointmentIDToRecord);
-
+    
         if (appointmentToRecord != null) {
             String patientIDToRecord = appointmentToRecord.getPatientID();
             MedicalRecord appointmentRecord = MedicalRecordsCsvHelper.getMedicalRecordById(patientIDToRecord);
-
+    
             if (appointmentRecord == null) {
                 System.out.println("No medical record found for patient ID: " + patientIDToRecord);
                 return;
             }
-
+    
             System.out.print("Enter service type (CONSULTATION, XRAY, BLOOD_TEST): ");
             String serviceTypeInput = scanner.nextLine().trim().toUpperCase();
-
+    
             try {
                 AppointmentOutcomeRecord.ServiceType serviceType = AppointmentOutcomeRecord.ServiceType.valueOf(serviceTypeInput);
                 System.out.print("Enter consultation notes: ");
                 String notes = scanner.nextLine();
-
+    
                 HashMap<String, Integer> medications = new HashMap<>();
                 System.out.print("Enter medication name (or 'done' to finish): ");
                 String medName;
@@ -210,25 +212,27 @@ public class DoctorView {
                     medications.put(medName, quantity);
                     System.out.print("Enter next medication name (or 'done' to finish): ");
                 }
-
-                // Convert the Date to String format for compatibility with AppointmentOutcomeRecord
-                String formattedDate = dateFormat.format(AppointmentOutcomeRecord.appointmentDate);
-
+    
+                // Generate the current date in the format yyyy-MM-dd
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                String formattedDate = dateFormat.format(new Date());
+    
+                // Create an AppointmentOutcomeRecord with the formattedDate
                 AppointmentOutcomeRecord outcomeRecord = new AppointmentOutcomeRecord(
                     patientIDToRecord,
                     appointmentToRecord.getDoctorID(),
                     appointmentIDToRecord,
-                    formattedDate, // Pass the formatted String date
+                    formattedDate, // Pass the formatted date
                     notes,
                     serviceType
                 );
-
+    
                 outcomeRecord.setMedications(medications);
-
+    
                 AppointmentOutcomeRecordsCsvHelper.saveAppointmentOutcome(outcomeRecord);
                 System.out.println("Appointment outcome recorded successfully.");
-            } catch (IllegalArgumentException | ParseException e) {
-                System.out.println("Error: " + e.getMessage());
+            } catch (IllegalArgumentException e) {
+                System.out.println("Error: Invalid service type.");
             }
         } else {
             System.out.println("Appointment not found.");
