@@ -86,9 +86,9 @@ public class PatientController
         }
     }
     
-    public void cancelAppointment(Appointment appointment) 
+    public void cancelAppointment(String appointmentID) 
     {
-        boolean success = appointmentManager.cancelAppointment(appointment.getAppointmentID());
+        boolean success = appointmentManager.cancelAppointment(appointmentID);
         if (success) 
         {
             view.showMessage("Appointment has been successfully canceled.");
