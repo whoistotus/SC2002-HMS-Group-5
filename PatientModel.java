@@ -15,7 +15,7 @@ public class PatientModel extends User
     private List<String> medicalRecord;
 
    
-    public PatientModel(String hospitalID, String password, String userRole, String name, String dob, String gender, String contactNumber, String email, String bloodType) 
+    public PatientModel(String hospitalID, String name, String dob, String gender, String bloodType, String email, String contactNumber, String password, String userRole) 
     {
         super(hospitalID, password, userRole);
         this.name = name;
@@ -93,13 +93,12 @@ public class PatientModel extends User
     public String toCsv() {
         return String.join(",",
                 getHospitalID(),
-                getPassword(),
                 getName(),
                 getDob(),
                 getGender(),
-                getContactNumber(),
+                getBloodType(),
                 getEmail(),
-                getBloodType()
+                getContactNumber()
         );
     }
     
