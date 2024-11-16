@@ -37,7 +37,7 @@ public class PatientView
 
             switch (choice) {
                 case 1 -> viewMedicalRecord();
-                case 2 -> controller.updatePersonalInformation();
+                case 2 -> updatePersonalInformation();
                 case 3 -> viewAvailableSlots();
                 case 4 -> scheduleAppointment();
                 case 5 -> rescheduleAppointment();
@@ -199,6 +199,51 @@ public class PatientView
             }
         
             System.out.println("+---------------------------------------------------------------------------------------------+");
+        }
+
+        public void updateContactNumber(String newContactNumber) 
+        {
+            model.setContactNumber(newContactNumber);
+            PatientListCsvHelper.updatePatientContactInfo(model.getHospitalID(), newContactNumber, model.getEmail());
+            MedicalRecordsCsvHelper.updatePatientContactInfo(model.getHospitalID(), newContactNumber, model.getEmail());
+            showMessage("Contact number updated successfully.");
+        }
+    
+        public void updateEmail(String newEmail) {
+            model.setEmail(newEmail);
+            PatientListCsvHelper.updatePatientContactInfo(model.getHospitalID(), model.getContactNumber(), newEmail);
+            MedicalRecordsCsvHelper.updatePatientContactInfo(model.getHospitalID(), model.getContactNumber(), newEmail);
+            showMessage("Email updated successfully.");
+        }
+    
+        public void updatePersonalInformation() {
+            Scanner scanner = new Scanner(System.in);
+        
+            System.out.println("What would you like to update?");
+            System.out.println("1. Contact Number");
+            System.out.println("2. Email");
+            System.out.println("3. Exit");
+            System.out.print("Enter your choice: ");
+            int choice = scanner.nextInt();
+            scanner.nextLine(); // Consume newline
+        
+            switch (choice) {
+                case 1:
+                    System.out.print("Enter new contact number: ");
+                    String newContactNumber = scanner.nextLine();
+                    updateContactNumber(newContactNumber);
+                    break;
+                case 2:
+                    System.out.print("Enter new email: ");
+                    String newEmail = scanner.nextLine();
+                    updateEmail(newEmail);
+                    break;
+                case 3:
+                    System.out.println("Exiting...");
+                    break;
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
         }
         
 

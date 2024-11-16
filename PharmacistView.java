@@ -61,7 +61,21 @@ public class PharmacistView {
         System.out.print("Select an option: ");
     }
 
-    public void start(List<AppointmentOutcomeRecord> records, List<Medication> medications, InventoryController inventoryController) {
+    public void start() {
+
+        InventoryController inventoryController = new InventoryController();
+        List<Medication> medications = new ArrayList<>();
+        List<AppointmentOutcomeRecord> records = AppointmentOutcomeRecordsCsvHelper.loadAppointmentOutcomes();
+
+        // Load medications from CSV
+        try {
+            MedicationCSVReader medicationCSVReader = new MedicationCSVReader();
+            medications = medicationCSVReader.getAllMedications();
+        } catch (FileNotFoundException e) {
+            System.out.println("Error: Medication file not found.");
+            e.printStackTrace();
+        }
+
         while (true) {
             pharmacistMenu();
 

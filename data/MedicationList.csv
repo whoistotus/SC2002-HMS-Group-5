@@ -1,5 +1,9 @@
 medicationName,stockLevel,description,lowStockThreshold
+<<<<<<< HEAD
 Paracetamol,650,Pain relief and fever reduction medication,100
+=======
+Paracetamol,590,Pain relief and fever reduction medication,101
+>>>>>>> f32f7f5924f4ce3ec54f75925950f333bd1e6144
 Amoxicillin,300,Antibiotic for bacterial infections,75
 Ibuprofen,450,Anti-inflammatory pain reliever,100
 Aspirin,450,Blood thinner and pain reliever,80
