@@ -6,6 +6,7 @@ import java.io.IOException;
 public class MainApp {
     private static LoginManager loginManager;
     private static Scanner scanner;
+    private static AdminView adminView;
 
     public static void main(String[] args) {
         initialize();
@@ -98,6 +99,7 @@ public class MainApp {
 
     private static void showRoleMenu(User currentUser, String password) {
         String role = currentUser.getUserRole().toLowerCase();
+        
 
         switch (role) {
             case "doctor":
@@ -109,6 +111,12 @@ public class MainApp {
                     System.out.println("Error: Could not find doctor details in the system.");
                 }
                 break;
+
+            case "administrator":
+            InventoryController inventoryController = new InventoryController();
+            adminView = new AdminView(inventoryController);
+            adminView.showMenu();
+            break;
 
             default:
                 System.out.println("Role not supported yet. Please contact the administrator.");
