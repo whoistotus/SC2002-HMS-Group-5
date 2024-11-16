@@ -143,14 +143,6 @@ public class AdminController {
         view.viewHospitalStaffs(model.getAllStaff());
     }
 
-    public void viewScheduledAppointments(String patientID) {
-        view.viewScheduledAppointments(model.getAppointmentsForPatient(patientID));
-    }
-
-    public void viewAllAppointments() {
-        view.viewScheduledAppointments(model.getAllAppointments());
-    }
-
     // Inventory Management Methods
     public void addMedication(String name, int quantity, int threshold) {
         model.addMedication(name, quantity, threshold);
