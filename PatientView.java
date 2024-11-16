@@ -81,16 +81,16 @@ public class PatientView
             List<DoctorAvailability> mergedAvailability = mergeAvailabilitySlots(availabilityList);
     
             // Display the merged availability
-            System.out.println("+-------------------------------------------+");
-            System.out.println("|      Doctor ID       |      Date       | Start Time | End Time      |");
-            System.out.println("+-------------------------------------------+");
+            System.out.println("+-----------------------------------------------+");
+            System.out.println("| Doctor ID |    Date    |Start Time|  End Time |");
+            System.out.println("+-----------------------------------------------+");
     
             for (DoctorAvailability avail : mergedAvailability) {
-                System.out.printf("| %s | %s |   %s   |   %s   |\n",
+                System.out.printf("|    %s   | %s |   %s  |   %s   |\n",
                     avail.getDoctorID(), avail.getDate(), avail.getStartTime(), avail.getEndTime());
             }
     
-            System.out.println("+-------------------------------------------+");
+            System.out.println("+-----------------------------------------------+");
         }
 
         System.out.println("\nPress Enter to return to the main menu...");
@@ -148,12 +148,12 @@ public class PatientView
             if (patientAppointments.isEmpty()) {
                 System.out.println("No upcoming scheduled appointments.");
             } else {
-                System.out.println("+---------------------------------------------------------------+");
-                System.out.println("| Appointment ID | Doctor | Date       | Time  | Status     |");
-                System.out.println("+---------------------------------------------------------------+");
+                System.out.println("+----------------------------------------------------------------+");
+                System.out.println("| Appointment ID | Doctor        | Date       | Time  |  Status  |");
+                System.out.println("+----------------------------------------------------------------+");
         
                 for (Appointment appointment : patientAppointments) {
-                    System.out.printf("| %-14s | %-10s | %-10s | %-5s | %-10s |\n",
+                    System.out.printf("| %-14s | %-10s | %-10s | %-5s | %-8s |\n",
                                       appointment.getAppointmentID(),
                                       appointment.getDoctor().getName(),
                                       appointment.getAppointmentDate(),
@@ -161,7 +161,7 @@ public class PatientView
                                       appointment.getStatus());
                 }
         
-                System.out.println("+---------------------------------------------------------------+");
+                System.out.println("+----------------------------------------------------------------+");
             }
         }
 
