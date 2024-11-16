@@ -2,3 +2,4 @@ RequestID,MedicineName,Quantity,Status
 R001,paracetamol,100,APPROVED
 R002,aspirin,50,PENDING
 R003,cough syrup,60,PENDING
+R004,paracetamol,40,PENDING
