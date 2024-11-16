@@ -155,7 +155,7 @@ public class MedicalRecordsCsvHelper {
                 String[] values = line.split(",");
                 if (values[0].equals(patientID)) {
                     if (contactNumber != null) values[4] = contactNumber; // Update contact number
-                    if (email != null) values[5] = email; // Update email
+                    if (email != null) values[6] = email; // Update email
                 }
                 records.add(values);
             }
