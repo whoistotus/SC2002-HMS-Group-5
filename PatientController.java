@@ -17,7 +17,7 @@ public class PatientController
 
     public void viewMedicalRecord(String patientID) {
         MedicalRecord record = MedicalRecordsCsvHelper.getMedicalRecordById(patientID);
-        view.viewMedicalRecord(record);
+        view.viewMedicalRecord();
     }
 
     public void updateContactNumber(String newContactNumber) 
@@ -67,7 +67,7 @@ public class PatientController
 
     public void viewAvailableSlots() {
         List<DoctorAvailability> slots = DoctorAvailabilityCsvHelper.loadDoctorAvailability();
-        view.viewAvailableSlots(slots);
+        view.viewAvailableSlots();
     }
     
     
@@ -112,7 +112,7 @@ public class PatientController
         if (appointments.isEmpty()) {
             view.showMessage("No scheduled appointments found.");
         } else {
-            view.viewScheduledAppointments(appointments);
+            view.viewScheduledAppointments();
         }
     }
     

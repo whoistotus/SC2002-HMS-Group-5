@@ -3,96 +3,95 @@ import java.util.Scanner;
 public class PatientApp{
 
     public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
         // Initialize necessary components for testing
-        PatientModel patient = new PatientModel("P1004", "Amy", "1990-01-01", "Female", "O+", "amy@example.com", "12345678", "Password", "Patient");
-        boolean success = PatientListCsvHelper.addPatientToCsv(patient);
+        PatientModel model = new PatientModel("P1004", "Amy", "1990-01-01", "Female", "O+", "amy@example.com", "12345678", "Password", "Patient");
+        PatientView view = new PatientView(model);
+        AppointmentManager appointmentManager = new AppointmentManager();
+        PatientController controller = new PatientController(model, view, appointmentManager);
+        
+        boolean success = PatientListCsvHelper.addPatientToCsv(model);
 
         if (success) {
             System.out.println("New patient added successfully!");
         } else {
             System.out.println("Failed to add the patient to the system.");
         }
-        PatientView view = new PatientView();
-        AppointmentManager appointmentManager = new AppointmentManager();
-        PatientController controller = new PatientController(patient, view, appointmentManager);
 
-        // Simulate the menu for testing
-        Scanner scanner = new Scanner(System.in);
         while (true) {
-            System.out.println("\n--- Test Cases Menu ---");
-            System.out.println("1. View Medical Record");
+            System.out.println("\n--- Patient Role Test Cases ---");
+            System.out.println("1. View Medical Records");
             System.out.println("2. Update Personal Information");
-            System.out.println("3. View Available Appointment Slots");
+            System.out.println("3. View Available Slots");
             System.out.println("4. Schedule an Appointment");
             System.out.println("5. Reschedule an Appointment");
             System.out.println("6. Cancel an Appointment");
             System.out.println("7. View Scheduled Appointments");
-            System.out.println("8. Exit");
-            System.out.print("Enter the test case number: ");
+            System.out.println("8. View Past Appointment Outcome Record");
+            System.out.println("9. Exit");
+            System.out.print("Choose a test case to execute (1-9): ");
+
             int choice = scanner.nextInt();
-            scanner.nextLine(); // Consume newline
+            scanner.nextLine();  // Consume newline
 
             switch (choice) {
-                case 1:
-                    // Test Case 1: View Medical Record
-                    controller.viewMedicalRecord(patient.getHospitalID());
-                    break;
-
-                case 2:
-                    // Test Case 2: Update Personal Information
-                    controller.updatePersonalInformation();
-                    break;
-
-                case 3:
-                    // Test Case 3: View Available Appointment Slots
-                    //System.out.print("Enter Doctor ID: ");
-                    //String doctorId = scanner.nextLine();
-                    //System.out.print("Enter Date (YYYY-MM-DD): ");
-                    //String date = scanner.nextLine();
-                    controller.viewAvailableSlots();
-                    break;
-
-                case 4:
-                    // Test Case 4: Schedule an Appointment
-                    System.out.print("Enter Doctor ID: ");
-                    String docId = scanner.nextLine();
-                    System.out.print("Enter Date (YYYY-MM-DD): ");
-                    String appDate = scanner.nextLine();
-                    System.out.print("Enter Time (HH:MM): ");
-                    String appTime = scanner.nextLine();
-                    controller.scheduleAppointment(docId, appDate, appTime);
-                    break;
-
-                case 5:
-                    // Test Case 5: Reschedule an Appointment
-                    System.out.print("Enter Appointment ID to reschedule: ");
-                    String appointmentId = scanner.nextLine();
-                    System.out.print("Enter new Date (YYYY-MM-DD): ");
-                    String newDate = scanner.nextLine();
-                    System.out.print("Enter new Time (HH:MM): ");
-                    String newTime = scanner.nextLine();
-                    controller.rescheduleAppointment(appointmentId, newDate, newTime);
-                    break;
-
-                case 6:
-                    // Test Case 6: Cancel an Appointment
-                    System.out.print("Enter Appointment ID to cancel: ");
-                    String cancelAppId = scanner.nextLine();
-                    controller.cancelAppointment(cancelAppId);
-                    break;
-
-                case 7:
-                    // Test Case 7: View Scheduled Appointments
-                    controller.viewScheduledAppointments();
-                    break;
-
-                case 8:
-                    System.out.println("Exiting test cases...");
+                case 1 -> testViewMedicalRecords(view);
+                case 2 -> testUpdatePersonalInformation(controller);
+                case 3 -> testViewAvailableSlots(view);
+                case 4 -> testScheduleAppointment(view);
+                case 5 -> testRescheduleAppointment(view);
+                case 6 -> testCancelAppointment(view);
+                case 7 -> testViewScheduledAppointments(view);
+                //case 8 -> testViewPastAppointmentOutcomeRecord(view);
+                case 9 -> {
+                    System.out.println("Exiting...");
+                    scanner.close();
                     return;
-
-                default:
-                    System.out.println("Invalid choice. Please try again.");
+                }
+                default -> System.out.println("Invalid choice. Please try again.");
             }
         }
     }
+
+    private static void testViewMedicalRecords(PatientView view) {
+        System.out.println("\n--- Test Case 1: View Medical Records ---");
+        view.viewMedicalRecord();
+    }
+
+    private static void testUpdatePersonalInformation(PatientController controller) {
+        System.out.println("\n--- Test Case 2: Update Personal Information ---");
+        controller.updatePersonalInformation();
+    }
+
+    private static void testViewAvailableSlots(PatientView view) {
+        System.out.println("\n--- Test 3: View Available Slots ---");
+        view.viewAvailableSlots();
+    }
+
+    private static void testScheduleAppointment(PatientView view)
+    {
+        System.out.println("\n--- Test 4: Schedule Appointment ---");
+        view.scheduleAppointment();
+    }
+
+    private static void testRescheduleAppointment(PatientView view)
+    {
+        System.out.println("\n--- Test 5: Reschedule Appointment ---");
+        view.rescheduleAppointment();
+    }
+
+    private static void testCancelAppointment(PatientView view)
+    {
+        System.out.println("\n--- Test 6: Cancel Appointment ---");
+        view.cancelAppointment();
+    }
+
+    private static void testViewScheduledAppointments(PatientView view)
+    {
+        System.out.println("\n--- Test 7: View Scheduled Appointments ---");
+        view.viewScheduledAppointments();
+    }
+
+
 }
