@@ -57,14 +57,14 @@ public class AppointmentOutcomeRecordsCsvHelper {
     }
 
     public static void writeToCsv(String record) {
-        String filePath = "AppointmentOutcomeRecords.csv"; // Adjust the file path as needed
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
-            writer.write(record);
-            writer.newLine();
-        } catch (IOException e) {
-            System.out.println("Error writing to the CSV file: " + e.getMessage());
-        }
+    try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_PATH, true))) { // Append mode
+        bw.write(record); // Write the record
+        bw.newLine(); // Add a newline for the next record
+        System.out.println("DEBUG: Successfully added to CSV -> " + record); // Debug output
+    } catch (IOException e) {
+        System.out.println("ERROR: Failed to write to CSV -> " + e.getMessage()); // Handle file I/O errors
     }
+}
     
 
 

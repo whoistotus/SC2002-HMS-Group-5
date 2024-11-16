@@ -303,62 +303,53 @@ public class DoctorView {
         appointmentToRecord.setStatus(Appointment.AppointmentStatus.COMPLETED);
         System.out.println("Appointment status updated to COMPLETED.");
     
-        String patientIDToRecord = appointmentToRecord.getPatient().getHospitalID();
-        MedicalRecord appointmentRecord = MedicalRecordsCsvHelper.getMedicalRecordById(patientIDToRecord);
-    
-        if (appointmentRecord == null) {
-            System.out.println("Error: No medical record found for patient ID: " + patientIDToRecord);
-            return;
-        }
-    
-        System.out.print("Enter service type (CONSULTATION, XRAY, BLOOD_TEST): ");
-        String serviceTypeInput = scanner.nextLine().trim().toUpperCase();
-    
         try {
+            System.out.print("Enter service type (CONSULTATION, XRAY, BLOOD_TEST): ");
+            String serviceTypeInput = scanner.nextLine().trim().toUpperCase();
             AppointmentOutcomeRecord.ServiceType serviceType = AppointmentOutcomeRecord.ServiceType.valueOf(serviceTypeInput);
+    
             System.out.print("Enter consultation notes: ");
             String notes = scanner.nextLine();
     
             HashMap<String, Integer> medications = new HashMap<>();
-    
             while (true) {
                 System.out.print("Enter medication name (or 'done' to finish): ");
                 String medName = scanner.nextLine();
-    
                 if (medName.equalsIgnoreCase("done")) {
                     break;
                 }
-    
                 System.out.print("Enter quantity for " + medName + ": ");
                 int quantity = Integer.parseInt(scanner.nextLine());
                 medications.put(medName, quantity);
             }
     
-            // Create a CSV record string
+            // Create the record string for CSV
             StringBuilder csvRecord = new StringBuilder();
-            csvRecord.append(patientIDToRecord).append(",");
+            csvRecord.append(appointmentToRecord.getPatient().getHospitalID()).append(",");
             csvRecord.append(appointmentToRecord.getDoctor().getHospitalID()).append(",");
             csvRecord.append(appointmentIDToRecord).append(",");
             csvRecord.append(appointmentToRecord.getAppointmentDate()).append(",");
             csvRecord.append(notes).append(",");
             csvRecord.append(serviceType).append(",");
     
-            // Append medications in the format "medication1:quantity1|medication2:quantity2"
+            // Append medications in "medication1:quantity1|medication2:quantity2" format
             if (!medications.isEmpty()) {
                 medications.forEach((med, qty) -> csvRecord.append(med).append(":").append(qty).append("|"));
-                csvRecord.deleteCharAt(csvRecord.length() - 1); // Remove the last "|"
+                csvRecord.deleteCharAt(csvRecord.length() - 1); // Remove last "|"
             } else {
                 csvRecord.append("N/A");
             }
     
             csvRecord.append(",Pending"); // Append statusOfPrescription as Pending
     
-            // Write the record to the CSV file
-            AppointmentOutcomeRecordsCsvHelper.writeToCsv(csvRecord.toString());
+            // Debug statement to verify record content
+            System.out.println("DEBUG: Constructed record -> " + csvRecord);
     
-            System.out.println("Appointment outcome recorded successfully in the CSV with status 'Pending'.");
+            // Write to CSV
+            AppointmentOutcomeRecordsCsvHelper.writeToCsv(csvRecord.toString()); // Append the record
+            System.out.println("DEBUG: Record added to AppointmentOutcomeRecords.csv.");
     
-            // Update appointment status in the appointment CSV
+            // Update appointment status in Appointments CSV
             AppointmentsCsvHelper.updateAppointmentStatus(appointmentIDToRecord, Appointment.AppointmentStatus.COMPLETED);
     
         } catch (IllegalArgumentException e) {
@@ -367,6 +358,7 @@ public class DoctorView {
             System.out.println("An error occurred while recording the appointment outcome: " + e.getMessage());
         }
     }
+    
     
 
     public void viewDoctorAvailability() {
