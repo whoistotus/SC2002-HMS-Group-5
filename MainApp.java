@@ -1,7 +1,10 @@
-import java.util.Scanner;
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
 public class MainApp {
     private static LoginManager loginManager;
@@ -118,6 +121,34 @@ public class MainApp {
                 adminView.showMenu();
                 break;
 
+            case "pharmacist":
+                InventoryController pharmInventoryController = new InventoryController();
+                PharmacistView pharmacistView = new PharmacistView(currentUser.getHospitalID());
+                List<Medication> medications = new ArrayList<>();
+                List<AppointmentOutcomeRecord> records = AppointmentOutcomeRecordsCsvHelper.loadAppointmentOutcomes();
+
+                // Load medications from CSV
+                try {
+                    MedicationCSVReader medicationCSVReader = new MedicationCSVReader();
+                    medications = medicationCSVReader.getAllMedications();
+                } catch (FileNotFoundException e) {
+                    System.out.println("Error: Medication file not found.");
+                    e.printStackTrace();
+                }
+                
+                pharmacistView.start(records, medications, pharmInventoryController); // Launch the pharmacist menu
+                break;
+
+            case "patient":
+                PatientModel patientModel = constructPatientModel(currentUser.getHospitalID(), password);
+                if (patientModel != null) {
+                    PatientView patientView = new PatientView(patientModel);
+                    patientView.PatientMenu();
+                } else {
+                    System.out.println("Error: Could not find patient details in the system.");
+                }
+                break;
+
             default:
                 System.out.println("Role not supported yet. Please contact the administrator.");
         }
@@ -142,6 +173,33 @@ public class MainApp {
             }
         } catch (IOException e) {
             System.out.println("Error reading staff list: " + e.getMessage());
+        }
+        return null; // Return null if no match is found
+    }
+
+    private static PatientModel constructPatientModel(String hospitalId, String password) {
+        try (BufferedReader br = new BufferedReader(new FileReader("data/PatientList.csv"))) {
+            String line;
+            boolean firstLine = true;
+            while ((line = br.readLine()) != null) {
+                if (firstLine) {
+                    firstLine = false;
+                    continue;
+                }
+
+                String[] values = line.split(",");
+                if (values[0].trim().equals(hospitalId)) {
+                    String name = values[1].trim();
+                    String dob = values[2].trim();
+                    String gender = values[3].trim();
+                    String bloodType = values[4].trim();
+                    String email = values[5].trim();
+                    String contactNumber = values[6].trim();
+                    return new PatientModel(hospitalId, name, dob, gender, bloodType, email, contactNumber, password, "Patient");
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error reading patient list: " + e.getMessage());
         }
         return null; // Return null if no match is found
     }

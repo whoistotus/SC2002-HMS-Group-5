@@ -12,8 +12,8 @@ public class PharmacistController extends User {
     private static int requestCounter = 1;  // Counter to track the ID generation
     private String hospitalID;
 
-    public PharmacistController(String hospitalID, String password, String userRole) {
-        super(hospitalID, password, userRole); 
+    public PharmacistController(String hospitalID) {
+        super(hospitalID); 
         System.out.println("Hello " + hospitalID);
     }
 

@@ -62,6 +62,10 @@ public class User
     //     }
     // }
 
+    public User(String hospitalID2) {
+        //TODO Auto-generated constructor stub
+    }
+
     public String getHospitalID()
     {
         return hospitalID;

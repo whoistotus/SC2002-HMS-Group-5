@@ -9,46 +9,46 @@ public class PharmacistView {
     private PharmacistController pharmacistController;
     private Scanner scanner;
 
-    public PharmacistView(String hospitalID, String password, String userRole) {
-        this.pharmacistController = new PharmacistController(hospitalID, password, userRole);
+    public PharmacistView(String hospitalID) {
+        this.pharmacistController = new PharmacistController(hospitalID);
         this.scanner = new Scanner(System.in);
     }
 
-    public static void main(String[] args) {
-        Scanner inputScanner = new Scanner(System.in);
+    // public static void main(String[] args) {
+    //     Scanner inputScanner = new Scanner(System.in);
 
-        // Initialize necessary variables
-        List<Medication> medications = new ArrayList<>();
-        InventoryController inventoryController = new InventoryController();
-        List<AppointmentOutcomeRecord> records = AppointmentOutcomeRecordsCsvHelper.loadAppointmentOutcomes();
+    //     // Initialize necessary variables
+    //     List<Medication> medications = new ArrayList<>();
+    //     InventoryController inventoryController = new InventoryController();
+    //     List<AppointmentOutcomeRecord> records = AppointmentOutcomeRecordsCsvHelper.loadAppointmentOutcomes();
 
-        // Load medications from CSV
-        try {
-            MedicationCSVReader medicationCSVReader = new MedicationCSVReader();
-            medications = medicationCSVReader.getAllMedications();
-        } catch (FileNotFoundException e) {
-            System.out.println("Error: Medication file not found.");
-            e.printStackTrace();
-        }
+    //     // Load medications from CSV
+    //     try {
+    //         MedicationCSVReader medicationCSVReader = new MedicationCSVReader();
+    //         medications = medicationCSVReader.getAllMedications();
+    //     } catch (FileNotFoundException e) {
+    //         System.out.println("Error: Medication file not found.");
+    //         e.printStackTrace();
+    //     }
 
-        // Authentication inputs
-        System.out.print("Enter Hospital ID: ");
-        String hospitalID = inputScanner.nextLine();
+    //     // Authentication inputs
+    //     System.out.print("Enter Hospital ID: ");
+    //     String hospitalID = inputScanner.nextLine();
 
-        System.out.print("Enter Password: ");
-        String password = inputScanner.nextLine();
+    //     System.out.print("Enter Password: ");
+    //     String password = inputScanner.nextLine();
 
-        System.out.print("Enter User Role: ");
-        String userRole = inputScanner.nextLine();
+    //     System.out.print("Enter User Role: ");
+    //     String userRole = inputScanner.nextLine();
 
-        // Initialize the Pharmacist App
-        PharmacistView app = new PharmacistView(hospitalID, password, userRole);
+    //     // Initialize the Pharmacist App
+    //     PharmacistView app = new PharmacistView(hospitalID);
 
-        // Start the application
-        app.start(records, medications, inventoryController);
+    //     // Start the application
+    //     app.start(records, medications, inventoryController);
 
-        inputScanner.close();
-    }
+    //     inputScanner.close();
+    // }
 
     public void pharmacistMenu() {
         System.out.println("\nPharmacist Menu:");
