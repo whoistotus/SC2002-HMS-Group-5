@@ -1,1 +1,2 @@
 AppointmentID,PatientID,DoctorID,Date,Time,Status
+AP001,P1001,D002,2023-01-11,10:00,PENDING
