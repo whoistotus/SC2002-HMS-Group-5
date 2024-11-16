@@ -387,26 +387,26 @@ public class AdminView {
     
         while (continueAdding) {
             try {
-                // Hospital ID input
-                String hospitalID;
+                // Staff Role input first since we need it for ID generation
+                String staffRole;
                 while (true) {
                     System.out.println("\nEnter 1 to exit or");
-                    System.out.println("Please enter the Hospital ID: ");
-                    hospitalID = sc.nextLine().trim();
+                    System.out.println("Please enter the Staff Role (Doctor/Pharmacist): ");
+                    staffRole = sc.nextLine().trim().toLowerCase();
                     
-                    if (hospitalID.equals("1")) {
+                    if (staffRole.equals("1")) {
                         return;
                     }
-                    if (hospitalID.isEmpty()) {
-                        System.out.println("Hospital ID cannot be empty. Please try again.");
-                        continue;
-                    }
-                    if (existingHospitalID(hospitalID)) {
-                        System.out.println("Hospital ID already exists. Please try again.");
+                    if (!staffRole.equals("doctor") && !staffRole.equals("pharmacist")) {
+                        System.out.println("Invalid role. Please enter either 'Doctor' or 'Pharmacist'.");
                         continue;
                     }
                     break;
                 }
+    
+                // Generate Hospital ID based on role
+                String hospitalID = generateNextHospitalID(staffRole);
+                System.out.println("Generated Hospital ID: " + hospitalID);
     
                 // Staff Name input
                 String staffName;
@@ -420,23 +420,6 @@ public class AdminView {
                     }
                     if (staffName.isEmpty()) {
                         System.out.println("Staff Name cannot be empty. Please try again.");
-                        continue;
-                    }
-                    break;
-                }
-    
-                // Staff Role input
-                String staffRole;
-                while (true) {
-                    System.out.println("\nEnter 1 to exit or");
-                    System.out.println("Please enter the Staff Role (Doctor/Pharmacist): ");
-                    staffRole = sc.nextLine().trim().toLowerCase();
-                    
-                    if (staffRole.equals("1")) {
-                        return;
-                    }
-                    if (!staffRole.equals("doctor") && !staffRole.equals("pharmacist")) {
-                        System.out.println("Invalid role. Please enter either 'Doctor' or 'Pharmacist'.");
                         continue;
                     }
                     break;
@@ -504,6 +487,30 @@ public class AdminView {
                 System.out.println("Please try again.");
             }
         }
+    }
+    
+    private String generateNextHospitalID(String role) throws Exception {
+        List<HospitalStaff> staffList = admincsvReader.getAllStaff();
+        String prefix = role.equalsIgnoreCase("doctor") ? "D" : "P";
+        int maxNumber = 0;
+    
+        // Find the highest number for the given role
+        for (HospitalStaff staff : staffList) {
+            String staffId = staff.getHospitalID();
+            if (staffId.startsWith(prefix)) {
+                try {
+                    int number = Integer.parseInt(staffId.substring(1));
+                    maxNumber = Math.max(maxNumber, number);
+                } catch (NumberFormatException e) {
+                    // Skip invalid format IDs
+                    continue;
+                }
+            }
+        }
+    
+        // Generate next number and format it with leading zeros
+        int nextNumber = maxNumber + 1;
+        return String.format("%s%03d", prefix, nextNumber);
     }
 
     private void removeStaff() {
