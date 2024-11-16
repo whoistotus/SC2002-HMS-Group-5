@@ -113,10 +113,10 @@ public class MainApp {
                 break;
 
             case "administrator":
-            InventoryController inventoryController = new InventoryController();
-            adminView = new AdminView(inventoryController);
-            adminView.showMenu();
-            break;
+                InventoryController inventoryController = new InventoryController();
+                adminView = new AdminView(inventoryController);
+                adminView.showMenu();
+                break;
 
             default:
                 System.out.println("Role not supported yet. Please contact the administrator.");

@@ -37,56 +37,54 @@ public class AdminView {
     }
 
 
-    public void showMenu()
-    {
-        System.out.println("======================");
-        System.out.println("Administrator Menu: ");
-        System.out.println("1 - Show Medication Inventory");
-        System.out.println("2 - Manage Medication");
-        System.out.println("3 - Show Hospital Staff");
-        System.out.println("4 - Manage Staff");
-        System.out.println("5 - Manage Replenishment Requests");
-        System.out.println("6 - Appointment Details");
-        System.out.println("7 - Logout");
-        System.out.println("======================");
-        System.out.println("Please enter your choice: ");
-        int choice = sc.nextInt();
-        sc.nextLine();
-        
-        switch (choice)
-        {
-            case 1:
-                showInventory(); //csv file
-                break;
+    public void showMenu() {
+        while (true) {  
+            System.out.println("======================");
+            System.out.println("Administrator Menu: ");
+            System.out.println("1 - Show Medication Inventory");
+            System.out.println("2 - Manage Medication");
+            System.out.println("3 - Show Hospital Staff");
+            System.out.println("4 - Manage Staff");
+            System.out.println("5 - Manage Replenishment Requests");
+            System.out.println("6 - Appointment Details");
+            System.out.println("7 - Logout");
+            System.out.println("======================");
+            System.out.println("Please enter your choice: ");
+            int choice = sc.nextInt();
+            sc.nextLine();
             
-            case 2:
-                manageMedicationInventory(); //csv
-                break;
-            
-            case 3:
-                filterAndDisplayStaff(); //csv
-                break;
-
-            case 4:
-                manageStaffList(); //csv
-                break;
-
-            case 5:
-                ManageReplenishmentReq();
-                break;
-
-            case 6:
-                showAppointmentDetails();
-                break;
-            
-            case 7: 
-                System.out.println("Logging out....");
-                break;
-
-
-            default:
-                System.out.println("Please input a valid choice");
-                    
+            switch (choice) {
+                case 1:
+                    showInventory(); //csv file
+                    break;
+                
+                case 2:
+                    manageMedicationInventory(); //csv
+                    break;
+                
+                case 3:
+                    filterAndDisplayStaff(); //csv
+                    break;
+    
+                case 4:
+                    manageStaffList(); //csv
+                    break;
+    
+                case 5:
+                    ManageReplenishmentReq();
+                    break;
+    
+                case 6:
+                    showAppointmentDetails();
+                    break;
+                
+                case 7: 
+                    System.out.println("Logging out....");
+                    return;  
+    
+                default:
+                    System.out.println("Please input a valid choice");
+            }
         }
     }
 
