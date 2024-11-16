@@ -56,6 +56,17 @@ public class AppointmentOutcomeRecordsCsvHelper {
         }
     }
 
+    public static void writeToCsv(String record) {
+        String filePath = "AppointmentOutcomeRecords.csv"; // Adjust the file path as needed
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
+            writer.write(record);
+            writer.newLine();
+        } catch (IOException e) {
+            System.out.println("Error writing to the CSV file: " + e.getMessage());
+        }
+    }
+    
+
 
     // Update a specific appointment outcome record in the CSV file
     public static void updateAppointmentOutcomeRecord(AppointmentOutcomeRecord updatedRecord) {

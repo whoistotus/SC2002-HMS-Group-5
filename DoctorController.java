@@ -15,8 +15,7 @@ public class DoctorController {
 
     public enum AppointmentStatus {
         PENDING,
-        ACCEPTED,
-        DECLINED,
+        CONFIRMED,
         CANCELLED
     }
 
@@ -41,7 +40,7 @@ public class DoctorController {
 
     // Accept appointment
     public void acceptAppointment(Appointment appointment) {
-        appointment.setStatus(Appointment.AppointmentStatus.ACCEPTED);
+        appointment.setStatus(Appointment.AppointmentStatus.CONFIRMED);
         if (!doctorModel.getAppointments().contains(appointment)) {
             doctorModel.getAppointments().add(appointment);
         }
@@ -50,7 +49,7 @@ public class DoctorController {
     }
     
     public void declineAppointment(Appointment appointment) {
-        appointment.setStatus(Appointment.AppointmentStatus.DECLINED);
+        appointment.setStatus(Appointment.AppointmentStatus.CANCELLED);
         // Remove the appointment from the list if it's declined
         doctorModel.getAppointments().removeIf(app -> app.getAppointmentID().equals(appointment.getAppointmentID()));
         AppointmentsCsvHelper.saveAllAppointments(doctorModel.getAppointments());

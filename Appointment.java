@@ -8,8 +8,7 @@ public class Appointment {
 
     public enum AppointmentStatus {
         PENDING,
-        ACCEPTED,
-        DECLINED,
+        CONFIRMED,
         CANCELLED,
         COMPLETED
     }

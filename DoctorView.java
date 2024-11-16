@@ -61,7 +61,7 @@ public class DoctorView {
 
         List<Appointment> acceptedAppointments = appointments.stream()
             .filter(appointment -> appointment.getDoctorID().equals(doctorModel.getHospitalID()) &&
-                                   appointment.getStatus() == Appointment.AppointmentStatus.ACCEPTED)
+                                   appointment.getStatus() == Appointment.AppointmentStatus.CONFIRMED)
             .distinct()
             .collect(Collectors.toList());
 
@@ -105,37 +105,53 @@ public class DoctorView {
     public void updatePatientMedicalRecords() {
         System.out.print("Enter Patient ID to update record: ");
         String patientID = scanner.nextLine();
-
+    
         MedicalRecord record = MedicalRecordsCsvHelper.getMedicalRecordById(patientID);
         if (record != null) {
+            // Get input for updates
             System.out.print("Enter new diagnosis (leave empty if no update): ");
             String diagnosis = scanner.nextLine();
             System.out.print("Enter new treatment plan (leave empty if no update): ");
             String treatment = scanner.nextLine();
             System.out.print("Enter new prescription (leave empty if no update): ");
             String prescription = scanner.nextLine();
-
+    
+            // Handle CurrentDiagnoses -> PastDiagnoses
             if (diagnosis != null && !diagnosis.trim().isEmpty()) {
-                record.getCurrentDiagnoses().removeIf(value -> value.equalsIgnoreCase("None"));
+                if (!record.getCurrentDiagnoses().isEmpty() && !record.getCurrentDiagnoses().get(0).equalsIgnoreCase("None")) {
+                    // Move current diagnoses to past
+                    record.getPastDiagnoses().addAll(record.getCurrentDiagnoses());
+                }
+                // Set the new diagnosis as the only current diagnosis
+                record.getCurrentDiagnoses().clear();
                 record.addNewDiagnosis(diagnosis);
             }
-
+    
+            // Handle CurrentTreatments -> PastTreatments
             if (treatment != null && !treatment.trim().isEmpty()) {
-                record.getCurrentTreatments().removeIf(value -> value.equalsIgnoreCase("None"));
+                if (!record.getCurrentTreatments().isEmpty() && !record.getCurrentTreatments().get(0).equalsIgnoreCase("None")) {
+                    // Move current treatments to past
+                    record.getPastTreatments().addAll(record.getCurrentTreatments());
+                }
+                // Set the new treatment as the only current treatment
+                record.getCurrentTreatments().clear();
                 record.addNewTreatment(treatment);
             }
-
+    
+            // Handle Prescriptions (no need to move to past)
             if (prescription != null && !prescription.trim().isEmpty()) {
                 record.getPrescriptions().removeIf(value -> value.equalsIgnoreCase("None"));
                 record.addNewPrescription(prescription);
             }
-
+    
+            // Save the updated record
             MedicalRecordsCsvHelper.saveMedicalRecord(record);
             System.out.println("Medical record updated successfully.");
         } else {
             System.out.println("No record found for Patient ID: " + patientID);
         }
     }
+    
 
     public void setAvailability() {
         System.out.print("Enter date (YYYY-MM-DD): ");
@@ -182,8 +198,8 @@ public class DoctorView {
             Appointment appointmentToAccept = AppointmentsCsvHelper.getAppointmentById(appointmentIDToAccept);
 
             if (appointmentToAccept != null && appointmentToAccept.getStatus() == Appointment.AppointmentStatus.PENDING) {
-                appointmentToAccept.setStatus(Appointment.AppointmentStatus.ACCEPTED);
-                AppointmentsCsvHelper.updateAppointmentStatus(appointmentIDToAccept, Appointment.AppointmentStatus.ACCEPTED);
+                appointmentToAccept.setStatus(Appointment.AppointmentStatus.CONFIRMED);
+                AppointmentsCsvHelper.updateAppointmentStatus(appointmentIDToAccept, Appointment.AppointmentStatus.CONFIRMED);
                 doctorModel.addAppointment(appointmentToAccept);
 
                 blockTimeInAvailability(appointmentToAccept);
@@ -260,8 +276,8 @@ public class DoctorView {
             Appointment appointmentToDecline = AppointmentsCsvHelper.getAppointmentById(appointmentIDToDecline);
 
             if (appointmentToDecline != null && appointmentToDecline.getStatus() == Appointment.AppointmentStatus.PENDING) {
-                appointmentToDecline.setStatus(Appointment.AppointmentStatus.DECLINED);
-                AppointmentsCsvHelper.updateAppointmentStatus(appointmentIDToDecline, Appointment.AppointmentStatus.DECLINED);
+                appointmentToDecline.setStatus(Appointment.AppointmentStatus.CANCELLED);
+                AppointmentsCsvHelper.updateAppointmentStatus(appointmentIDToDecline, Appointment.AppointmentStatus.CANCELLED);
                 System.out.println("Appointment declined: " + appointmentToDecline.getAppointmentID());
             } else {
                 System.out.println("Appointment not found or already processed.");
@@ -273,74 +289,85 @@ public class DoctorView {
         System.out.print("Enter Appointment ID: ");
         String appointmentIDToRecord = scanner.nextLine();
         Appointment appointmentToRecord = AppointmentsCsvHelper.getAppointmentById(appointmentIDToRecord);
-
+    
         if (appointmentToRecord == null) {
             System.out.println("Error: Appointment not found. Exiting this case.");
             return;
         }
-
-        if (appointmentToRecord.getStatus() != Appointment.AppointmentStatus.ACCEPTED) {
-            System.out.println("Error: Appointment must be in ACCEPTED status to mark it as COMPLETED.");
+    
+        if (appointmentToRecord.getStatus() != Appointment.AppointmentStatus.CONFIRMED) {
+            System.out.println("Error: Appointment must be in CONFIRMED status to mark it as COMPLETED.");
             return;
         }
-
+    
         appointmentToRecord.setStatus(Appointment.AppointmentStatus.COMPLETED);
         System.out.println("Appointment status updated to COMPLETED.");
-
+    
         String patientIDToRecord = appointmentToRecord.getPatient().getHospitalID();
         MedicalRecord appointmentRecord = MedicalRecordsCsvHelper.getMedicalRecordById(patientIDToRecord);
-
+    
         if (appointmentRecord == null) {
             System.out.println("Error: No medical record found for patient ID: " + patientIDToRecord);
             return;
         }
-
+    
         System.out.print("Enter service type (CONSULTATION, XRAY, BLOOD_TEST): ");
         String serviceTypeInput = scanner.nextLine().trim().toUpperCase();
-
+    
         try {
             AppointmentOutcomeRecord.ServiceType serviceType = AppointmentOutcomeRecord.ServiceType.valueOf(serviceTypeInput);
             System.out.print("Enter consultation notes: ");
             String notes = scanner.nextLine();
-
+    
             HashMap<String, Integer> medications = new HashMap<>();
-
+    
             while (true) {
                 System.out.print("Enter medication name (or 'done' to finish): ");
                 String medName = scanner.nextLine();
-
+    
                 if (medName.equalsIgnoreCase("done")) {
                     break;
                 }
-
+    
                 System.out.print("Enter quantity for " + medName + ": ");
                 int quantity = Integer.parseInt(scanner.nextLine());
                 medications.put(medName, quantity);
             }
-
-            AppointmentOutcomeRecord outcomeRecord = new AppointmentOutcomeRecord(
-                patientIDToRecord,
-                appointmentToRecord.getDoctor().getHospitalID(),
-                appointmentIDToRecord,
-                appointmentToRecord.getAppointmentDate(),
-                notes,
-                serviceType
-            );
-
-            outcomeRecord.setMedications(medications);
-            outcomeRecord.setStatusOfPrescription(AppointmentOutcomeRecord.StatusOfPrescription.PENDING);
-
-            AppointmentOutcomeRecordsCsvHelper.saveAppointmentOutcome(outcomeRecord);
-            System.out.println("Appointment outcome recorded successfully with status 'Pending'.");
-
+    
+            // Create a CSV record string
+            StringBuilder csvRecord = new StringBuilder();
+            csvRecord.append(patientIDToRecord).append(",");
+            csvRecord.append(appointmentToRecord.getDoctor().getHospitalID()).append(",");
+            csvRecord.append(appointmentIDToRecord).append(",");
+            csvRecord.append(appointmentToRecord.getAppointmentDate()).append(",");
+            csvRecord.append(notes).append(",");
+            csvRecord.append(serviceType).append(",");
+    
+            // Append medications in the format "medication1:quantity1|medication2:quantity2"
+            if (!medications.isEmpty()) {
+                medications.forEach((med, qty) -> csvRecord.append(med).append(":").append(qty).append("|"));
+                csvRecord.deleteCharAt(csvRecord.length() - 1); // Remove the last "|"
+            } else {
+                csvRecord.append("N/A");
+            }
+    
+            csvRecord.append(",Pending"); // Append statusOfPrescription as Pending
+    
+            // Write the record to the CSV file
+            AppointmentOutcomeRecordsCsvHelper.writeToCsv(csvRecord.toString());
+    
+            System.out.println("Appointment outcome recorded successfully in the CSV with status 'Pending'.");
+    
+            // Update appointment status in the appointment CSV
             AppointmentsCsvHelper.updateAppointmentStatus(appointmentIDToRecord, Appointment.AppointmentStatus.COMPLETED);
-
+    
         } catch (IllegalArgumentException e) {
             System.out.println("Error: Invalid service type entered.");
         } catch (Exception e) {
             System.out.println("An error occurred while recording the appointment outcome: " + e.getMessage());
         }
     }
+    
 
     public void viewDoctorAvailability() {
         System.out.println("\n=== View Doctor Availability ===");
@@ -350,7 +377,7 @@ public class DoctorView {
         List<Appointment> appointments = AppointmentsCsvHelper.loadAppointments()
                 .stream()
                 .filter(appointment -> appointment.getDoctorID().equals(doctorModel.getHospitalID()) &&
-                                       appointment.getStatus() == Appointment.AppointmentStatus.ACCEPTED)
+                                       appointment.getStatus() == Appointment.AppointmentStatus.CONFIRMED)
                 .distinct()
                 .collect(Collectors.toList());
 
