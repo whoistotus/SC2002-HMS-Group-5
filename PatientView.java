@@ -20,7 +20,7 @@ public class PatientView
     public void PatientMenu()
     {
         while (true) {
-            System.out.println("\n--- Patient Role Test Cases ---");
+            System.out.println("Patient Menu for " + model.getName());
             System.out.println("1. View Medical Records");
             System.out.println("2. Update Personal Information");
             System.out.println("3. View Available Slots");
@@ -30,7 +30,7 @@ public class PatientView
             System.out.println("7. View Scheduled Appointments");
             System.out.println("8. View Past Appointment Outcome Record");
             System.out.println("9. Exit");
-            System.out.print("Choose a test case to execute (1-9): ");
+            System.out.print("Choose an option: ");
 
             int choice = scanner.nextInt();
             scanner.nextLine(); // Consume newline
@@ -46,7 +46,6 @@ public class PatientView
                 case 8 -> viewPastAppointmentOutcomeRecord();
                 case 9 -> {
                     System.out.println("Exiting...");
-                    scanner.close();
                     return;
                 }
                 default -> System.out.println("Invalid choice. Please try again.");
