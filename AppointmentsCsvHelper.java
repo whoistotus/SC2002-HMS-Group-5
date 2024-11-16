@@ -29,10 +29,9 @@ public class AppointmentsCsvHelper {
     private static Appointment parseAppointment(String line) {
         String[] values = line.split(",");
         if (values.length < 6) {
-            System.out.println("Debug: Malformed line: " + line);
             return null;
         }
-    
+
         try {
             String appointmentID = values[0].trim();
             String patientID = values[1].trim();
@@ -40,22 +39,19 @@ public class AppointmentsCsvHelper {
             String date = values[3].trim();
             String time = values[4].trim();
             Appointment.AppointmentStatus status = Appointment.AppointmentStatus.valueOf(values[5].trim().toUpperCase());
-    
+
             PatientModel patient = PatientListCsvHelper.getPatientById(patientID);
             if (patient == null) {
-                System.out.println("Debug: Patient with ID " + patientID + " not found for appointment " + appointmentID);
                 return null;
             }
-    
+
             DoctorModel doctor = DoctorAvailabilityCsvHelper.getDoctorById(doctorID);
             if (doctor == null) {
-                System.out.println("Debug: Doctor with ID " + doctorID + " not found for appointment " + appointmentID);
                 return null;
             }
-    
+
             return new Appointment(appointmentID, patient, doctor, date, time, status);
         } catch (Exception e) {
-            System.out.println("Debug: Error parsing appointment: " + line);
             return null;
         }
     }

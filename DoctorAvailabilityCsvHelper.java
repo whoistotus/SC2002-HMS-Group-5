@@ -138,14 +138,12 @@ public class DoctorAvailabilityCsvHelper {
             while ((line = br.readLine()) != null) {
                 String[] values = line.split(",");
                 if (values[0].trim().equals(doctorID) && values[2].trim().equalsIgnoreCase("Doctor")) {
-                    System.out.println("Debug: Found doctor with ID " + doctorID);
                     return new DoctorModel(values[0].trim(), values[5].trim(), values[2].trim(), values[1].trim(), "");
                 }
             }
         } catch (IOException e) {
             System.out.println("Error reading StaffList.csv: " + e.getMessage());
         }
-        System.out.println("Debug: Doctor with ID " + doctorID + " not found.");
         return null;
     }
     

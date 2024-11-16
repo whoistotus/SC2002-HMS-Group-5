@@ -42,37 +42,50 @@ public class LoginManager {
     }
 
     private void loadUsers(String staffFilePath, String patientFilePath) throws IOException {
+        // Load staff credentials
         try (BufferedReader br = new BufferedReader(new FileReader(staffFilePath))) {
             String line;
             boolean firstLine = true;
             while ((line = br.readLine()) != null) {
                 if (firstLine) {
                     firstLine = false;
+                    continue; // Skip header
+                }
+    
+                String[] values = line.split(",");
+                if (values.length < 6) { // Adjust this based on your columns
                     continue;
                 }
-                String[] values = line.split(",");
+    
                 String hospitalId = values[0].trim();
                 String role = values[2].trim().toUpperCase();
                 User user = new User(hospitalId, hashPassword(DEFAULT_PASSWORD), role);
                 credentialsMap.put(hospitalId, user);
             }
         }
-
+    
+        // Load patient credentials
         try (BufferedReader br = new BufferedReader(new FileReader(patientFilePath))) {
             String line;
             boolean firstLine = true;
             while ((line = br.readLine()) != null) {
                 if (firstLine) {
                     firstLine = false;
+                    continue; // Skip header
+                }
+    
+                String[] values = line.split(",");
+                if (values.length < 8) { // Adjust this based on your columns
                     continue;
                 }
-                String[] values = line.split(",");
+    
                 String hospitalId = values[0].trim();
                 User user = new User(hospitalId, hashPassword(DEFAULT_PASSWORD), "PATIENT");
                 credentialsMap.put(hospitalId, user);
             }
         }
     }
+    
 
     private void loadPasswords() {
         try (BufferedReader br = new BufferedReader(new FileReader(PASSWORD_FILE))) {

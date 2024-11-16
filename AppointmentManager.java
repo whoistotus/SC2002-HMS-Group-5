@@ -39,7 +39,7 @@ public class AppointmentManager
         // Get available slots for the doctor
         List<String> availableSlots = DoctorAvailabilityCsvHelper.getAvailableSlots(doctor.getHospitalID(), date);
         if (!availableSlots.contains(time)) {
-            System.out.println("Debug: Time slot " + time + " on " + date + " is unavailable for doctor " + doctor.getHospitalID());
+            System.out.println("Time slot " + time + " on " + date + " is unavailable for doctor " + doctor.getHospitalID());
             return false; // Slot unavailable
         }
     
@@ -48,7 +48,7 @@ public class AppointmentManager
             if (appointment.getDoctor().getHospitalID().equals(doctor.getHospitalID()) &&
                 appointment.getAppointmentDate().equals(date) &&
                 appointment.getAppointmentTime().equals(time)) {
-                System.out.println("Debug: Appointment conflict for " + time + " on " + date);
+                System.out.println("Appointment conflict for " + time + " on " + date);
                 return false; // Conflict with an existing appointment
             }
         }
@@ -64,7 +64,7 @@ public class AppointmentManager
         DoctorAvailabilityCsvHelper.updateDoctorAvailability(doctor.getHospitalID(), date, time);
         AppointmentsCsvHelper.addAppointment(newAppointment);
     
-        System.out.println("Debug: Appointment scheduled successfully.");
+        System.out.println("Appointment scheduled successfully.");
         return true;
     }
     
@@ -96,7 +96,7 @@ public class AppointmentManager
         DoctorAvailabilityCsvHelper.updateDoctorAvailability(doctorID, newDate, newTime);
         AppointmentsCsvHelper.updateAppointment(appointment);
     
-        System.out.println("Debug: Appointment rescheduled successfully.");
+        System.out.println("Appointment rescheduled successfully.");
         return true;
     }
     

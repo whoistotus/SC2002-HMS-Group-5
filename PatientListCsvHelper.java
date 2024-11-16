@@ -55,7 +55,6 @@ public class PatientListCsvHelper {
             while ((line = br.readLine()) != null) {
                 String[] values = line.split(",");
                 if (values[0].trim().equals(patientID)) {
-                    System.out.println("Debug: Found patient with ID " + patientID);
                     return new PatientModel(
                             values[0].trim(), values[1].trim(), values[2].trim(),
                             values[3].trim(), values[4].trim(), values[5].trim(),
