@@ -1,4 +1,4 @@
 PatientID,Name,DOB,Gender,ContactNumber,BloodType,Email,PastDiagnoses,PastTreatments,CurrentDiagnoses,CurrentTreatments,Prescriptions
-P1001,Alice Brown,14/5/1980,FEMALE,1234567890,test@test.com,alice.brown@example.com,sick;D1;D2,Cold,Bed Rest,Test,Test
+P1001,Alice Brown,14/5/1980,FEMALE,98765432,alice@gmail.com,alice.brown@example.com,sick;D1;D2,Cold,Bed Rest,Test,Test
 P1002,Bob Stone,1975-11-22,MALE,B+,bob.stone@example.com,None,None,None,None;new,None;new,new
-P1003,Charlie White,1990-07-08,MALE,O-,charlie.white@example.com,None,None,None,None,None,
+P1003,Charlie White,1990-07-08,MALE,O-,charlie.white@example.com,None,None,None,None,None
