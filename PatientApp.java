@@ -4,7 +4,7 @@ public class PatientApp{
 
     public static void main(String[] args) {
         // Initialize necessary components for testing
-        PatientModel patient = new PatientModel("P1001", "password", "Patient", "Alice", "1990-01-01", "Female", "1234567890", "alice@example.com", "O+");
+        PatientModel patient = new PatientModel("P1004", "Amy", "1990-01-01", "Female", "O+", "amy@example.com", "12345678", "Password", "Patient");
         boolean success = PatientListCsvHelper.addPatientToCsv(patient);
 
         if (success) {
