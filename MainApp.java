@@ -1,4 +1,6 @@
 import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 
 public class MainApp {
@@ -35,7 +37,7 @@ public class MainApp {
         scanner = new Scanner(System.in);
 
         try {
-            loginManager.loadCredentials("SC2002_Assignment/data/StaffList.csv", "SC2002_Assignment/data/PatientList.csv");
+            loginManager.loadCredentials("data/StaffList.csv", "data/PatientList.csv");
         } catch (IOException e) {
             System.out.println("Error loading credentials: " + e.getMessage());
             System.out.println("Current working directory: " + System.getProperty("user.dir"));
@@ -50,20 +52,19 @@ public class MainApp {
         String password = scanner.nextLine();
 
         if (loginManager.login(hospitalId, password)) {
+            User currentUser = loginManager.getCurrentUser();
             System.out.println("Login successful!");
+            System.out.println("Welcome, " + currentUser.getHospitalID() + "!");
+            System.out.println("Role: " + currentUser.getUserRole());
 
             if (password.equals("password")) {
                 handlePasswordChange();
             }
 
-            // Print current user info
-            User currentUser = loginManager.getCurrentUser();
-            System.out.println("Logged in as: " + currentUser.getHospitalID());
-            System.out.println("Role: " + currentUser.getUserRole());
-
-            showLoggedInMenu();
+            // Show role-specific menu
+            showRoleMenu(currentUser, password); // Pass password for constructing DoctorModel
         } else {
-            System.out.println("Login failed.");
+            System.out.println("Login failed. Invalid Hospital ID or Password.");
         }
     }
 
@@ -73,7 +74,6 @@ public class MainApp {
             System.out.print("Enter new password: ");
             String newPassword = scanner.nextLine();
 
-            // Add password complexity validation
             if (newPassword.length() < 8) {
                 System.out.println("Password must be at least 8 characters long. Please try again.");
                 continue;
@@ -94,6 +94,48 @@ public class MainApp {
                 System.out.println("Failed to change password. Please try again.");
             }
         }
+    }
+
+    private static void showRoleMenu(User currentUser, String password) {
+        String role = currentUser.getUserRole().toLowerCase();
+
+        switch (role) {
+            case "doctor":
+                DoctorModel doctorModel = constructDoctorModel(currentUser.getHospitalID(), password);
+                if (doctorModel != null) {
+                    DoctorView doctorView = new DoctorView(doctorModel);
+                    doctorView.DoctorMenu();
+                } else {
+                    System.out.println("Error: Could not find doctor details in the system.");
+                }
+                break;
+
+            default:
+                System.out.println("Role not supported yet. Please contact the administrator.");
+        }
+    }
+
+    private static DoctorModel constructDoctorModel(String hospitalId, String password) {
+        try (BufferedReader br = new BufferedReader(new FileReader("data/StaffList.csv"))) {
+            String line;
+            boolean firstLine = true;
+            while ((line = br.readLine()) != null) {
+                if (firstLine) {
+                    firstLine = false;
+                    continue;
+                }
+
+                String[] values = line.split(",");
+                if (values[0].trim().equals(hospitalId) && values[2].trim().equalsIgnoreCase("Doctor")) {
+                    String name = values[1].trim();
+                    String specialization = values[3].trim();
+                    return new DoctorModel(hospitalId, password, "Doctor", name, specialization);
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error reading staff list: " + e.getMessage());
+        }
+        return null; // Return null if no match is found
     }
 
     private static void showLoggedInMenu() {
@@ -139,7 +181,6 @@ public class MainApp {
         System.out.print("Enter new password: ");
         String newPassword = scanner.nextLine();
 
-        // Add password complexity validation
         if (newPassword.length() < 8) {
             System.out.println("Password must be at least 8 characters long.");
             return;

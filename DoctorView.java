@@ -90,6 +90,7 @@ public class DoctorView {
     }
     
     
+    
 
     public void viewPatientMedicalRecords() {
         System.out.print("Enter Patient ID to view record: ");

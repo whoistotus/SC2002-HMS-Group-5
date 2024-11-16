@@ -114,14 +114,23 @@ public class DoctorAvailabilityCsvHelper {
     
 
     public static DoctorModel getDoctorById(String doctorID) {
-        List<DoctorModel> doctors = loadDoctors();
-        for (DoctorModel doctor : doctors) {
-            if (doctor.getHospitalID().equals(doctorID)) {
-                return doctor;
+        try (BufferedReader br = new BufferedReader(new FileReader("data/StaffList.csv"))) {
+            String line;
+            br.readLine(); // Skip header
+            while ((line = br.readLine()) != null) {
+                String[] values = line.split(",");
+                if (values[0].trim().equals(doctorID) && values[2].trim().equalsIgnoreCase("Doctor")) {
+                    System.out.println("Debug: Found doctor with ID " + doctorID);
+                    return new DoctorModel(values[0].trim(), values[5].trim(), values[2].trim(), values[1].trim(), "");
+                }
             }
+        } catch (IOException e) {
+            System.out.println("Error reading StaffList.csv: " + e.getMessage());
         }
+        System.out.println("Debug: Doctor with ID " + doctorID + " not found.");
         return null;
     }
+    
 
     public static List<String> getAvailableSlots(String doctorID, String date) {
         List<String> availableSlots = new ArrayList<>();

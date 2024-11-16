@@ -49,14 +49,27 @@ public class PatientListCsvHelper {
 
     // Get a specific patient by patient ID
     public static PatientModel getPatientById(String patientID) {
-        List<PatientModel> patients = loadPatients();
-        for (PatientModel patient : patients) {
-            if (patient.getHospitalID().equals(patientID)) {
-                return patient;
+        try (BufferedReader br = new BufferedReader(new FileReader("data/PatientList.csv"))) {
+            String line;
+            br.readLine(); // Skip header
+            while ((line = br.readLine()) != null) {
+                String[] values = line.split(",");
+                if (values[0].trim().equals(patientID)) {
+                    System.out.println("Debug: Found patient with ID " + patientID);
+                    return new PatientModel(
+                            values[0].trim(), values[1].trim(), values[2].trim(),
+                            values[3].trim(), values[4].trim(), values[5].trim(),
+                            "1234567890", "password", "Patient"
+                    );
+                }
             }
+        } catch (IOException e) {
+            System.out.println("Error reading PatientList.csv: " + e.getMessage());
         }
+        System.out.println("Debug: Patient with ID " + patientID + " not found.");
         return null;
     }
+    
 
 
     public static List<String> getMedicalRecord(String patientId)

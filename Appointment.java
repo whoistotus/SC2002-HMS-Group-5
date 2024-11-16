@@ -24,6 +24,7 @@ public class Appointment {
         this.status = status;
     }
 
+
     // Getters and Setters
     public String getPatientID() {
         return patient.getHospitalID();

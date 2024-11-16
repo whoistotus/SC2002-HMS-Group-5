@@ -7,36 +7,17 @@ public class AppointmentsCsvHelper {
     
 
     // Loads all appointments from the CSV file
+
     public static List<Appointment> loadAppointments() {
         List<Appointment> appointments = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(FILE_PATH))) {
             String line;
-            br.readLine(); // Skip header row
+            br.readLine(); // Skip header
             while ((line = br.readLine()) != null) {
-                String[] values = line.split(",");
-                String appointmentID = values[0];
-                String patientID = values[1];
-                String doctorID = values[2];
-                String date = values[3]; // Keep date as a String
-                String time = values[4];
-
-                // Trim and check if status is valid
-                Appointment.AppointmentStatus status;
-                try {
-                    status = Appointment.AppointmentStatus.valueOf(values[5].trim().toUpperCase());
-                } catch (IllegalArgumentException e) {
-                    System.out.println("Warning: Invalid status '" + values[5] + "' in appointment " + appointmentID);
-                    continue; // Skip this appointment if status is invalid
-                }
-
-                PatientModel patient = PatientListCsvHelper.getPatientById(patientID);
-                DoctorModel doctor = DoctorAvailabilityCsvHelper.getDoctorById(doctorID);
-
-                if (patient != null && doctor != null) {
-                    Appointment appointment = new Appointment(appointmentID, patient, doctor, date, time, status);
+                if (line.trim().isEmpty()) continue; // Skip empty lines
+                Appointment appointment = parseAppointment(line);
+                if (appointment != null) {
                     appointments.add(appointment);
-                } else {
-                    System.out.println("Could not load appointment: Patient or Doctor not found for " + appointmentID);
                 }
             }
         } catch (IOException e) {
@@ -44,6 +25,41 @@ public class AppointmentsCsvHelper {
         }
         return appointments;
     }
+
+    private static Appointment parseAppointment(String line) {
+        String[] values = line.split(",");
+        if (values.length < 6) {
+            System.out.println("Debug: Malformed line: " + line);
+            return null;
+        }
+    
+        try {
+            String appointmentID = values[0].trim();
+            String patientID = values[1].trim();
+            String doctorID = values[2].trim();
+            String date = values[3].trim();
+            String time = values[4].trim();
+            Appointment.AppointmentStatus status = Appointment.AppointmentStatus.valueOf(values[5].trim().toUpperCase());
+    
+            PatientModel patient = PatientListCsvHelper.getPatientById(patientID);
+            if (patient == null) {
+                System.out.println("Debug: Patient with ID " + patientID + " not found for appointment " + appointmentID);
+                return null;
+            }
+    
+            DoctorModel doctor = DoctorAvailabilityCsvHelper.getDoctorById(doctorID);
+            if (doctor == null) {
+                System.out.println("Debug: Doctor with ID " + doctorID + " not found for appointment " + appointmentID);
+                return null;
+            }
+    
+            return new Appointment(appointmentID, patient, doctor, date, time, status);
+        } catch (Exception e) {
+            System.out.println("Debug: Error parsing appointment: " + line);
+            return null;
+        }
+    }
+    
 
     // Retrieves an appointment by its ID
     public static Appointment getAppointmentById(String appointmentID) {
