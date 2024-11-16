@@ -1,5 +1,3 @@
-
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -29,64 +27,83 @@ public class AdminCSVReader {
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line;
             boolean firstLine = true;
+            int lineNumber = 0;
             
             while ((line = br.readLine()) != null) {
+                lineNumber++;
+                
+                // Skip header
                 if (firstLine) {
                     firstLine = false;
-                    continue; // Skip header line
+                    continue;
+                }
+                
+                // Skip empty or whitespace-only lines
+                if (line.trim().isEmpty()) {
+                    System.out.println("Skipping empty line at line " + lineNumber);
+                    continue;
                 }
                 
                 try {
                     processStaffLine(line);
                 } catch (Exception e) {
-                    System.out.println("Error processing line: " + line);
+                    System.out.println("Error at line " + lineNumber + ": " + line);
                     System.out.println("Error message: " + e.getMessage());
                 }
             }
             
         } catch (IOException e) {
             System.out.println("Error reading staff data file: " + e.getMessage());
+            staffList = new ArrayList<>(); // Initialize empty list on error
         }
     }
 
     private void processStaffLine(String line) {
-        String[] values = line.split(",");
+        // Handle empty or null lines
+        if (line == null || line.trim().isEmpty()) {
+            throw new IllegalArgumentException("Empty or null line");
+        }
+
+        // Split with proper CSV handling
+        String[] values = line.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)");
+        
+        // Correct the error message to match actual expected values
         if (values.length != 6) {
-            throw new IllegalArgumentException("Invalid line format. Expected 5 values, got " + values.length);
+            throw new IllegalArgumentException("Invalid line format. Expected 6 values, got " + values.length);
         }
 
-        String staffId = values[0].trim();
-        String name = values[1].trim();
-        String role = values[2].trim();
-        String gender = values[3].trim();
-        int age;
-
-        // Validate staff ID format
-        if (!isValidStaffId(staffId, role)) {
-            throw new IllegalArgumentException("Invalid staff ID format: " + staffId);
-        }
-
-        // Validate role
-        if (!isValidRole(role)) {
-            throw new IllegalArgumentException("Invalid role: " + role);
-        }
-
-        // Validate gender
-        if (!gender.equalsIgnoreCase("Male") && !gender.equalsIgnoreCase("Female")) {
-            throw new IllegalArgumentException("Invalid gender: " + gender);
-        }
-
-        // Parse and validate age
         try {
-            age = Integer.parseInt(values[4].trim());
+            String staffId = values[0].trim();
+            String name = values[1].trim();
+            String role = values[2].trim();
+            String gender = values[3].trim();
+            int age = Integer.parseInt(values[4].trim());
+            String password = values[5].trim();
+
+            // Validate staff ID format
+            if (!isValidStaffId(staffId, role)) {
+                throw new IllegalArgumentException("Invalid staff ID format: " + staffId);
+            }
+
+            // Validate role
+            if (!isValidRole(role)) {
+                throw new IllegalArgumentException("Invalid role: " + role);
+            }
+
+            // Validate gender
+            if (!gender.equalsIgnoreCase("Male") && !gender.equalsIgnoreCase("Female")) {
+                throw new IllegalArgumentException("Invalid gender: " + gender);
+            }
+
+            // Validate age
             if (age < 18 || age > 100) {
                 throw new IllegalArgumentException("Invalid age: " + age);
             }
+
+            staffList.add(new HospitalStaff(staffId, password, role, name, gender, age));
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException("Invalid age format: " + values[4]);
         }
-
-        staffList.add(new HospitalStaff(staffId, "password", role, name, gender, age));
     }
 
     private boolean isValidStaffId(String staffId, String role) {

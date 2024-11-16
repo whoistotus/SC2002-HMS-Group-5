@@ -305,8 +305,8 @@ public class AdminView {
             System.out.println(appointment.toString());
         }
     }
+    
     //Appointment methods end
-
     public void viewReplenishmentRequests(List<ReplenishmentRequest> requests) {
         System.out.println("\n=== Replenishment Requests ===");
         if (requests.isEmpty()) {
@@ -942,6 +942,4 @@ public class AdminView {
             System.out.println("------------------------------");
         }
     }
-
-    
 }
