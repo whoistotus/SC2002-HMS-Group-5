@@ -166,67 +166,70 @@ public class PatientView
         }
         
 
-    public void scheduleAppointment() {
-        Scanner scanner = new Scanner(System.in);
-    
-        // Display doctor availability
-        System.out.println("\n=== Doctor Availability ===");
-        List<DoctorAvailability> availabilityList = DoctorAvailabilityCsvHelper.loadDoctorAvailability();
-    
-        if (availabilityList.isEmpty()) {
-            System.out.println("No available slots for any doctors at the moment.");
-            return;
+        public void scheduleAppointment() {
+            Scanner scanner = new Scanner(System.in);
+        
+            // Display doctor availability
+            System.out.println("\n=== Doctor Availability ===");
+            List<DoctorAvailability> availabilityList = DoctorAvailabilityCsvHelper.loadDoctorAvailability();
+        
+            if (availabilityList.isEmpty()) {
+                System.out.println("No available slots for any doctors at the moment.");
+                return;
+            }
+        
+            // Display available slots in a table format
+            System.out.println("+-----------------------------------------------------------+");
+            System.out.println("| Doctor ID   | Date       | Start Time   | End Time        |");
+            System.out.println("+-----------------------------------------------------------+");
+            for (DoctorAvailability availability : availabilityList) {
+                System.out.printf("| %-11s | %-10s | %-12s | %-14s |\n",
+                        availability.getDoctorID(),
+                        availability.getDate(),
+                        availability.getStartTime(),
+                        availability.getEndTime());
+            }
+            System.out.println("+-----------------------------------------------------------+");
+        
+            // Get user input for scheduling
+            System.out.print("\nEnter Doctor ID: ");
+            String doctorID = scanner.nextLine();
+        
+            System.out.print("Enter appointment date (YYYY-MM-DD): ");
+            String date = scanner.nextLine();
+        
+            System.out.print("Enter appointment time (HH:MM): ");
+            String time = scanner.nextLine();
+        
+            // Validate doctor ID and availability
+            DoctorModel doctor = DoctorAvailabilityCsvHelper.getDoctorById(doctorID);
+            if (doctor == null) {
+                showMessage("Invalid Doctor ID! Please try again.");
+                return;
+            }
+        
+            // Check availability for the selected doctor
+            List<String> availableSlots = DoctorAvailabilityCsvHelper.getAvailableSlots(doctorID, date);
+            if (!availableSlots.contains(time)) {
+                showMessage("The selected time slot is unavailable. Please try again.");
+                return;
+            }
+        
+            // Schedule the appointment
+            boolean success = appointmentManager.scheduleAppointment(model, doctor, date, time);
+            if (success) {
+                // Block the booked time slot and update the doctor's availability
+                boolean updated = DoctorAvailabilityCsvHelper.updateDoctorAvailability(doctorID, date, time);
+                if (updated) {
+                    showMessage("Appointment scheduled successfully with status 'Pending'. Doctor availability updated.");
+                } else {
+                    showMessage("Appointment scheduled successfully, but failed to update doctor availability in CSV.");
+                }
+            } else {
+                showMessage("Failed to schedule the appointment. Please try again.");
+            }
         }
-    
-        // Display available slots in a table format
-        System.out.println("+-----------------------------------------------------------+");
-        System.out.println("| Doctor ID   | Date       | Start Time   | End Time        |");
-        System.out.println("+-----------------------------------------------------------+");
-        for (DoctorAvailability availability : availabilityList) {
-            System.out.printf("| %-11s | %-10s | %-12s | %-14s |\n",
-                    availability.getDoctorID(),
-                    availability.getDate(),
-                    availability.getStartTime(),
-                    availability.getEndTime());
-        }
-        System.out.println("+-----------------------------------------------------------+");
-    
-        // Get user input for scheduling
-        System.out.print("\nEnter Doctor ID: ");
-        String doctorID = scanner.nextLine();
-    
-        System.out.print("Enter appointment date (YYYY-MM-DD): ");
-        String date = scanner.nextLine();
-    
-        System.out.print("Enter appointment time (HH:MM): ");
-        String time = scanner.nextLine();
-    
-        // Validate doctor ID and availability
-        DoctorModel doctor = DoctorAvailabilityCsvHelper.getDoctorById(doctorID);
-        if (doctor == null) {
-            showMessage("Invalid Doctor ID! Please try again.");
-            return;
-        }
-    
-        // Check availability for the selected doctor
-        List<String> availableSlots = DoctorAvailabilityCsvHelper.getAvailableSlots(doctorID, date);
-        if (!availableSlots.contains(time)) {
-            showMessage("The selected time slot is unavailable. Please try again.");
-            return;
-        }
-    
-        // Schedule the appointment
-        boolean success = appointmentManager.scheduleAppointment(model, doctor, date, time);
-        if (success) {
-            showMessage("Appointment scheduled successfully with status 'Pending'.");
-        } else {
-            showMessage("Failed to schedule the appointment. Please try again.");
-        }
-    }
-    
-    
-    
-
+        
     public void rescheduleAppointment() {
         Scanner scanner = new Scanner(System.in);
     

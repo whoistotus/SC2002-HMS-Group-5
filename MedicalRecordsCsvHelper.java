@@ -99,8 +99,7 @@ public class MedicalRecordsCsvHelper {
     public static void saveMedicalRecord(MedicalRecord record) {
         List<MedicalRecord> records = loadMedicalRecords();
         boolean found = false;
-
-        // Update if the record exists
+    
         for (int i = 0; i < records.size(); i++) {
             if (records.get(i).getPatientID().equals(record.getPatientID())) {
                 records.set(i, record);
@@ -108,16 +107,34 @@ public class MedicalRecordsCsvHelper {
                 break;
             }
         }
-
-        // Add as new record if not found
+    
         if (!found) {
             records.add(record);
         }
-
-        // Save all records back to the CSV
-        saveAllMedicalRecords(records);
+    
+        try (PrintWriter writer = new PrintWriter(new FileWriter("data/MedicalRecords.csv"))) {
+            writer.println("PatientID,Name,DOB,Gender,ContactNumber,BloodType,Email,PastDiagnoses,PastTreatments,CurrentDiagnoses,CurrentTreatments,Prescriptions");
+            for (MedicalRecord rec : records) {
+                writer.printf("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s%n",
+                    rec.getPatientID(),
+                    rec.getName(),
+                    rec.getDOB(),
+                    rec.getGender(),
+                    rec.getContactNumber(),
+                    rec.getBloodType(),
+                    rec.getEmail(),
+                    String.join(";", rec.getPastDiagnoses()),
+                    String.join(";", rec.getPastTreatments()),
+                    String.join(";", rec.getCurrentDiagnoses()),
+                    String.join(";", rec.getCurrentTreatments()),
+                    String.join(";", rec.getPrescriptions())
+                );
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
-
+    
     // Save the list of medical records back to the CSV file
     public static void saveAllMedicalRecords(List<MedicalRecord> medicalRecords) {
         try (PrintWriter writer = new PrintWriter(new FileWriter(FILE_PATH))) {

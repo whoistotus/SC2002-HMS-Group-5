@@ -113,21 +113,43 @@ public class DoctorView {
     public void updatePatientMedicalRecords() {
         System.out.print("Enter Patient ID to update record: ");
         String patientID = scanner.nextLine();
-        
+    
         // Retrieve the medical record using the patient ID
         MedicalRecord record = MedicalRecordsCsvHelper.getMedicalRecordById(patientID);
         if (record != null) {
-            System.out.print("Enter new diagnosis: ");
-            String diagnosis = scanner.nextLine();
-            System.out.print("Enter new prescription: ");
-            String prescription = scanner.nextLine();
-            System.out.print("Enter new treatment plan: ");
-            String treatment = scanner.nextLine();
+            // Debug: Print the fields before update
+            System.out.println("Debug: Current Diagnoses before update: " + record.getCurrentDiagnoses());
+            System.out.println("Debug: Current Treatments before update: " + record.getCurrentTreatments());
+            System.out.println("Debug: Prescriptions before update: " + record.getPrescriptions());
     
-            // Update the medical record directly
-            record.addNewDiagnosis(diagnosis);
-            record.addNewPrescription(prescription);
-            record.addNewTreatment(treatment);
+            // Input new updates
+            System.out.print("Enter new diagnosis (leave empty if no update): ");
+            String diagnosis = scanner.nextLine();
+            System.out.print("Enter new treatment plan (leave empty if no update): ");
+            String treatment = scanner.nextLine();
+            System.out.print("Enter new prescription (leave empty if no update): ");
+            String prescription = scanner.nextLine();
+    
+            // Update only CurrentDiagnoses, CurrentTreatments, and Prescriptions
+            if (diagnosis != null && !diagnosis.trim().isEmpty()) {
+                record.getCurrentDiagnoses().removeIf(value -> value.equalsIgnoreCase("None")); // Remove "None"
+                record.addNewDiagnosis(diagnosis); // Add new diagnosis
+            }
+    
+            if (treatment != null && !treatment.trim().isEmpty()) {
+                record.getCurrentTreatments().removeIf(value -> value.equalsIgnoreCase("None")); // Remove "None"
+                record.addNewTreatment(treatment); // Add new treatment
+            }
+    
+            if (prescription != null && !prescription.trim().isEmpty()) {
+                record.getPrescriptions().removeIf(value -> value.equalsIgnoreCase("None")); // Remove "None"
+                record.addNewPrescription(prescription); // Add new prescription
+            }
+    
+            // Debug: Print the fields after update
+            System.out.println("Debug: Current Diagnoses after update: " + record.getCurrentDiagnoses());
+            System.out.println("Debug: Current Treatments after update: " + record.getCurrentTreatments());
+            System.out.println("Debug: Prescriptions after update: " + record.getPrescriptions());
     
             // Save the updated record back to the CSV
             MedicalRecordsCsvHelper.saveMedicalRecord(record);
@@ -136,6 +158,24 @@ public class DoctorView {
             System.out.println("No record found for Patient ID: " + patientID);
         }
     }
+    
+    
+    // Helper method to clean and update fields
+    private List<String> cleanAndUpdateField(List<String> originalField, String newData) {
+        if (originalField == null) {
+            originalField = new ArrayList<>();
+        } else {
+            originalField.removeIf(value -> value == null || value.trim().equalsIgnoreCase("None") || value.trim().isEmpty());
+        }
+    
+        if (newData != null && !newData.trim().isEmpty()) {
+            originalField.add(newData);
+        }
+    
+        return originalField;
+    }
+    
+    
     
     public void setAvailability() {
         System.out.print("Enter date (YYYY-MM-DD): ");

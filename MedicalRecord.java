@@ -124,6 +124,24 @@ public class MedicalRecord {
         }
     }
 
+    // Add these setter methods to the MedicalRecord class
+        public void setPastDiagnoses(List<String> pastDiagnoses) {
+            this.pastDiagnoses = pastDiagnoses;
+        }
+
+        public void setPrescriptions(List<String> prescriptions) {
+            this.prescriptions = prescriptions;
+        }
+
+        public void setCurrentTreatments(List<String> currentTreatments) {
+            this.currentTreatments = currentTreatments;
+        }
+
+        public void setCurrentDiagnoses(List<String> currentDiagnoses) {
+            this.currentDiagnoses = currentDiagnoses;
+        }
+
+
     public void viewMedicalRecord() {
         System.out.println("Medical Record for Patient: " + patientID);
         System.out.println("==============================");

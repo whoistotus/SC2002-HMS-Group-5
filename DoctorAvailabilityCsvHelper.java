@@ -60,28 +60,45 @@ public class DoctorAvailabilityCsvHelper {
     
 
 
-    public static boolean updateDoctorAvailability(String doctorID, String date, String time) {
-        List<DoctorAvailability> availabilities = loadDoctorAvailability();
+    public static boolean updateDoctorAvailability(String doctorId, String date, String time) {
+        List<DoctorAvailability> availabilityList = loadDoctorAvailability();
         boolean updated = false;
     
-        for (DoctorAvailability availability : availabilities) {
-            if (availability.getDoctorID().equals(doctorID) && availability.getDate().equals(date)) {
+        for (DoctorAvailability availability : availabilityList) {
+            if (availability.getDoctorID().equals(doctorId) && availability.getDate().equals(date)) {
+                // Block the booked time slot
                 if (availability.isTimeSlotAvailable(time)) {
-                    availability.blockTimeSlot(time); // Block the specific time slot
+                    availability.blockTimeSlot(time); // Mark slot as unavailable
                     updated = true;
-                    break;
                 }
             }
         }
     
         if (updated) {
-            saveDoctorAvailability(availabilities); // Save updated availability back to the CSV
-            System.out.println("Debug: Updated availability for doctor " + doctorID + " on " + date + " at " + time);
+            // Save the updated availability back to the CSV
+            saveDoctorAvailability(availabilityList);
         } else {
-            System.out.println("Debug: Failed to update availability for doctor " + doctorID + " on " + date + " at " + time);
+            System.out.println("Debug: No matching availability found for update.");
         }
     
         return updated;
+    }
+    
+    
+    public static List<String> getAvailableSlots(String doctorID, String date) {
+        List<String> availableSlots = new ArrayList<>();
+        List<DoctorAvailability> availabilityList = loadDoctorAvailability();
+    
+        for (DoctorAvailability availability : availabilityList) {
+            if (availability.getDoctorID().equals(doctorID) && availability.getDate().equals(date)) {
+                int start = Integer.parseInt(availability.getStartTime().split(":")[0]);
+                int end = Integer.parseInt(availability.getEndTime().split(":")[0]);
+                for (int i = start; i < end; i++) {
+                    availableSlots.add(String.format("%02d:00", i));
+                }
+            }
+        }
+        return availableSlots;
     }
     
 
@@ -130,28 +147,6 @@ public class DoctorAvailabilityCsvHelper {
         }
         System.out.println("Debug: Doctor with ID " + doctorID + " not found.");
         return null;
-    }
-    
-
-    public static List<String> getAvailableSlots(String doctorID, String date) {
-        List<DoctorAvailability> availabilities = loadDoctorAvailability();
-        List<String> availableSlots = new ArrayList<>();
-    
-        for (DoctorAvailability availability : availabilities) {
-            if (availability.getDoctorID().equals(doctorID) && availability.getDate().equals(date)) {
-                int start = Integer.parseInt(availability.getStartTime().split(":")[0]);
-                int end = Integer.parseInt(availability.getEndTime().split(":")[0]);
-    
-                for (int hour = start; hour < end; hour++) {
-                    String slot = String.format("%02d:00", hour);
-                    if (availability.isTimeSlotAvailable(slot)) {
-                        availableSlots.add(slot);
-                    }
-                }
-            }
-        }
-    
-        return availableSlots;
     }
     
 }
