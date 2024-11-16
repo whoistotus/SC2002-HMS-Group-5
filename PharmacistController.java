@@ -108,7 +108,7 @@ public class PharmacistController extends User {
     
     public AppointmentOutcomeRecord getAppointmentOutcomeRecord(String appointmentID, List<AppointmentOutcomeRecord> records) {
         for (AppointmentOutcomeRecord record : records) {
-            if (record.getAppointmentID().equals(appointmentID)) {
+            if (record.getAppointmentID().equalsIgnoreCase(appointmentID)) {
                 return record;
             }
         }
