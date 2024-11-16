@@ -1,4 +1,7 @@
+import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -92,40 +95,68 @@ public class AdminView {
     
 
     public void showInventory() {
-        try {
-            List<Medication> medications = medicationReader.getAllMedications();
-            
-            if (medications.isEmpty()) {
-                System.out.println("No medications found in inventory.");
-                return;
-            }
+        final String CSV_PATH = "data/MedicationList.csv";
     
+        try {
+        // Create a new FileReader each time to ensure fresh read
+        BufferedReader br = null;
+        try {
+            // Force garbage collection and release any file handles
+            System.gc();
+            Thread.sleep(100); // Give system time to release resources
+            
+            br = new BufferedReader(new FileReader(new File(CSV_PATH).getAbsoluteFile()));
+            
             System.out.println("\n================= Medication Inventory =================");
             System.out.printf("%-20s %-10s %-40s %-15s%n", 
                 "Name", "Stock", "Description", "Threshold");
             System.out.println("=".repeat(85));
-    
-            for (Medication med : medications) {
-                System.out.printf("%-20s %-10d %-40s %-15d%n",
-                    med.getName(),
-                    med.getQuantity(),
-                    med.getDescription(),
-                    med.getThreshold());
-    
-                // Show warning if stock is below threshold
-                if (med.getQuantity() <= med.getThreshold()) {
-                    System.out.printf("WARNING: %s is below or at threshold level!%n", med.getName());
+
+            // Skip header line
+            br.readLine();
+            
+            String line;
+            boolean hasData = false;
+            
+            while ((line = br.readLine()) != null) {
+                hasData = true;
+                String[] values = line.split(",");
+                if (values.length == 4) {
+                    String name = values[0].trim();
+                    int stock = Integer.parseInt(values[1].trim());
+                    String description = values[2].trim();
+                    int threshold = Integer.parseInt(values[3].trim());
+
+                    System.out.printf("%-20s %-10d %-40s %-15d%n",
+                        name, stock, description, threshold);
+
+                    if (stock <= threshold) {
+                        System.out.printf("WARNING: %s is below or at threshold level!%n", name);
+                    }
                 }
             }
+
+            if (!hasData) {
+                System.out.println("No medications found in inventory.");
+            }
+
             System.out.println("=".repeat(85));
             
-            // Pause for user to read
-            System.out.println("\nPress Enter to continue...");
-            sc.nextLine();
-        } catch (Exception e) {
-            System.out.println("Error displaying inventory: " + e.getMessage());
+        } finally {
+            if (br != null) {
+                br.close();
+            }
         }
+        
+        // Pause for user to read
+        System.out.println("\nPress Enter to continue...");
+        sc.nextLine();
+        
+    } catch (Exception e) {
+        System.out.println("Error reading medication inventory: " + e.getMessage());
+        e.printStackTrace();
     }
+}
     
 
     public void manageMedicationInventory() {

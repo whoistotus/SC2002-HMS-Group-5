@@ -3,15 +3,47 @@ import java.util.*;
 
 public class MedicationCSVReader {
     private static final String CSV_PATH = "data/MedicationList.csv";
-    
-    private List<Medication> medicationList;
 
     public MedicationCSVReader() throws FileNotFoundException {
-        this.medicationList = new ArrayList<>();
-        loadMedicationData();
+        // No need to store medication list as a field anymore
     }
 
-    private void loadMedicationData() throws FileNotFoundException {
+    public List<Medication> getAllMedications() throws FileNotFoundException {
+        List<Medication> medicationList = new ArrayList<>();
+        
+        try (BufferedReader br = new BufferedReader(new FileReader(new File(CSV_PATH).getAbsoluteFile()))) {
+            String line;
+            boolean firstLine = true;
+
+            while ((line = br.readLine()) != null) {
+                if (firstLine) {
+                    firstLine = false;
+                    continue;
+                }
+
+                try {
+                    String[] values = line.split(",");
+                    if (values.length == 4) {
+                        String name = values[0].trim();
+                        int stockLevel = Integer.parseInt(values[1].trim());
+                        String description = values[2].trim();
+                        int threshold = Integer.parseInt(values[3].trim());
+
+                        medicationList.add(new Medication(name, stockLevel, description, threshold));
+                    }
+                } catch (Exception e) {
+                    System.out.println("Error processing medication line: " + line);
+                    System.out.println("Error message: " + e.getMessage());
+                }
+            }
+        } catch (IOException e) {
+            throw new FileNotFoundException("Error reading medication data: " + e.getMessage());
+        }
+        
+        return medicationList;
+    }
+
+    private void loadMedicationData(List<Medication> medicationList) throws FileNotFoundException {
         try (BufferedReader br = new BufferedReader(new FileReader(CSV_PATH))) {
             String line;
             boolean firstLine = true;
@@ -23,7 +55,7 @@ public class MedicationCSVReader {
                 }
 
                 try {
-                    processMedicationLine(line);
+                    processMedicationLine(line, medicationList);
                 } catch (Exception e) {
                     System.out.println("Error processing medication line: " + line);
                     System.out.println("Error message: " + e.getMessage());
@@ -34,7 +66,7 @@ public class MedicationCSVReader {
         }
     }
 
-    private void processMedicationLine(String line) {
+    private void processMedicationLine(String line, List<Medication> medicationList) {
         String[] values = line.split(",");
         if (values.length != 4) {
             throw new IllegalArgumentException("Invalid line format. Expected 4 values.");
@@ -46,10 +78,6 @@ public class MedicationCSVReader {
         int threshold = Integer.parseInt(values[3].trim());
 
         medicationList.add(new Medication(name, stockLevel, description, threshold));
-    }
-
-    public List<Medication> getAllMedications() {
-        return new ArrayList<>(medicationList);
     }
 
     public void updateMedication(String name, int newStock) throws IOException {
@@ -82,15 +110,12 @@ public class MedicationCSVReader {
                 bw.newLine();
             }
         }
-
-        // Reload data
-        medicationList.clear();
-        loadMedicationData();
     }
 
     public void addMedication(String name, int stock, String description, int threshold) throws IOException {
         // Check if medication already exists
-        if (medicationList.stream().anyMatch(m -> m.getName().equalsIgnoreCase(name))) {
+        List<Medication> currentMedications = getAllMedications();
+        if (currentMedications.stream().anyMatch(m -> m.getName().equalsIgnoreCase(name))) {
             throw new IllegalArgumentException("Medication already exists: " + name);
         }
 
@@ -100,10 +125,6 @@ public class MedicationCSVReader {
             bw.write(newLine);
             bw.newLine();
         }
-
-        // Reload data
-        medicationList.clear();
-        loadMedicationData();
     }
 
     public void removeMedication(String name) throws IOException {
@@ -135,10 +156,6 @@ public class MedicationCSVReader {
                 bw.newLine();
             }
         }
-
-        // Reload data
-        medicationList.clear();
-        loadMedicationData();
     }
 
     public void updateThreshold(String name, int newThreshold) throws IOException {
@@ -171,9 +188,5 @@ public class MedicationCSVReader {
                 bw.newLine();
             }
         }
-
-        // Reload data
-        medicationList.clear();
-        loadMedicationData();
     }
 }
