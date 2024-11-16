@@ -32,8 +32,16 @@ public class MedicalRecordsCsvHelper {
         try (BufferedReader br = new BufferedReader(new FileReader(FILE_PATH))) {
             String line;
             br.readLine(); // Skip header row
+            
             while ((line = br.readLine()) != null) {
                 String[] values = line.split(",");
+                
+                // Check if the row has the minimum required columns
+                if (values.length < 7) {
+                    System.out.println("Warning: Skipping malformed row: " + line);
+                    continue;
+                }
+                
                 String patientID = values[0];
                 String name = values[1];
                 String dob = values[2];
@@ -41,20 +49,20 @@ public class MedicalRecordsCsvHelper {
                 String contactNumber = values[4];
                 String bloodType = values[5];
                 String email = values[6];
-
-                // Parse medical details, handling fields for past and current diagnoses, treatments, and prescriptions
+    
+                // Use helper method to parse optional fields
                 List<String> pastDiagnoses = values.length > 7 ? parseListField(values[7]) : new ArrayList<>();
                 List<String> pastTreatments = values.length > 8 ? parseListField(values[8]) : new ArrayList<>();
                 List<String> currentDiagnoses = values.length > 9 ? parseListField(values[9]) : new ArrayList<>();
                 List<String> currentTreatments = values.length > 10 ? parseListField(values[10]) : new ArrayList<>();
                 List<String> prescriptions = values.length > 11 ? parseListField(values[11]) : new ArrayList<>();
-
-                // Create MedicalRecord object with all details
+    
+                // Create a MedicalRecord object
                 MedicalRecord record = new MedicalRecord(
                     patientID, name, dob, gender, contactNumber, bloodType, email,
                     pastDiagnoses, pastTreatments, currentDiagnoses, currentTreatments, prescriptions
                 );
-
+    
                 records.add(record);
             }
         } catch (IOException e) {
@@ -62,6 +70,7 @@ public class MedicalRecordsCsvHelper {
         }
         return records;
     }
+    
 
     // Helper method to parse semicolon-separated fields into a list
     private static List<String> parseListField(String field) {

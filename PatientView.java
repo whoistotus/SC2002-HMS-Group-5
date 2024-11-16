@@ -130,26 +130,69 @@ public class PatientView
         }
 
     
-    public void viewAppointmentOutcome(AppointmentOutcomeRecord outcome) 
-    {
-        if (outcome == null) 
-        {
-            System.out.println("No outcome available for this appointment.");
-        } 
+        public void viewPastAppointmentOutcomeRecord() {
+            System.out.println("\n=== View Past Appointment Outcome Record ===");
         
-        else 
-        {
-            System.out.println("Appointment Outcome:");
-            System.out.println("Service: " + outcome.getServiceType());
-            System.out.println("Outcome Description: " + outcome.getConsultationNotes());
-            System.out.println("Prescription: " + outcome.getMedications());
+            // Load all appointment outcome records
+            List<AppointmentOutcomeRecord> outcomes = AppointmentOutcomeRecordsCsvHelper.loadAppointmentOutcomes();
+        
+            // Filter outcomes for the current patient
+            List<AppointmentOutcomeRecord> patientOutcomes = outcomes.stream()
+                    .filter(outcome -> outcome.getPatientID().equals(model.getHospitalID()))
+                    .collect(Collectors.toList());
+        
+            if (patientOutcomes.isEmpty()) {
+                System.out.println("No past appointment outcome records found.");
+                return;
+            }
+        
+            // Display the outcomes in a table format
+            System.out.println("+---------------------------------------------------------------------------------------------+");
+            System.out.println("| Appointment ID | Doctor ID | Date       | Service Type   | Medications      | Notes         |");
+            System.out.println("+---------------------------------------------------------------------------------------------+");
+        
+            for (AppointmentOutcomeRecord outcome : patientOutcomes) {
+                String medications = outcome.getMedications().isEmpty() ? "None" : outcome.medicationsToCsv();
+                System.out.printf("| %-14s | %-9s | %-10s | %-14s | %-15s | %-12s |\n",
+                        outcome.getAppointmentID(),
+                        outcome.getDoctorID(),
+                        outcome.getDate(),
+                        outcome.getServiceType(),
+                        medications,
+                        outcome.getConsultationNotes());
+            }
+        
+            System.out.println("+---------------------------------------------------------------------------------------------+");
         }
-    }
+        
 
     public void scheduleAppointment() {
         Scanner scanner = new Scanner(System.in);
     
-        System.out.print("Enter Doctor ID: ");
+        // Display doctor availability
+        System.out.println("\n=== Doctor Availability ===");
+        List<DoctorAvailability> availabilityList = DoctorAvailabilityCsvHelper.loadDoctorAvailability();
+    
+        if (availabilityList.isEmpty()) {
+            System.out.println("No available slots for any doctors at the moment.");
+            return;
+        }
+    
+        // Display available slots in a table format
+        System.out.println("+-----------------------------------------------------------+");
+        System.out.println("| Doctor ID   | Date       | Start Time   | End Time        |");
+        System.out.println("+-----------------------------------------------------------+");
+        for (DoctorAvailability availability : availabilityList) {
+            System.out.printf("| %-11s | %-10s | %-12s | %-14s |\n",
+                    availability.getDoctorID(),
+                    availability.getDate(),
+                    availability.getStartTime(),
+                    availability.getEndTime());
+        }
+        System.out.println("+-----------------------------------------------------------+");
+    
+        // Get user input for scheduling
+        System.out.print("\nEnter Doctor ID: ");
         String doctorID = scanner.nextLine();
     
         System.out.print("Enter appointment date (YYYY-MM-DD): ");
@@ -158,20 +201,29 @@ public class PatientView
         System.out.print("Enter appointment time (HH:MM): ");
         String time = scanner.nextLine();
     
+        // Validate doctor ID and availability
         DoctorModel doctor = DoctorAvailabilityCsvHelper.getDoctorById(doctorID);
         if (doctor == null) {
-            showMessage("Invalid Doctor ID!");
+            showMessage("Invalid Doctor ID! Please try again.");
             return;
         }
     
-        
+        // Check availability for the selected doctor
+        List<String> availableSlots = DoctorAvailabilityCsvHelper.getAvailableSlots(doctorID, date);
+        if (!availableSlots.contains(time)) {
+            showMessage("The selected time slot is unavailable. Please try again.");
+            return;
+        }
+    
+        // Schedule the appointment
         boolean success = appointmentManager.scheduleAppointment(model, doctor, date, time);
         if (success) {
             showMessage("Appointment scheduled successfully with status 'Pending'.");
         } else {
-            showMessage("Failed to schedule appointment. The selected time slot is unavailable.");
+            showMessage("Failed to schedule the appointment. Please try again.");
         }
     }
+    
     
     
 

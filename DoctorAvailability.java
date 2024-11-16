@@ -39,6 +39,8 @@ public class DoctorAvailability {
         timeSlots[hour] = false;
     }
 
+    
+
     // Getters
     public String getDoctorID() { return doctorID; }
     public String getDate() { return date; }

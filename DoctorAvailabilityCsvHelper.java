@@ -13,31 +13,34 @@ public class DoctorAvailabilityCsvHelper {
             br.readLine(); // Skip header
             while ((line = br.readLine()) != null) {
                 if (line.trim().isEmpty()) {
-                    // Skip empty lines
-                    continue;
+                    continue; // Skip empty lines
                 }
-                
+    
                 String[] values = line.split(",");
-                
-                // Ensure the line has the correct number of columns
                 if (values.length < 4) {
                     System.out.println("Warning: Skipping malformed line: " + line);
                     continue;
                 }
     
-                String doctorID = values[0].trim();
-                String date = values[1].trim();
-                String startTime = values[2].trim();
-                String endTime = values[3].trim();
+                try {
+                    String doctorID = values[0].trim();
+                    String date = values[1].trim();
+                    String startTime = values[2].trim();
+                    String endTime = values[3].trim();
     
-                DoctorAvailability availability = new DoctorAvailability(doctorID, date, startTime, endTime);
-                availabilityList.add(availability);
+                    DoctorAvailability availability = new DoctorAvailability(doctorID, date, startTime, endTime);
+                    availabilityList.add(availability);
+                } catch (Exception e) {
+                    System.out.println("Error parsing line: " + line);
+                    e.printStackTrace();
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
         return availabilityList;
     }
+    
     
     public static void saveDoctorAvailability(List<DoctorAvailability> availabilityList) {
         try (PrintWriter writer = new PrintWriter(new FileWriter(FILE_PATH, false))) {
@@ -57,32 +60,30 @@ public class DoctorAvailabilityCsvHelper {
     
 
 
-    public static boolean updateDoctorAvailability(String doctorId, String date, String time) {
-        List<String[]> updatedEntries = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader("data/DoctorAvailability.csv"))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                String[] data = line.split(",");
-                if (!(data[0].equals(doctorId) && data[1].equals(date) && data[2].equals(time))) {
-                    updatedEntries.add(data);
+    public static boolean updateDoctorAvailability(String doctorID, String date, String time) {
+        List<DoctorAvailability> availabilities = loadDoctorAvailability();
+        boolean updated = false;
+    
+        for (DoctorAvailability availability : availabilities) {
+            if (availability.getDoctorID().equals(doctorID) && availability.getDate().equals(date)) {
+                if (availability.isTimeSlotAvailable(time)) {
+                    availability.blockTimeSlot(time); // Block the specific time slot
+                    updated = true;
+                    break;
                 }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
         }
     
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter("data/DoctorAvailability.csv"))) {
-            for (String[] entry : updatedEntries) {
-                bw.write(String.join(",", entry));
-                bw.newLine();
-            }
-            return true;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
+        if (updated) {
+            saveDoctorAvailability(availabilities); // Save updated availability back to the CSV
+            System.out.println("Debug: Updated availability for doctor " + doctorID + " on " + date + " at " + time);
+        } else {
+            System.out.println("Debug: Failed to update availability for doctor " + doctorID + " on " + date + " at " + time);
         }
+    
+        return updated;
     }
+    
 
     public static List<DoctorModel> loadDoctors() {
         List<DoctorModel> doctors = new ArrayList<>();
@@ -133,18 +134,23 @@ public class DoctorAvailabilityCsvHelper {
     
 
     public static List<String> getAvailableSlots(String doctorID, String date) {
+        List<DoctorAvailability> availabilities = loadDoctorAvailability();
         List<String> availableSlots = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader("data/DoctorAvailability.csv"))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] data = line.split(",");
-                if (data[0].equals(doctorID) && data[1].equals(date)) {
-                    availableSlots.add(data[2].trim()); // Add time slot
+    
+        for (DoctorAvailability availability : availabilities) {
+            if (availability.getDoctorID().equals(doctorID) && availability.getDate().equals(date)) {
+                int start = Integer.parseInt(availability.getStartTime().split(":")[0]);
+                int end = Integer.parseInt(availability.getEndTime().split(":")[0]);
+    
+                for (int hour = start; hour < end; hour++) {
+                    String slot = String.format("%02d:00", hour);
+                    if (availability.isTimeSlotAvailable(slot)) {
+                        availableSlots.add(slot);
+                    }
                 }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
+    
         return availableSlots;
     }
     

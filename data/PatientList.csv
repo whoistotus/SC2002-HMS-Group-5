@@ -1,4 +1,6 @@
-﻿Patient_ID,Name,Date of Birth,Gender,Blood Type,Contact Information,password
-P1001,Alice Brown,1980-05-14,Female,A+,jamie@hotmail.com,1234567890
-P1002,Bob Stone,1975-11-22,Male,B+,bob.stone@example.com,password
-P1003,Charlie White,1990-07-08,Male,O-,charlie.white@example.com,password
+﻿Patient_ID,Name,Date of Birth,Gender,Blood Type,Contact Information,number,password
+P1001,Alice Brown,1980-05-14,Female,A+,test@test.com,1234567890,password
+P1002,Bob Stone,1975-11-22,Male,B+,bob.stone@example.com,,password
+P1003,Charlie White,1990-07-08,Male,O-,charlie.white@example.com,,password
+P1004,Amy,1990-01-01,Female,O+,amy@example.com,12345678,password
+P1004,Amy,1990-01-01,Female,O+,amy@example.com,12345678,password

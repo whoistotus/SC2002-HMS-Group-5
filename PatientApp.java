@@ -1,23 +1,24 @@
 import java.util.Scanner;
 
-public class PatientApp{
+public class PatientApp {
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        // Initialize necessary components for testing
-        PatientModel model = new PatientModel("P1004", "Amy", "1990-01-01", "Female", "O+", "amy@example.com", "12345678", "Password", "Patient");
+        // Initialize the patient with ID P1001
+        String patientID = "P1001";
+        PatientModel model = PatientListCsvHelper.getPatientById(patientID);
+        
+        if (model == null) {
+            System.out.println("Error: Patient with ID " + patientID + " not found.");
+            return;
+        }
+
         PatientView view = new PatientView(model);
         AppointmentManager appointmentManager = new AppointmentManager();
         PatientController controller = new PatientController(model, view, appointmentManager);
-        
-        boolean success = PatientListCsvHelper.addPatientToCsv(model);
 
-        if (success) {
-            System.out.println("New patient added successfully!");
-        } else {
-            System.out.println("Failed to add the patient to the system.");
-        }
+        System.out.println("Welcome, " + model.getName() + " (ID: " + model.getHospitalID() + ")!");
 
         while (true) {
             System.out.println("\n--- Patient Role Test Cases ---");
@@ -33,7 +34,7 @@ public class PatientApp{
             System.out.print("Choose a test case to execute (1-9): ");
 
             int choice = scanner.nextInt();
-            scanner.nextLine();  // Consume newline
+            scanner.nextLine(); // Consume newline
 
             switch (choice) {
                 case 1 -> testViewMedicalRecords(view);
@@ -43,7 +44,8 @@ public class PatientApp{
                 case 5 -> testRescheduleAppointment(view);
                 case 6 -> testCancelAppointment(view);
                 case 7 -> testViewScheduledAppointments(view);
-                //case 8 -> testViewPastAppointmentOutcomeRecord(view);
+                // Uncomment and implement if needed
+                case 8 -> testViewPastAppointmentOutcomeRecord(view);
                 case 9 -> {
                     System.out.println("Exiting...");
                     scanner.close();
@@ -65,33 +67,33 @@ public class PatientApp{
     }
 
     private static void testViewAvailableSlots(PatientView view) {
-        System.out.println("\n--- Test 3: View Available Slots ---");
+        System.out.println("\n--- Test Case 3: View Available Slots ---");
         view.viewAvailableSlots();
     }
 
-    private static void testScheduleAppointment(PatientView view)
-    {
-        System.out.println("\n--- Test 4: Schedule Appointment ---");
+    private static void testScheduleAppointment(PatientView view) {
+        System.out.println("\n--- Test Case 4: Schedule Appointment ---");
         view.scheduleAppointment();
     }
 
-    private static void testRescheduleAppointment(PatientView view)
-    {
-        System.out.println("\n--- Test 5: Reschedule Appointment ---");
+    private static void testRescheduleAppointment(PatientView view) {
+        System.out.println("\n--- Test Case 5: Reschedule Appointment ---");
         view.rescheduleAppointment();
     }
 
-    private static void testCancelAppointment(PatientView view)
-    {
-        System.out.println("\n--- Test 6: Cancel Appointment ---");
+    private static void testCancelAppointment(PatientView view) {
+        System.out.println("\n--- Test Case 6: Cancel Appointment ---");
         view.cancelAppointment();
     }
 
-    private static void testViewScheduledAppointments(PatientView view)
-    {
-        System.out.println("\n--- Test 7: View Scheduled Appointments ---");
+    private static void testViewScheduledAppointments(PatientView view) {
+        System.out.println("\n--- Test Case 7: View Scheduled Appointments ---");
         view.viewScheduledAppointments();
     }
 
-
+    private static void testViewPastAppointmentOutcomeRecord(PatientView view) {
+        System.out.println("\n--- Test Case 8: View Past Appointment Outcome Record ---");
+        view.viewPastAppointmentOutcomeRecord();
+    }
+    
 }
