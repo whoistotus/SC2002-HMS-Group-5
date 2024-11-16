@@ -145,7 +145,7 @@ public class MainApp {
                     PatientView patientView = new PatientView(patientModel);
                     patientView.PatientMenu();
                 } else {
-                    System.out.println("Error: Could not find doctor details in the system.");
+                    System.out.println("Error: Could not find patient details in the system.");
                 }
                 break;
 
