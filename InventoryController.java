@@ -77,29 +77,48 @@ public class InventoryController {
 
     
     public boolean approveReplenishmentRequest(String requestId) {
+        // Load replenishment requests
+        replenishmentRequests = ReplenishmentRequestCsvHelper.loadReplenishmentRequests();
+        System.out.println("Loaded " + replenishmentRequests.size() + " replenishment requests.");
+        
+        // Iterate through requests to find the matching one
         for (ReplenishmentRequest request : replenishmentRequests) {
-            if (request.getRequestID() == requestId && request.getStatus() == ReplenishmentRequest.RequestStatus.PENDING) {
+            System.out.println("Checking request ID: " + request.getRequestID() + ", Status: " + request.getStatus());
+            
+            if (request.getRequestID().trim().equals(requestId.trim()) 
+                && request.getStatus() == ReplenishmentRequest.RequestStatus.PENDING) {
+                
+                // Update status to APPROVED
                 request.setStatus(ReplenishmentRequest.RequestStatus.APPROVED);
-                String lowerCaseMedicineName = request.getMedicineName().toLowerCase(); // Convert to lowercase for case-insensitive comparison
-                Medication medication = findMedicationByName(lowerCaseMedicineName); // Find medication by lowercase name
-    
+                
+                // Find medication in inventory
+                String lowerCaseMedicineName = request.getMedicineName().trim().toLowerCase();
+                Medication medication = findMedicationByName(lowerCaseMedicineName);
+                
                 if (medication != null) {
+                    // Update medication quantity
                     medication.setQuantity(medication.getQuantity() + request.getQuantity());
                     System.out.println("Approved replenishment of " + request.getQuantity() + " units for " + medication.getName() + ".");
-                    return true;  // Successfully approved the request
+                    
+                    // Save changes back to CSV
+                    ReplenishmentRequestCsvHelper.saveAllReplenishmentRequests(replenishmentRequests);
+                    return true;
                 } else {
                     System.out.println("Medication " + request.getMedicineName() + " not found in inventory.");
-                    return false;  // Medication not found in inventory
+                    return false;
                 }
             }
         }
+        
+        // If no matching request found
         System.out.println("Replenishment request not found or already completed.");
-        return false;  // Request not found or already completed
+        return false;
     }
+    
 
     private Medication findMedicationByName(String name) {
         for (Medication medication : medicationList) {
-            if (medication.getName().equalsIgnoreCase(name)) {
+            if (medication.getName().trim().toLowerCase().equals(name)) {
                 return medication;
             }
         }

@@ -638,18 +638,21 @@ public class AdminView {
                 switch (choice) {
                     case 1: // View Replenishment Requests
                         System.out.println("\n===== Current Replenishment Requests =====");
-                        //prints out the requests from csv file
-                        
-                        if (requests.isEmpty()) {
+
+                        // Load requests from CSV file
+                        List<ReplenishmentRequest> requests = ReplenishmentRequestCsvHelper.loadReplenishmentRequests();
+
+                        if (requests == null || requests.isEmpty()) {
                             System.out.println("No replenishment requests found.");
                         } else {
-                            displayRequestsTable(requests);
+                            displayRequestsTable(requests); // Display the requests in a table format
                         }
-                        
+
                         // Pause before returning to menu
                         System.out.println("\nPress Enter to continue...");
                         sc.nextLine();
                         break;
+
     
                     case 2: // Approve Replenishment Requests
                         System.out.println("Enter request ID to approve: ");
