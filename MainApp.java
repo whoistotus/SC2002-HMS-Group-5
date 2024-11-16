@@ -1,5 +1,8 @@
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
@@ -116,6 +119,24 @@ public class MainApp {
                 InventoryController inventoryController = new InventoryController();
                 adminView = new AdminView(inventoryController);
                 adminView.showMenu();
+                break;
+
+            case "pharmacist":
+                InventoryController pharmInventoryController = new InventoryController();
+                PharmacistView pharmacistView = new PharmacistView(currentUser.getHospitalID());
+                List<Medication> medications = new ArrayList<>();
+                List<AppointmentOutcomeRecord> records = AppointmentOutcomeRecordsCsvHelper.loadAppointmentOutcomes();
+
+                // Load medications from CSV
+                try {
+                    MedicationCSVReader medicationCSVReader = new MedicationCSVReader();
+                    medications = medicationCSVReader.getAllMedications();
+                } catch (FileNotFoundException e) {
+                    System.out.println("Error: Medication file not found.");
+                    e.printStackTrace();
+                }
+                
+                pharmacistView.start(records, medications, pharmInventoryController); // Launch the pharmacist menu
                 break;
 
             default:
