@@ -1,4 +1,8 @@
 PatientID,Name,DOB,Gender,ContactNumber,BloodType,Email,PastDiagnoses,PastTreatments,CurrentDiagnoses,CurrentTreatments,Prescriptions
+<<<<<<< HEAD
+P1001,Alice Brown,14/5/1980,FEMALE,1234567890,B+,alice.brown@example.com,sick;D1;D2;Bed Rest,Cold;CheckUp,DDDD,TTT,Panadol;PPP
+=======
 P1001,Alice Brown,14/5/1980,FEMALE,999,jamie.com,alice.brown@example.com,sick;D1;D2,Cold,Bed Rest;Sleep disorder,CheckUp;sleep more,Panadol;panadol
+>>>>>>> f32f7f5924f4ce3ec54f75925950f333bd1e6144
 P1002,Bob Stone,1975-11-22,MALE,,B+,bob.stone@example.com,None,None,None,None,None
 P1003,Charlie White,1990-07-08,MALE,,O-,charlie.white@example.com,None,None,new,new,new
