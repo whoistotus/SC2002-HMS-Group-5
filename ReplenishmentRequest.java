@@ -14,7 +14,7 @@ public class ReplenishmentRequest{
     private String medicineName;
     private int quantity;
     private String requestID;
-    private RequestStatus status;
+    protected RequestStatus status;
 
     // Constructor
     public ReplenishmentRequest(String requestID, String medicineName, int quantity) {
@@ -70,7 +70,7 @@ public class ReplenishmentRequest{
 
     // Method to save the request to a CSV file
     public void writeToCSV() {
-        try (FileWriter writer = new FileWriter("replenishment_requests.csv", true)) {
+        try (FileWriter writer = new FileWriter("ReplenishmentRequests.csv", true)) {
             // Append data as a new line in the CSV file
             writer.append(requestID)
                   .append(',')

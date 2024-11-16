@@ -1,6 +1,10 @@
 
 
 import java.util.List;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class PharmacistController extends User {
@@ -26,16 +30,42 @@ public class PharmacistController extends User {
 
     // Submit a replenishment request for medicines
     public void submitReplenishmentRequest(String medicineName, int quantity) {
-        String requestID = String.format("%04d", requestCounter);
-        requestCounter++;
+        String requestID = getNextRequestID();  // Get the next request ID
         
         ReplenishmentRequest request = new ReplenishmentRequest(requestID, medicineName, quantity);
         
-        // Save the request to the CSV file
-        request.writeToCSV();
+        // Load existing requests, add the new one, and save all back to the CSV
+        List<ReplenishmentRequest> requests = ReplenishmentRequestCsvHelper.loadReplenishmentRequests();
+        requests.add(request);
+        
+        ReplenishmentRequestCsvHelper.saveAllReplenishmentRequests(requests); // Save all requests back to the CSV
         
         System.out.println("Replenishment request submitted with ID: " + requestID);
     }
+    
+    // Helper method to get the next request ID
+    private String getNextRequestID() {
+        // Load previous request IDs from the CSV
+        List<String> requestIDs = ReplenishmentRequestCsvHelper.loadRequestIDsFromCSV();
+        
+        if (requestIDs.isEmpty()) {
+            return "R001";  // If there are no previous requests, start with R001
+        }
+    
+        // Get the last request ID
+        String lastRequestID = requestIDs.get(requestIDs.size() - 1);
+        
+        // Extract the number from the last request ID
+        int lastNumber = Integer.parseInt(lastRequestID.substring(1)); // Remove 'R' and parse the number
+        
+        // Increment the number
+        int newNumber = lastNumber + 1;
+        
+        // Format the new number as a 3-digit string (e.g., R002, R003)
+        return String.format("R%03d", newNumber);
+    }
+    
+
 
 
     // Prescribe medicine based on quantities already set by the doctor

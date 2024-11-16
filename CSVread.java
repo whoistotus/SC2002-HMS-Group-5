@@ -11,7 +11,7 @@ public class CSVread {
     public static List<ReplenishmentRequest> loadRequestsFromCSV() {
         List<ReplenishmentRequest> requests = new ArrayList<>();
         
-        try (BufferedReader reader = new BufferedReader(new FileReader("replenishment_requests.csv"))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader("ReplenishmentRequests.csv"))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");

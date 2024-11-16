@@ -42,7 +42,6 @@ public static void main(String[] args) {
     
     System.out.print("Enter Password: ");
     String password = inputScanner.nextLine();
-    
     System.out.print("Enter User Role: ");
     String userRole = inputScanner.nextLine();
     
@@ -71,10 +70,10 @@ public static void main(String[] args) {
                 scanner.nextLine(); // Consume newline character
         
                 switch (choice) {
-                    case 1:
+                case 1:
                         viewAppointmentOutcome(records);
                         break;
-                    case 2:
+                case 2:
                         monitorInventory(medications);
                     break;
                 case 3:
@@ -82,6 +81,7 @@ public static void main(String[] args) {
                     break;
                 case 4:
                     replenishMedicine();
+                    ReplenishmentRequestCsvHelper.printAllRequests();
                     break;
                 case 5:
                     System.out.println("Exiting the application.");
