@@ -1,2 +1,0 @@
-PatientID,Name,DOB,Gender,ContactNumber,BloodType,Email,Diagnoses,Treatments,Prescriptions
-P1001,Alice Brown,14/5/1980,FEMALE,null,A+,alice.brown@example.com;sick;D1;D2,Cold;flu;jdiajsdsa,Bed Rest;P1;jasidj,iasjdiaj
