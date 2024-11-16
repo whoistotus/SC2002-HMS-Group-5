@@ -199,7 +199,7 @@ public class MainApp {
                 }
             }
         } catch (IOException e) {
-            System.out.println("Error reading staff list: " + e.getMessage());
+            System.out.println("Error reading patient list: " + e.getMessage());
         }
         return null; // Return null if no match is found
     }
