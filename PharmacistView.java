@@ -10,6 +10,11 @@ public class PharmacistView {
     private PharmacistView pharmacistView;
     private Scanner scanner;
 
+    public PharmacistView(String hospitalID, String password, String userRole) {
+        this.pharmacistController = new PharmacistController(hospitalID, password, userRole);
+        this.scanner = new Scanner(System.in);
+    }
+
     public static void main(String[] args) {
         Scanner inputScanner = new Scanner(System.in);
         
@@ -41,7 +46,7 @@ public class PharmacistView {
         String userRole = inputScanner.nextLine();
         
         // Initialize the PharmacistApp
-        PharmacistApp app = new PharmacistApp(hospitalID, password, userRole);
+        PharmacistView app = new PharmacistView(hospitalID, password, userRole);
         
         // Start the application and test all methods
         app.start(records, medications, inventoryController);
@@ -67,7 +72,7 @@ public class PharmacistView {
             while (true) {
 
                 PharmacistMenu();
-                
+
                 int choice = scanner.nextInt();
                 scanner.nextLine(); // Consume newline character
         
