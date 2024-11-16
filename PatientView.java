@@ -17,6 +17,42 @@ public class PatientView
     {
         this.model = model;
     }
+    public void PatientMenu()
+    {
+        while (true) {
+            System.out.println("\n--- Patient Role Test Cases ---");
+            System.out.println("1. View Medical Records");
+            System.out.println("2. Update Personal Information");
+            System.out.println("3. View Available Slots");
+            System.out.println("4. Schedule an Appointment");
+            System.out.println("5. Reschedule an Appointment");
+            System.out.println("6. Cancel an Appointment");
+            System.out.println("7. View Scheduled Appointments");
+            System.out.println("8. View Past Appointment Outcome Record");
+            System.out.println("9. Exit");
+            System.out.print("Choose a test case to execute (1-9): ");
+
+            int choice = scanner.nextInt();
+            scanner.nextLine(); // Consume newline
+
+            switch (choice) {
+                case 1 -> viewMedicalRecord();
+                case 2 -> controller.updatePersonalInformation();
+                case 3 -> viewAvailableSlots();
+                case 4 -> scheduleAppointment();
+                case 5 -> rescheduleAppointment();
+                case 6 -> cancelAppointment();
+                case 7 -> viewScheduledAppointments();
+                case 8 -> viewPastAppointmentOutcomeRecord();
+                case 9 -> {
+                    System.out.println("Exiting...");
+                    scanner.close();
+                    return;
+                }
+                default -> System.out.println("Invalid choice. Please try again.");
+            }
+        }
+    }
     public void viewMedicalRecord() {
         MedicalRecord record = MedicalRecordsCsvHelper.getMedicalRecordById(model.getHospitalID());
         
