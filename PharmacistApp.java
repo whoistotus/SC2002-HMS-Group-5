@@ -15,44 +15,44 @@ public class PharmacistApp {
         this.scanner = new Scanner(System.in);
     }
 
-public static void main(String[] args) {
-    Scanner inputScanner = new Scanner(System.in);
-    
-    // Initialize necessary variables outside the try-catch block
-    List<Medication> medications = new ArrayList<>();
-    
-    InventoryController inventoryController = new InventoryController();
-    List<AppointmentOutcomeRecord> records = AppointmentOutcomeRecordsCsvHelper.loadAppointmentOutcomes();
-    
-    try {
-        // Initialize medicationCSVReader inside try-catch to handle exceptions
-        MedicationCSVReader medicationCSVReader = new MedicationCSVReader();
+    public static void main(String[] args) {
+        Scanner inputScanner = new Scanner(System.in);
         
-        // Get all medications from the CSV
-        medications = medicationCSVReader.getAllMedications();
+        // Initialize necessary variables outside the try-catch block
+        List<Medication> medications = new ArrayList<>();
         
-    } catch (FileNotFoundException e) {
-        System.out.println("Error: " + e.getMessage());
-        e.printStackTrace();
-    }
+        InventoryController inventoryController = new InventoryController();
+        List<AppointmentOutcomeRecord> records = AppointmentOutcomeRecordsCsvHelper.loadAppointmentOutcomes();
+        
+        try {
+            // Initialize medicationCSVReader inside try-catch to handle exceptions
+            MedicationCSVReader medicationCSVReader = new MedicationCSVReader();
+            
+            // Get all medications from the CSV
+            medications = medicationCSVReader.getAllMedications();
+            
+        } catch (FileNotFoundException e) {
+            System.out.println("Error: " + e.getMessage());
+            e.printStackTrace();
+        }
 
-    // Authentication inputs
-    System.out.print("Enter Hospital ID: ");
-    String hospitalID = inputScanner.nextLine();
-    
-    System.out.print("Enter Password: ");
-    String password = inputScanner.nextLine();
-    System.out.print("Enter User Role: ");
-    String userRole = inputScanner.nextLine();
-    
-    // Initialize the PharmacistApp
-    PharmacistApp app = new PharmacistApp(hospitalID, password, userRole);
-    
-    // Start the application and test all methods
-    app.start(records, medications, inventoryController);
-    
-    inputScanner.close();
-}
+        // Authentication inputs
+        System.out.print("Enter Hospital ID: ");
+        String hospitalID = inputScanner.nextLine();
+        
+        System.out.print("Enter Password: ");
+        String password = inputScanner.nextLine();
+        System.out.print("Enter User Role: ");
+        String userRole = inputScanner.nextLine();
+        
+        // Initialize the PharmacistApp
+        PharmacistApp app = new PharmacistApp(hospitalID, password, userRole);
+        
+        // Start the application and test all methods
+        app.start(records, medications, inventoryController);
+        
+        inputScanner.close();
+    }
 
 
     public void start(List<AppointmentOutcomeRecord> records, List<Medication> medications, InventoryController inventoryController) {
