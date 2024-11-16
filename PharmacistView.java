@@ -1,5 +1,6 @@
 
 
+import java.util.List;
 import java.util.Map;
 
 public class PharmacistView {
@@ -33,19 +34,16 @@ public class PharmacistView {
         }
     }
     
-    public void displayInventory(Map<Medication, Integer> medicationStock) {
-        if (medicationStock == null || medicationStock.isEmpty()) {
+    public void displayInventory(List<Medication> medications) {
+        if (medications == null || medications.isEmpty()) {
             System.out.println("The inventory is empty.");
             return;
         }
-
+    
         System.out.println("Inventory:");
-        for (Map.Entry<Medication, Integer> entry : medicationStock.entrySet()) {
-            Medication medication = entry.getKey();
-            Integer quantity = entry.getValue();
-
+        for (Medication medication : medications) {
             // Display the medication name and its stock quantity
-            System.out.println(medication.getName() + ": " + quantity + " units available");
+            System.out.println(medication.getName() + ": " + medication.getQuantity() + " units available");
         }
     }
 

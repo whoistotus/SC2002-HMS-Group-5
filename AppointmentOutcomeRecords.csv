@@ -1,0 +1,4 @@
+﻿AppointmentID,PatientID,DoctorID,Date,ServiceType,ConsultationNotes,Medications,PrescriptionStatus
+
+P1001,D001,AP001,Mon Nov 11 00:00:00 SGT 2024,C1,CONSULTATION
+,M1,2,M2,3

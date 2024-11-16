@@ -56,6 +56,7 @@ public class AppointmentOutcomeRecordsCsvHelper {
         }
     }
 
+
     // Update a specific appointment outcome record in the CSV file
     public static void updateAppointmentOutcomeRecord(AppointmentOutcomeRecord updatedRecord) {
         List<AppointmentOutcomeRecord> records = loadAppointmentOutcomes();

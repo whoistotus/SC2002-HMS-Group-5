@@ -1,5 +1,5 @@
-
-
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -15,35 +15,67 @@ public class PharmacistApp {
         this.scanner = new Scanner(System.in);
     }
 
-    // public static void main(String[] args) {
-    //     System.out.print("Enter Hospital ID: ");
-    //     Scanner inputScanner = new Scanner(System.in);
-    //     String hospitalID = inputScanner.nextLine();
-    //     PharmacistApp app = new PharmacistApp(hospitalID, password, userRole);
-    //     app.start();
-    //     inputScanner.close();
-    // }
+public static void main(String[] args) {
+    Scanner inputScanner = new Scanner(System.in);
+    
+    // Initialize necessary variables outside the try-catch block
+    List<Medication> medications = new ArrayList<>();
+    
+    InventoryController inventoryController = new InventoryController();
+    List<AppointmentOutcomeRecord> records = AppointmentOutcomeRecordsCsvHelper.loadAppointmentOutcomes();
+    
+    try {
+        // Initialize medicationCSVReader inside try-catch to handle exceptions
+        MedicationCSVReader medicationCSVReader = new MedicationCSVReader();
+        
+        // Get all medications from the CSV
+        medications = medicationCSVReader.getAllMedications();
+        
+    } catch (FileNotFoundException e) {
+        System.out.println("Error: " + e.getMessage());
+        e.printStackTrace();
+    }
 
-    public void start(List<AppointmentOutcomeRecord> records, Map<Medication, Integer> medicationStock, InventoryController inventoryController) {
+    // Authentication inputs
+    System.out.print("Enter Hospital ID: ");
+    String hospitalID = inputScanner.nextLine();
     
-        while (true) {
-            System.out.println("\nPharmacist Menu:");
-            System.out.println("1. View Patient Appointment Outcome Record");
-            System.out.println("2. Monitor Inventory");
-            System.out.println("3. Prescribe Medicine");
-            System.out.println("4. Replenish Medicine");
-            System.out.println("5. Exit");
-            System.out.print("Select an option: ");
+    System.out.print("Enter Password: ");
+    String password = inputScanner.nextLine();
     
-            int choice = scanner.nextInt();
-            scanner.nextLine(); // Consume newline character
+    System.out.print("Enter User Role: ");
+    String userRole = inputScanner.nextLine();
     
-            switch (choice) {
-                case 1:
-                    viewAppointmentOutcome(records);
-                    break;
-                case 2:
-                    monitorInventory(medicationStock);
+    // Initialize the PharmacistApp
+    PharmacistApp app = new PharmacistApp(hospitalID, password, userRole);
+    
+    // Start the application and test all methods
+    app.start(records, medications, inventoryController);
+    
+    inputScanner.close();
+}
+
+
+    public void start(List<AppointmentOutcomeRecord> records, List<Medication> medications, InventoryController inventoryController) {
+        
+            while (true) {
+                System.out.println("\nPharmacist Menu:");
+                System.out.println("1. View Patient Appointment Outcome Record");
+                System.out.println("2. Monitor Inventory");
+                System.out.println("3. Prescribe Medicine");
+                System.out.println("4. Replenish Medicine");
+                System.out.println("5. Exit");
+                System.out.print("Select an option: ");
+        
+                int choice = scanner.nextInt();
+                scanner.nextLine(); // Consume newline character
+        
+                switch (choice) {
+                    case 1:
+                        viewAppointmentOutcome(records);
+                        break;
+                    case 2:
+                        monitorInventory(medications);
                     break;
                 case 3:
                     prescribeMedicine(records, inventoryController);
@@ -76,9 +108,9 @@ public class PharmacistApp {
     }
     
 
-    private void monitorInventory(Map<Medication, Integer> medicationStock) {
+    private void monitorInventory(List<Medication> medications) {
         // Display the current inventory of medications
-        pharmacistView.displayInventory(medicationStock);
+        pharmacistView.displayInventory(medications);
     }
 
 
