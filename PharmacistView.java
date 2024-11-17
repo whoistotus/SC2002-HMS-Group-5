@@ -1,5 +1,4 @@
 import java.util.Map;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.io.FileNotFoundException;
@@ -19,7 +18,7 @@ public class PharmacistView {
         List<AppointmentOutcomeRecord> records = AppointmentOutcomeRecordsCsvHelper.loadAppointmentOutcomes();
 
         while (true) {
-            displayMenu();
+            pharmacistMenu();
             int choice = getUserChoice();
             switch (choice) {
                 case 1 -> viewAppointmentOutcome(records);
@@ -37,7 +36,7 @@ public class PharmacistView {
     }
 
     // Display the main menu
-    private void displayMenu() {
+    private void pharmacistMenu() {
         System.out.println("\nPharmacist Menu:");
         System.out.println("1. View Patient Appointment Outcome Record");
         System.out.println("2. Monitor Inventory");

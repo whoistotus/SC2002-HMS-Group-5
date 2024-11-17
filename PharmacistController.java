@@ -1,9 +1,7 @@
 import java.util.List;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class PharmacistController {
-    private static int requestCounter = 1;
     private String hospitalID;
 
     public PharmacistController(String hospitalID) {
