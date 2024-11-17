@@ -21,18 +21,12 @@ public class PharmacistController extends User {
     public String updateStatusOfPrescription(String appointmentID, AppointmentOutcomeRecord.StatusOfPrescription newStatus, List<AppointmentOutcomeRecord> records) {
         for (AppointmentOutcomeRecord record : records) {
             if (record.getAppointmentID().equals(appointmentID)) {
-                // Update the status in the record
                 record.setStatusOfPrescription(newStatus);
-    
-                // Update the record in the CSV
-                AppointmentOutcomeRecordsCsvHelper.updateAppointmentOutcomeRecord(record);
-    
                 return "Status updated successfully";
             }
         }
         return "Appointment ID not found";
     }
-    
 
     // Submit a replenishment request for medicines
     public void submitReplenishmentRequest(String medicineName, int quantity) {
