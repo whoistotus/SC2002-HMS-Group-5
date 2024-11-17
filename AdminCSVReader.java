@@ -14,7 +14,6 @@ public class AdminCSVReader {
     public AdminCSVReader(String filePath) throws FileNotFoundException {
         this.filePath = filePath;
         this.staffList = new ArrayList<>();
-        refreshStaffData();
         
         File file = new File(filePath);
         if (!file.exists()) {
@@ -25,7 +24,7 @@ public class AdminCSVReader {
     }
 
     public void refreshStaffData() {
-        staffList.clear();
+        staffList.clear();  // Clear existing data
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line;
             boolean firstLine = true;
