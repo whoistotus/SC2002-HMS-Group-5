@@ -7,11 +7,17 @@ import java.util.Scanner;
 public class PharmacistView {
 
     private PharmacistController pharmacistController;
+    private MedicationCSVReader medicationCSVReader;
     private Scanner scanner;
 
     public PharmacistView(String hospitalID) {
         this.pharmacistController = new PharmacistController(hospitalID);
         this.scanner = new Scanner(System.in);
+        try {
+            this.medicationCSVReader = new MedicationCSVReader();
+        } catch (FileNotFoundException e) {
+            System.err.println("Error: Inventory file not found. Unable to load medications.");
+        }
     }
 
     // public static void main(String[] args) {
@@ -92,7 +98,7 @@ public class PharmacistView {
                     viewAppointmentOutcome(records);
                     break;
                 case 2:
-                    displayInventory(medications);
+                    displayInventory();
                     break;
                 case 3:
                     prescribeMedicine(records, inventoryController);
@@ -160,7 +166,7 @@ public class PharmacistView {
 
         try {
             // Prescribe the medication and update the inventory
-            String result = pharmacistController.prescribeMed(appointmentID, records, inventoryController);
+            String result = pharmacistController.prescribeMed(appointmentID, record, records, inventoryController);
             System.out.println(result);
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
@@ -216,16 +222,28 @@ public class PharmacistView {
         }
     }
 
-    public void displayInventory(List<Medication> medications) {
-        if (medications == null || medications.isEmpty()) {
-            System.out.println("The inventory is empty.");
+    public void displayInventory() {
+        if (medicationCSVReader == null) {
+            System.out.println("Unable to load inventory due to missing CSV file.");
             return;
         }
 
-        System.out.println("Inventory:");
-        for (Medication medication : medications) {
-            // Display the medication name and its stock quantity
-            System.out.println(medication.getName() + ": " + medication.getQuantity() + " units available");
+        try {
+            List<Medication> medications = medicationCSVReader.getAllMedications();
+            if (medications == null || medications.isEmpty()) {
+                System.out.println("The inventory is empty.");
+                return;
+            }
+        
+            System.out.println("Inventory:");
+            for (Medication medication : medications) {
+                System.out.println(medication.getName() + ": " + medication.getQuantity() + " units available");
+            }
+        } catch (Exception e) { // Catching a more general exception type if needed
+            System.out.println("An error occurred while loading the inventory: " + e.getMessage());
+            e.printStackTrace();
         }
+        
+
     }
 }
