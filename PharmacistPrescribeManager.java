@@ -1,15 +1,14 @@
 import java.util.HashMap;
 import java.util.List;
 
-public class PharmacistPrescribe {
+public class PharmacistPrescribeManager implements IPrescriptionManager {
 
+    @Override
     public String prescribeMed(String appointmentID, List<AppointmentOutcomeRecord> records, InventoryController inventoryController) {
         for (AppointmentOutcomeRecord record : records) {
             if (record.getAppointmentID().equals(appointmentID)) {
-                // Check if the prescription is already dispensed
-                if (record.getStatusOfPrescription() != null &&
-                    record.getStatusOfPrescription().name().equalsIgnoreCase("DISPENSED")) {
-                    throw new IllegalStateException("Prescription already dispensed for Appointment ID: " + appointmentID);
+                if (record.getStatusOfPrescription() == AppointmentOutcomeRecord.StatusOfPrescription.DISPENSED) {
+                    throw new IllegalStateException("Error: Prescription already dispensed for Appointment ID: " + appointmentID);
                 }
 
                 HashMap<String, Integer> prescribedMedicines = record.getMedications();
@@ -31,14 +30,15 @@ public class PharmacistPrescribe {
         throw new IllegalArgumentException("Appointment ID not found: " + appointmentID);
     }
 
-    private void updateStatusOfPrescription(String appointmentID, AppointmentOutcomeRecord.StatusOfPrescription newStatus, List<AppointmentOutcomeRecord> records) {
+    @Override
+    public String updateStatusOfPrescription(String appointmentID, AppointmentOutcomeRecord.StatusOfPrescription newStatus, List<AppointmentOutcomeRecord> records) {
         for (AppointmentOutcomeRecord record : records) {
             if (record.getAppointmentID().equals(appointmentID)) {
                 record.setStatusOfPrescription(newStatus);
                 AppointmentOutcomeRecordsCsvHelper.updateAppointmentOutcomeRecord(record); // Update in CSV
-                return;
+                return "Status updated successfully";
             }
         }
-        throw new IllegalArgumentException("Appointment ID not found for updating status: " + appointmentID);
+        return "Appointment ID not found";
     }
 }

@@ -1,22 +1,28 @@
 import java.util.List;
 
 public class PharmacistController {
-    private String hospitalID;
-    private PharmacistReplenishRequestManager replenishRequestManager;
-    private PharmacistPrescribe pharmacistPrescribe;
+    private IReplenishmentManager replenishmentManager;
+    private IPrescriptionManager prescriptionManager;
 
     public PharmacistController(String hospitalID) {
-        this.hospitalID = hospitalID;
-        this.replenishRequestManager = new PharmacistReplenishRequestManager();
-        this.pharmacistPrescribe = new PharmacistPrescribe();
+        this.replenishmentManager = new PharmacistReplenishRequestManager();
+        this.prescriptionManager = new PharmacistPrescribeManager();
     }
 
     public void submitReplenishmentRequest(String medicineName, int quantity) {
-        replenishRequestManager.submitReplenishmentRequest(medicineName, quantity);
+        replenishmentManager.submitReplenishmentRequest(medicineName, quantity);
+    }
+
+    public List<ReplenishmentRequest> viewAllReplenishmentRequests() {
+        return replenishmentManager.viewAllReplenishmentRequests();
     }
 
     public String prescribeMed(String appointmentID, List<AppointmentOutcomeRecord> records, InventoryController inventoryController) {
-        return pharmacistPrescribe.prescribeMed(appointmentID, records, inventoryController);
+        return prescriptionManager.prescribeMed(appointmentID, records, inventoryController);
+    }
+
+    public String updateStatusOfPrescription(String appointmentID, AppointmentOutcomeRecord.StatusOfPrescription newStatus, List<AppointmentOutcomeRecord> records) {
+        return prescriptionManager.updateStatusOfPrescription(appointmentID, newStatus, records);
     }
 
     public AppointmentOutcomeRecord getAppointmentOutcomeRecord(String appointmentID, List<AppointmentOutcomeRecord> records) {

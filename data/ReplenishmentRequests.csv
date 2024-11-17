@@ -2,3 +2,4 @@ RequestID,MedicineName,Quantity,Status
 R001,paracetamol,100,APPROVED
 R002,aspirin,50,APPROVED
 R003,Paracetamol,70,PENDING
+R004,Aspirin,400,PENDING
