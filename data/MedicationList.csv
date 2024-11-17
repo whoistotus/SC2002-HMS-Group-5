@@ -2,7 +2,7 @@ medicationName,stockLevel,description,lowStockThreshold
 Paracetamol,641,Pain relief and fever reduction medication,100
 Amoxicillin,300,Antibiotic for bacterial infections,75
 Ibuprofen,450,Anti-inflammatory pain reliever,100
-Aspirin,400,Blood thinner and pain reliever,80
+Aspirin,350,Blood thinner and pain reliever,80
 Omeprazole,200,Acid reflux and ulcer medication,50
 Cetirizine,350,Antihistamine for allergies,70
 Metformin,250,Type 2 diabetes medication,60

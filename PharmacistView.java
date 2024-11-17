@@ -6,7 +6,6 @@ import java.io.FileNotFoundException;
 
 public class PharmacistView {
     private PharmacistController pharmacistController;
-    private InventoryController inventoryController;
     private Scanner scanner;
 
     public PharmacistView(String hospitalID) {
@@ -17,7 +16,6 @@ public class PharmacistView {
     // Main application loop
     public void start() {
         InventoryController inventoryController = new InventoryController();
-        List<Medication> medications = loadMedications();
         List<AppointmentOutcomeRecord> records = AppointmentOutcomeRecordsCsvHelper.loadAppointmentOutcomes();
 
         while (true) {
@@ -56,16 +54,6 @@ public class PharmacistView {
             return Integer.parseInt(scanner.nextLine());
         } catch (NumberFormatException e) {
             return -1; // Invalid choice
-        }
-    }
-
-    // Load medications from CSV
-    private List<Medication> loadMedications() {
-        try {
-            return new MedicationCSVReader().getAllMedications();
-        } catch (FileNotFoundException e) {
-            System.out.println("Error: Medication file not found.");
-            return new ArrayList<>();
         }
     }
 
@@ -125,16 +113,34 @@ public class PharmacistView {
     
 
     // Prescribe medicine
-    private void prescribeMedicine(List<AppointmentOutcomeRecord> records, InventoryController inventoryController) {
-        System.out.print("Enter Appointment ID: ");
-        String appointmentID = scanner.nextLine();
-        try {
-            String result = pharmacistController.prescribeMed(appointmentID, records, inventoryController);
-            System.out.println(result);
-        } catch (Exception e) {
-            System.out.println("Error: " + e.getMessage());
-        }
+// Prescribe medicine
+private void prescribeMedicine(List<AppointmentOutcomeRecord> records, InventoryController inventoryController) {
+    System.out.print("Enter Appointment ID: ");
+    String appointmentID = scanner.nextLine();
+    
+    // Find the matching appointment outcome record
+    AppointmentOutcomeRecord record = pharmacistController.getAppointmentOutcomeRecord(appointmentID, records);
+    if (record == null) {
+        System.out.println("Error: Appointment outcome record not found for ID: " + appointmentID);
+        return;
     }
+
+    // Check if the prescription has already been dispensed
+    if (record.getStatusOfPrescription() != null && 
+    record.getStatusOfPrescription().name().equalsIgnoreCase("DISPENSED")) {
+    System.out.println("Error: Prescription for Appointment ID " + appointmentID + " has already been dispensed. Action rejected.");
+    return;
+}
+
+    try {
+        // Proceed with prescribing medicine
+        String result = pharmacistController.prescribeMed(appointmentID, records, inventoryController);
+        System.out.println(result);
+    } catch (Exception e) {
+        System.out.println("Error: " + e.getMessage());
+    }
+}
+
 
     // Submit replenishment request
     private void replenishMedicine() {
