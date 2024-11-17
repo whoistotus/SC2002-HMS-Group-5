@@ -5,12 +5,10 @@ import java.util.stream.Collectors;
 public class AdminModel {
     private List<HospitalStaff> staffList;
     protected InventoryController inventoryController;
-    private AppointmentManager appointmentManager;
 
     public AdminModel() {
         this.staffList = new ArrayList<>();
         this.inventoryController = new InventoryController();
-        this.appointmentManager = new AppointmentManager();
     }
 
     // Staff Management Methods
