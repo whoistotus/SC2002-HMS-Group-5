@@ -94,7 +94,7 @@ public class AppointmentManager
         DoctorAvailabilityCsvHelper.updateDoctorAvailability(doctorID, newDate, newTime);
         AppointmentsCsvHelper.updateAppointment(appointment);
     
-        System.out.println("Appointment rescheduled successfully.");
+        
         return true;
     }
     

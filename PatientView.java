@@ -315,23 +315,36 @@ public class PatientView
     
         System.out.print("Enter Appointment ID to reschedule: ");
         String appointmentID = scanner.nextLine();
-    
-        System.out.print("Enter new appointment date (YYYY-MM-DD): ");
-        String newDate = scanner.nextLine();
-    
-        System.out.print("Enter new appointment time (HH:MM): ");
-        String newTime = scanner.nextLine();
-    
+
         Appointment appointment = AppointmentsCsvHelper.getAppointmentById(appointmentID);
         if (appointment == null) {
             showMessage("Appointment not found!");
             return;
         }
     
+        System.out.print("Enter new appointment date (YYYY-MM-DD): ");
+        String newDate = scanner.nextLine();
+    
+        System.out.print("Enter new appointment time (HH:MM): ");
+        String newTime = scanner.nextLine();
+
+        String doctorID = appointment.getDoctorID();
+        String oldDate = appointment.getAppointmentDate();
+        String oldTime = appointment.getAppointmentTime();
+    
         // Attempt to reschedule
         boolean success = appointmentManager.rescheduleAppointment(appointmentID, newDate, newTime);
         if (success) {
-            showMessage("Appointment rescheduled successfully!");
+            // Add the original time slot back to availability
+            boolean oldSlotAdded = DoctorAvailabilityCsvHelper.addSlot(doctorID, oldDate, oldTime);
+            // Remove the new time slot from availability
+            boolean newSlotRemoved = DoctorAvailabilityCsvHelper.removeSlot(doctorID, newDate, newTime);
+    
+            if (oldSlotAdded && newSlotRemoved) {
+                showMessage("Appointment rescheduled successfully! Availability updated.");
+            } else {
+                showMessage("Appointment rescheduled successfully, but failed to update availability.");
+            }
         } else {
             showMessage("Failed to reschedule. The new slot may be unavailable.");
         }

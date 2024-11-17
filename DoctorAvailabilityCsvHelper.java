@@ -165,6 +165,19 @@ public class DoctorAvailabilityCsvHelper {
         saveDoctorAvailability(updatedList);
         return true;
     }
+
+    public static boolean addSlot(String doctorID, String date, String time) {
+        List<DoctorAvailability> availabilityList = loadDoctorAvailability();
+        DoctorAvailability newSlot = new DoctorAvailability(doctorID, date, time, time);
+    
+        // Add the new slot to the list
+        availabilityList.add(newSlot);
+    
+        // Save the updated availability back to the CSV
+        saveDoctorAvailability(availabilityList);
+        return true;
+    }
+    
     
     
     
