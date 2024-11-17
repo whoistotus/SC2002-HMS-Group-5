@@ -102,44 +102,59 @@ public class AppointmentsCsvHelper {
     
     // Retrieves all pending appointments for a specific doctor
     public static List<Appointment> getPendingAppointmentsForDoctor(String doctorID) {
-        List<Appointment> pendingAppointments = new ArrayList<>();
-        
-        try (BufferedReader br = new BufferedReader(new FileReader(FILE_PATH))) {
-            String line;
-            br.readLine(); // Skip header
-            while ((line = br.readLine()) != null) {
-                String[] values = line.split(",");
-                String currentAppointmentID = values[0].trim();
-                String currentPatientID = values[1].trim();
-                String currentDoctorID = values[2].trim();
-                String date = values[3].trim();
-                String time = values[4].trim();
-                
-                if (currentDoctorID.equals(doctorID)) {
-                    // If the doctor ID matches, check for pending status
-                    try {
-                        Appointment.AppointmentStatus status = Appointment.AppointmentStatus.valueOf(values[5].trim().toUpperCase());
-                        if (status == Appointment.AppointmentStatus.PENDING) {
-                            PatientModel patient = PatientListCsvHelper.getPatientById(currentPatientID);
-                            DoctorModel doctor = DoctorAvailabilityCsvHelper.getDoctorById(currentDoctorID);
-                            
-                            if (patient != null && doctor != null) {
-                                pendingAppointments.add(new Appointment(currentAppointmentID, patient, doctor, date, time, status));
-                            } else {
-                                System.out.println("Could not load appointment: Patient or Doctor not found for " + currentAppointmentID);
-                            }
+    List<Appointment> pendingAppointments = new ArrayList<>();
+
+    try (BufferedReader br = new BufferedReader(new FileReader("data/Appointments.csv"))) {
+        String line;
+        br.readLine(); // Skip the header row
+
+        while ((line = br.readLine()) != null) {
+            line = line.trim(); // Remove leading/trailing spaces
+            if (line.isEmpty()) {
+                System.out.println("Skipping empty line in CSV.");
+                continue; // Skip empty lines
+            }
+
+            String[] values = line.split(",");
+            if (values.length < 6) { // Validate the number of columns
+                System.out.println("Skipping malformed line: " + line);
+                continue;
+            }
+
+            String currentDoctorID = values[2].trim(); // DoctorID at index 2
+            if (currentDoctorID.equals(doctorID)) {
+                try {
+                    Appointment.AppointmentStatus status = Appointment.AppointmentStatus.valueOf(values[5].trim().toUpperCase());
+                    if (status == Appointment.AppointmentStatus.PENDING) {
+                        PatientModel patient = PatientListCsvHelper.getPatientById(values[1].trim()); // PatientID at index 1
+                        DoctorModel doctor = DoctorAvailabilityCsvHelper.getDoctorById(currentDoctorID);
+
+                        if (patient != null && doctor != null) {
+                            pendingAppointments.add(new Appointment(
+                                values[0].trim(), // AppointmentID
+                                patient,
+                                doctor,
+                                values[3].trim(), // Date
+                                values[4].trim(), // Time
+                                status
+                            ));
+                        } else {
+                            System.out.println("Skipping appointment due to missing patient or doctor: " + line);
                         }
-                    } catch (IllegalArgumentException e) {
-                        System.out.println("Warning: Invalid status in appointment " + currentAppointmentID);
                     }
+                } catch (IllegalArgumentException e) {
+                    System.out.println("Skipping appointment with invalid status: " + line);
                 }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
-        
-        return pendingAppointments;
+    } catch (IOException e) {
+        System.out.println("Error reading the CSV file: " + e.getMessage());
+        e.printStackTrace();
     }
+
+    return pendingAppointments;
+}
+
     
 
     // Saves the entire list of appointments back to the CSV file

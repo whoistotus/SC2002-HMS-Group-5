@@ -337,8 +337,12 @@ public class DoctorView {
                     break;
                 }
                 System.out.print("Enter quantity for " + medName + ": ");
-                int quantity = Integer.parseInt(scanner.nextLine());
-                medications.put(medName, quantity);
+                try {
+                    int quantity = Integer.parseInt(scanner.nextLine());
+                    medications.put(medName, quantity);
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid quantity. Please enter a number.");
+                }
             }
     
             // Create the record string for CSV
@@ -360,22 +364,23 @@ public class DoctorView {
     
             csvRecord.append(",Pending"); // Append statusOfPrescription as Pending
     
-            // Debug statement to verify record content
-            System.out.println("DEBUG: Constructed record -> " + csvRecord);
+            // Debug the constructed CSV record
+            System.out.println("DEBUG: Constructed CSV record: " + csvRecord);
     
-            // Write to CSV
-            AppointmentOutcomeRecordsCsvHelper.writeToCsv(csvRecord.toString()); // Append the record
-            System.out.println("DEBUG: Record added to AppointmentOutcomeRecords.csv.");
+            // Write to the CSV file
+            AppointmentOutcomeRecordsCsvHelper.writeToCsv(csvRecord.toString());
     
             // Update appointment status in Appointments CSV
             AppointmentsCsvHelper.updateAppointmentStatus(appointmentIDToRecord, Appointment.AppointmentStatus.COMPLETED);
     
+            System.out.println("Appointment outcome recorded successfully.");
         } catch (IllegalArgumentException e) {
             System.out.println("Error: Invalid service type entered.");
         } catch (Exception e) {
             System.out.println("An error occurred while recording the appointment outcome: " + e.getMessage());
         }
     }
+    
     
     
 
