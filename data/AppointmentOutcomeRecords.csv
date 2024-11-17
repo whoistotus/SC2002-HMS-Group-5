@@ -1,4 +1,3 @@
 patientID,doctorID,appointmentID,date,consultationNotes,serviceType,medications ,statusOfPrescription
-P1001,D001,AP001,11/11/2024,test,XRAY,Sertraline:2,Pending
-P1002,D002,AP002,11/11/2024,idk,CONSULTATION,Paracetamol:1,Pending
-P1002,D001,AP005,2023-11-11,notes,CONSULTATION,test:1,Pending
+P1002,D002,AP002,2024-12-11,Bed Rest,CONSULTATION,Paracetamol:1,Pending
+P1003,D001,AP001,2023-11-11,Very sick,BLOOD_TEST,Aspirin :50,Pending

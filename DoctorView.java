@@ -28,7 +28,7 @@ public class DoctorView {
             System.out.println("5. Accept Appointment");
             System.out.println("6. Decline Appointment");
             System.out.println("7. Record Appointment Outcome");
-            System.out.println("8. View Doctor Availability");
+            System.out.println("8. View Personal Schedule");
             System.out.println("9. Exit");
             System.out.print("Choose an option: ");
 
@@ -56,22 +56,23 @@ public class DoctorView {
     public void viewScheduledAppointments() {
         System.out.println("\n=== View Scheduled Appointments ===");
         System.out.println("Doctor: " + doctorModel.getName() + " (ID: " + doctorModel.getHospitalID() + ")");
-
+    
         List<Appointment> appointments = AppointmentsCsvHelper.loadAppointments();
-
+    
+        // Filter for the current doctor's confirmed appointments
         List<Appointment> acceptedAppointments = appointments.stream()
-            .filter(appointment -> appointment.getDoctorID().equals(doctorModel.getHospitalID()) &&
-                                   appointment.getStatus() == Appointment.AppointmentStatus.CONFIRMED)
-            .distinct()
-            .collect(Collectors.toList());
-
+                .filter(appointment -> appointment.getDoctorID().equals(doctorModel.getHospitalID()) &&
+                                       appointment.getStatus() == Appointment.AppointmentStatus.CONFIRMED)
+                .distinct()
+                .collect(Collectors.toList());
+    
         if (acceptedAppointments.isEmpty()) {
             System.out.println("No upcoming accepted appointments.");
         } else {
             System.out.println("+---------------------------------------------------------------+");
             System.out.println("| Appointment ID | Patient ID | Date       | Time  | Status     |");
             System.out.println("+---------------------------------------------------------------+");
-
+    
             for (Appointment appointment : acceptedAppointments) {
                 System.out.printf("| %-14s | %-10s | %-10s | %-5s | %-10s |\n",
                                   appointment.getAppointmentID(),
@@ -80,10 +81,27 @@ public class DoctorView {
                                   appointment.getAppointmentTime(),
                                   appointment.getStatus());
             }
-
+    
             System.out.println("+---------------------------------------------------------------+");
+    
+            // Fetch and display patient details below the table
+            System.out.println("\n=== Patient Details ===");
+            for (Appointment appointment : acceptedAppointments) {
+                String patientID = appointment.getPatientID();
+                MedicalRecord medicalRecord = MedicalRecordsCsvHelper.getMedicalRecordById(patientID);
+    
+                // Display patient ID and medical record details
+                System.out.println("Patient ID: " + patientID);
+                if (medicalRecord != null) {
+                    medicalRecord.viewMedicalRecord(); // Assuming this method prints the record
+                } else {
+                    System.out.println("No medical record found for Patient ID: " + patientID);
+                }
+                System.out.println(); // Add space between patient details
+            }
         }
     }
+    
 
     public void viewPatientMedicalRecords() {
         System.out.print("Enter Patient ID to view record: ");
