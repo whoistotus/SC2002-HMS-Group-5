@@ -14,34 +14,34 @@ public class AdminCSVReader {
     public AdminCSVReader(String filePath) throws FileNotFoundException {
         this.filePath = filePath;
         this.staffList = new ArrayList<>();
-        
+
         File file = new File(filePath);
         if (!file.exists()) {
             throw new FileNotFoundException("Staff data file not found at: " + file.getAbsolutePath());
         }
-        
+
         loadStaffData();
     }
 
     public void refreshStaffData() {
-        staffList.clear();  // Clear existing data
+        staffList.clear(); // Clear existing data
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line;
             boolean firstLine = true;
             int lineNumber = 0;
-            
+
             while ((line = br.readLine()) != null) {
                 lineNumber++;
-                
+
                 if (firstLine) {
                     firstLine = false;
                     continue;
                 }
-                
+
                 if (line.trim().isEmpty()) {
                     continue;
                 }
-                
+
                 try {
                     processStaffLine(line);
                 } catch (Exception e) {
@@ -59,7 +59,7 @@ public class AdminCSVReader {
         refreshStaffData(); // Refresh data before generating new ID
         String prefix = role.equalsIgnoreCase("doctor") ? "D" : "P";
         int maxNumber = 0;
-    
+
         for (HospitalStaff staff : staffList) {
             String staffId = staff.getHospitalID();
             if (staffId.startsWith(prefix)) {
@@ -71,7 +71,7 @@ public class AdminCSVReader {
                 }
             }
         }
-    
+
         return String.format("%s%03d", prefix, maxNumber + 1);
     }
 
@@ -80,22 +80,22 @@ public class AdminCSVReader {
             String line;
             boolean firstLine = true;
             int lineNumber = 0;
-            
+
             while ((line = br.readLine()) != null) {
                 lineNumber++;
-                
+
                 // Skip header
                 if (firstLine) {
                     firstLine = false;
                     continue;
                 }
-                
+
                 // Skip empty or whitespace-only lines
                 if (line.trim().isEmpty()) {
                     System.out.println("Skipping empty line at line " + lineNumber);
                     continue;
                 }
-                
+
                 try {
                     processStaffLine(line);
                 } catch (Exception e) {
@@ -103,7 +103,7 @@ public class AdminCSVReader {
                     System.out.println("Error message: " + e.getMessage());
                 }
             }
-            
+
         } catch (IOException e) {
             System.out.println("Error reading staff data file: " + e.getMessage());
             staffList = new ArrayList<>(); // Initialize empty list on error
@@ -118,7 +118,7 @@ public class AdminCSVReader {
 
         // Split with proper CSV handling
         String[] values = line.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)");
-        
+
         // Correct the error message to match actual expected values
         if (values.length != 6) {
             throw new IllegalArgumentException("Invalid line format. Expected 6 values, got " + values.length);
@@ -183,10 +183,10 @@ public class AdminCSVReader {
     }
 
     private boolean isValidRole(String role) {
-        return role != null && 
-               (role.equalsIgnoreCase("Doctor") || 
-                role.equalsIgnoreCase("Pharmacist") || 
-                role.equalsIgnoreCase("Administrator"));
+        return role != null &&
+                (role.equalsIgnoreCase("Doctor") ||
+                        role.equalsIgnoreCase("Pharmacist") ||
+                        role.equalsIgnoreCase("Administrator"));
     }
 
     // Filter methods
