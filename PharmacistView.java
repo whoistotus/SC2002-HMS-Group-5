@@ -25,7 +25,7 @@ public class PharmacistView {
             int choice = getUserChoice();
             switch (choice) {
                 case 1 -> viewAppointmentOutcome(records);
-                case 2 -> displayInventory(medications);
+                case 2 -> displayInventory();
                 case 3 -> prescribeMedicine(records, inventoryController);
                 case 4 -> replenishMedicine();
                 case 5 -> viewAllReplenishmentRequests();
@@ -101,9 +101,28 @@ public class PharmacistView {
     }
 
     // Display inventory details
-    private void displayInventory(List<Medication> medications) {
-        inventoryController.displayInventory();
+    private void displayInventory() {
+        try {
+            // Use MedicationCSVReader to fetch the list of medications from the CSV
+            MedicationCSVReader medicationCSVReader = new MedicationCSVReader();
+            List<Medication> medications = medicationCSVReader.getAllMedications();
+    
+            if (medications == null || medications.isEmpty()) {
+                System.out.println("The inventory is empty.");
+                return;
+            }
+    
+            System.out.println("Inventory:");
+            for (Medication medication : medications) {
+                System.out.println(medication.getName() + ": " + medication.getQuantity() + " units available");
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("Error: Medication file not found.");
+        } catch (Exception e) {
+            System.out.println("Error reading inventory: " + e.getMessage());
+        }
     }
+    
 
     // Prescribe medicine
     private void prescribeMedicine(List<AppointmentOutcomeRecord> records, InventoryController inventoryController) {
