@@ -361,16 +361,23 @@ public class PatientView
             showMessage("Appointment not found!");
             return;
         }
+
+        String doctorID = appointment.getDoctorID();
+        String date = appointment.getAppointmentDate();
+        String time = appointment.getAppointmentTime();
         
         boolean success = appointmentManager.cancelAppointment(appointmentID);
-        if (success) 
-        {
-            showMessage("Appointment has been successfully canceled.");
-        } 
-        
-        else 
-        {
-            showMessage("Failed to cancel the appointment. Appointment not found.");
+        if (success) {
+            // Add the canceled time slot back to availability
+            boolean slotAdded = DoctorAvailabilityCsvHelper.addSlot(doctorID, date, time);
+    
+            if (slotAdded) {
+                showMessage("Appointment canceled successfully! Time slot added back to availability.");
+            } else {
+                showMessage("Appointment canceled successfully, but failed to update availability.");
+            }
+        } else {
+            showMessage("Failed to cancel the appointment. Please try again.");
         }
     }
 
