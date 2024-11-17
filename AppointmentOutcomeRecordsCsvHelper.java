@@ -97,7 +97,7 @@ public class AppointmentOutcomeRecordsCsvHelper {
     }
 
     // Helper to format a record as a CSV string
-    private static String formatRecordToCsv(AppointmentOutcomeRecord record) {
+    protected static String formatRecordToCsv(AppointmentOutcomeRecord record) {
         return String.format("%s,%s,%s,%s,%s,%s,%s,%s",
                 record.getAppointmentID(),
                 record.getPatientID(),
