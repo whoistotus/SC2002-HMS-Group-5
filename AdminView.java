@@ -418,6 +418,8 @@ public class AdminView {
     
         while (continueAdding) {
             try {
+                admincsvReader.refreshStaffData(); // Refresh data before each addition
+
                 // Staff Role input first since we need it for ID generation
                 String staffRole;
                 while (true) {
@@ -512,7 +514,8 @@ public class AdminView {
                         System.out.println("Invalid input. Please enter Y or N.");
                     }
                 }
-    
+                admincsvReader.refreshStaffData(); // Refresh data before each addition
+
             } catch (Exception e) {
                 System.out.println("An error occurred: " + e.getMessage());
                 System.out.println("Please try again.");

@@ -14,6 +14,7 @@ public class AdminCSVReader {
     public AdminCSVReader(String filePath) throws FileNotFoundException {
         this.filePath = filePath;
         this.staffList = new ArrayList<>();
+        refreshStaffData();
         
         File file = new File(filePath);
         if (!file.exists()) {
@@ -21,6 +22,58 @@ public class AdminCSVReader {
         }
         
         loadStaffData();
+    }
+
+    public void refreshStaffData() {
+        staffList.clear();
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            boolean firstLine = true;
+            int lineNumber = 0;
+            
+            while ((line = br.readLine()) != null) {
+                lineNumber++;
+                
+                if (firstLine) {
+                    firstLine = false;
+                    continue;
+                }
+                
+                if (line.trim().isEmpty()) {
+                    continue;
+                }
+                
+                try {
+                    processStaffLine(line);
+                } catch (Exception e) {
+                    System.out.println("Error at line " + lineNumber + ": " + line);
+                    System.out.println("Error message: " + e.getMessage());
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error reading staff data file: " + e.getMessage());
+            staffList = new ArrayList<>();
+        }
+    }
+
+    public String generateNextHospitalID(String role) throws Exception {
+        refreshStaffData(); // Refresh data before generating new ID
+        String prefix = role.equalsIgnoreCase("doctor") ? "D" : "P";
+        int maxNumber = 0;
+    
+        for (HospitalStaff staff : staffList) {
+            String staffId = staff.getHospitalID();
+            if (staffId.startsWith(prefix)) {
+                try {
+                    int number = Integer.parseInt(staffId.substring(1));
+                    maxNumber = Math.max(maxNumber, number);
+                } catch (NumberFormatException e) {
+                    continue;
+                }
+            }
+        }
+    
+        return String.format("%s%03d", prefix, maxNumber + 1);
     }
 
     private void loadStaffData() {
