@@ -343,12 +343,6 @@ public class PatientView
         System.out.print("Enter Appointment ID: ");
         String appointmentID = scanner.nextLine();
     
-        System.out.print("Enter appointment date (YYYY-MM-DD): ");
-        String date = scanner.nextLine();
-    
-        System.out.print("Enter appointment time (HH:MM): ");
-        String time = scanner.nextLine();
-    
         Appointment appointment = model.getAppointmentById(appointmentID);
         if (appointment == null) {
             showMessage("Appointment not found!");

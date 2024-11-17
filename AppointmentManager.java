@@ -63,8 +63,6 @@ public class AppointmentManager
         // Update Doctor's availability and CSV
         DoctorAvailabilityCsvHelper.updateDoctorAvailability(doctor.getHospitalID(), date, time);
         AppointmentsCsvHelper.addAppointment(newAppointment);
-    
-        System.out.println("Appointment scheduled successfully.");
         return true;
     }
     
