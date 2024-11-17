@@ -74,7 +74,7 @@ public class AdminView {
                     break;
     
                 case 5:
-                    ManageReplenishmentReq();
+                    manageReplenishmentReq();
                     break;
     
                 case 6:
@@ -646,7 +646,7 @@ public class AdminView {
         }
     }
 
-    private void ManageReplenishmentReq() {
+    private void manageReplenishmentReq() {
         boolean continueManaging = true;
     
         while (continueManaging) {
