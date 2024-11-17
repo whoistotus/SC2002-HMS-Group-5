@@ -1,3 +1,3 @@
-appointmentID,patientID,doctorID,date,serviceType,consultationNotes,medications,statusOfPrescription
-AP002,P1002,D002,2024-12-11,CONSULTATION,Bed Rest,Paracetamol:1,DISPENSED
-AP001,P1003,D001,2023-11-11,BLOOD_TEST,Very sick,Aspirin :50,PENDING
+patientID,doctorID,appointmentID,date,consultationNotes,serviceType,medications ,statusOfPrescription
+P1002,D002,AP002,2024-12-11,Bed Rest,CONSULTATION,Paracetamol:1,Pending
+P1003,D001,AP001,2023-11-11,Very sick,BLOOD_TEST,Aspirin :50,Pending
