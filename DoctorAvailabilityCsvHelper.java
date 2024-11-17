@@ -78,7 +78,6 @@ public class DoctorAvailabilityCsvHelper {
             // Save the updated availability back to the CSV
             saveDoctorAvailability(availabilityList);
         } else {
-            System.out.println("Debug: No matching availability found for update.");
         }
     
         return updated;
