@@ -299,7 +299,7 @@ public class PatientView
             boolean success = appointmentManager.scheduleAppointment(model, doctor, date, time);
             if (success) {
                 // Block the booked time slot and update the doctor's availability
-                boolean updated = DoctorAvailabilityCsvHelper.updateDoctorAvailability(doctorID, date, time);
+                boolean updated = DoctorAvailabilityCsvHelper.removeSlot(doctorID, date, time);
                 if (updated) {
                     showMessage("Appointment scheduled successfully with status 'Pending'. Doctor availability updated.");
                 } else {

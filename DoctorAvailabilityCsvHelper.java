@@ -145,5 +145,27 @@ public class DoctorAvailabilityCsvHelper {
         }
         return null;
     }
+
+    public static boolean removeSlot(String doctorID, String date, String time) {
+        List<DoctorAvailability> availabilityList = loadDoctorAvailability();
+        List<DoctorAvailability> updatedList = new ArrayList<>();
+    
+        for (DoctorAvailability availability : availabilityList) {
+            if (availability.getDoctorID().equals(doctorID) && availability.getDate().equals(date)) {
+                // Check if the slot matches the scheduled time
+                if (availability.getStartTime().equals(time)) {
+                    // Skip this slot to "remove" it
+                    continue;
+                }
+            }
+            updatedList.add(availability);
+        }
+    
+        // Save the updated availability back to the CSV
+        saveDoctorAvailability(updatedList);
+        return true;
+    }
+    
+    
     
 }
