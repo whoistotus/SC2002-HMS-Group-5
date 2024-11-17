@@ -86,7 +86,7 @@ public class AppointmentOutcomeRecordsCsvHelper {
 
         if (updated) {
             try (PrintWriter writer = new PrintWriter(new FileWriter(FILE_PATH))) {
-                writer.println("appointmentID,patientID,doctorID,date,serviceType,consultationNotes,medications,statusOfPrescription");
+                writer.println("patientID,doctorID,appointmentID,date,consultationNotes,serviceType,medications ,statusOfPrescription");
                 for (String line : lines) {
                     writer.println(line);
                 }
@@ -99,12 +99,12 @@ public class AppointmentOutcomeRecordsCsvHelper {
     // Helper to format a record as a CSV string
     private static String formatRecordToCsv(AppointmentOutcomeRecord record) {
         return String.format("%s,%s,%s,%s,%s,%s,%s,%s",
-                record.getAppointmentID(),
                 record.getPatientID(),
                 record.getDoctorID(),
+                record.getAppointmentID(),
                 record.getDate(),
-                record.getServiceType(),
                 record.getConsultationNotes(),
+                record.getServiceType(),
                 formatMedications(record.getMedications()),
                 record.getStatusOfPrescription()
         );
