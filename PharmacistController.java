@@ -1,9 +1,9 @@
+
+
 import java.util.List;
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -18,39 +18,15 @@ public class PharmacistController extends User {
     }
 
     // Update the status of the prescription in the appointment record
-    // Update the StatusOfPrescription for a specific appointment outcome record
-    public static void updateStatusOfPrescription(String appointmentID, AppointmentOutcomeRecord.StatusOfPrescription newStatus) {
-        List<AppointmentOutcomeRecord> records = AppointmentOutcomeRecordsCsvHelper.loadAppointmentOutcomes();
-        List<String> lines = new ArrayList<>();
-        boolean updated = false;
-
+    public String updateStatusOfPrescription(String appointmentID, AppointmentOutcomeRecord.StatusOfPrescription newStatus, List<AppointmentOutcomeRecord> records) {
         for (AppointmentOutcomeRecord record : records) {
             if (record.getAppointmentID().equals(appointmentID)) {
-                record.setStatusOfPrescription(newStatus); // Update the status of prescription
-                String updatedLine = AppointmentOutcomeRecordsCsvHelper.formatRecordToCsv(record); // Format the updated record to CSV
-                lines.add(updatedLine);
-                updated = true;
-            } else {
-                lines.add(AppointmentOutcomeRecordsCsvHelper.formatRecordToCsv(record)); // Keep existing records as they are
+                record.setStatusOfPrescription(newStatus);
+                return "Status updated successfully";
             }
         }
-
-        if (updated) {
-            try (PrintWriter writer = new PrintWriter(new FileWriter("data/AppointmentOutcomeRecords.csv"))) {
-                writer.println("appointmentID,patientID,doctorID,date,serviceType,consultationNotes,medications,statusOfPrescription");
-                for (String line : lines) {
-                    writer.println(line); // Write all lines back to the CSV
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else {
-            System.out.println("ERROR: Appointment with ID " + appointmentID + " not found.");
-        }
+        return "Appointment ID not found";
     }
-
-    
-    
 
     // Submit a replenishment request for medicines
     public void submitReplenishmentRequest(String medicineName, int quantity) {
@@ -93,7 +69,7 @@ public class PharmacistController extends User {
 
 
     // Prescribe medicine based on quantities already set by the doctor
-    public String prescribeMed(String appointmentID, AppointmentOutcomeRecord patientRecord, List<AppointmentOutcomeRecord> records, InventoryController inventoryController) {
+    public String prescribeMed(String appointmentID, List<AppointmentOutcomeRecord> records, InventoryController inventoryController) {
         // Iterate through the list of appointment outcome records to find the specific appointment
         for (AppointmentOutcomeRecord record : records) {
             if (record.getAppointmentID().equals(appointmentID)) {
@@ -119,8 +95,7 @@ public class PharmacistController extends User {
                 }
     
                 // Update the status of the prescription to DISPENSED
-                record.setStatusOfPrescription(AppointmentOutcomeRecord.StatusOfPrescription.DISPENSED);
-                updateStatusOfPrescription(appointmentID, AppointmentOutcomeRecord.StatusOfPrescription.DISPENSED);
+                updateStatusOfPrescription(appointmentID, AppointmentOutcomeRecord.StatusOfPrescription.DISPENSED, records);
     
                 return "Medicines processed successfully for appointment ID: " + appointmentID;
             }

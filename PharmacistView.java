@@ -7,18 +7,48 @@ import java.util.Scanner;
 public class PharmacistView {
 
     private PharmacistController pharmacistController;
-    private MedicationCSVReader medicationCSVReader;
     private Scanner scanner;
 
     public PharmacistView(String hospitalID) {
         this.pharmacistController = new PharmacistController(hospitalID);
         this.scanner = new Scanner(System.in);
-        try {
-            this.medicationCSVReader = new MedicationCSVReader();
-        } catch (FileNotFoundException e) {
-            System.err.println("Error: Inventory file not found. Unable to load medications.");
-        }
     }
+
+    // public static void main(String[] args) {
+    //     Scanner inputScanner = new Scanner(System.in);
+
+    //     // Initialize necessary variables
+    //     List<Medication> medications = new ArrayList<>();
+    //     InventoryController inventoryController = new InventoryController();
+    //     List<AppointmentOutcomeRecord> records = AppointmentOutcomeRecordsCsvHelper.loadAppointmentOutcomes();
+
+    //     // Load medications from CSV
+    //     try {
+    //         MedicationCSVReader medicationCSVReader = new MedicationCSVReader();
+    //         medications = medicationCSVReader.getAllMedications();
+    //     } catch (FileNotFoundException e) {
+    //         System.out.println("Error: Medication file not found.");
+    //         e.printStackTrace();
+    //     }
+
+    //     // Authentication inputs
+    //     System.out.print("Enter Hospital ID: ");
+    //     String hospitalID = inputScanner.nextLine();
+
+    //     System.out.print("Enter Password: ");
+    //     String password = inputScanner.nextLine();
+
+    //     System.out.print("Enter User Role: ");
+    //     String userRole = inputScanner.nextLine();
+
+    //     // Initialize the Pharmacist App
+    //     PharmacistView app = new PharmacistView(hospitalID);
+
+    //     // Start the application
+    //     app.start(records, medications, inventoryController);
+
+    //     inputScanner.close();
+    // }
 
     public void pharmacistMenu() {
         System.out.println("\nPharmacist Menu:");
@@ -62,7 +92,7 @@ public class PharmacistView {
                     viewAppointmentOutcome(records);
                     break;
                 case 2:
-                    displayInventory();
+                    displayInventory(medications);
                     break;
                 case 3:
                     prescribeMedicine(records, inventoryController);
@@ -130,7 +160,7 @@ public class PharmacistView {
 
         try {
             // Prescribe the medication and update the inventory
-            String result = pharmacistController.prescribeMed(appointmentID, record, records, inventoryController);
+            String result = pharmacistController.prescribeMed(appointmentID, records, inventoryController);
             System.out.println(result);
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
@@ -186,28 +216,16 @@ public class PharmacistView {
         }
     }
 
-    public void displayInventory() {
-        if (medicationCSVReader == null) {
-            System.out.println("Unable to load inventory due to missing CSV file.");
+    public void displayInventory(List<Medication> medications) {
+        if (medications == null || medications.isEmpty()) {
+            System.out.println("The inventory is empty.");
             return;
         }
 
-        List<Medication> medications;
-        try {
-            medications = medicationCSVReader.getAllMedications();
-            if (medications == null || medications.isEmpty()) {
-                System.out.println("The inventory is empty.");
-                return;
-            }
-    
-            System.out.println("Inventory:");
-            for (Medication medication : medications) {
-                System.out.println(medication.getName() + ": " + medication.getQuantity() + " units available");
-            }
-        } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        System.out.println("Inventory:");
+        for (Medication medication : medications) {
+            // Display the medication name and its stock quantity
+            System.out.println(medication.getName() + ": " + medication.getQuantity() + " units available");
         }
-
     }
 }
