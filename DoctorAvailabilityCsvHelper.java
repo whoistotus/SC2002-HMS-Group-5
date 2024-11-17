@@ -52,7 +52,7 @@ public class DoctorAvailabilityCsvHelper {
                         availability.getStartTime(),
                         availability.getEndTime());
             }
-            System.out.println("Doctor availability successfully saved to CSV.");
+            //System.out.println("Doctor availability successfully saved to CSV.");
         } catch (IOException e) {
             e.printStackTrace();
         }
