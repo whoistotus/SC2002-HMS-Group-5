@@ -1,14 +1,14 @@
 import java.util.Arrays;
 
 public class DoctorAvailability {
-    private String doctorID;
+    private DoctorModel doctor;
     private String date;
     private String startTime;
     private String endTime;
     private boolean[] timeSlots; // Array to represent each hourly slot as available/unavailable
 
-    public DoctorAvailability(String doctorID, String date, String startTime, String endTime) {
-        this.doctorID = doctorID;
+    public DoctorAvailability(DoctorModel doctor, String date, String startTime, String endTime) {
+        this.doctor = doctor;
         this.date = date;
         this.startTime = startTime;
         this.endTime = endTime;
@@ -42,7 +42,9 @@ public class DoctorAvailability {
     
 
     // Getters
-    public String getDoctorID() { return doctorID; }
+    public String getDoctorID() { return doctor.getHospitalID(); }
+    public String getDoctorName(){return doctor.getName();}
+    public DoctorModel getDoctor() {return doctor;}
     public String getDate() { return date; }
     public String getStartTime() { return startTime; }
     public String getEndTime() { return endTime; }
@@ -50,7 +52,7 @@ public class DoctorAvailability {
     @Override
     public String toString() {
         return "DoctorAvailability{" +
-            "doctorID='" + doctorID + '\'' +
+            "doctorID='" + doctor.getHospitalID() + '\'' +
             ", date='" + date + '\'' +
             ", startTime='" + startTime + '\'' +
             ", endTime='" + endTime + '\'' +

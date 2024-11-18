@@ -80,16 +80,21 @@ public class PatientView
             List<DoctorAvailability> mergedAvailability = mergeAvailabilitySlots(availabilityList);
     
             // Display the merged availability
-            System.out.println("+-----------------------------------------------+");
-            System.out.println("| Doctor ID |    Date    |Start Time|  End Time |");
-            System.out.println("+-----------------------------------------------+");
-    
+            System.out.println("+----------------------------------------------------------------------+");
+            System.out.println("| Doctor ID |    Doctor Name     |    Date    | Start Time | End Time  |");
+            System.out.println("+----------------------------------------------------------------------+");
+
             for (DoctorAvailability avail : mergedAvailability) {
-                System.out.printf("|    %s   | %s |   %s  |   %s   |\n",
-                    avail.getDoctorID(), avail.getDate(), avail.getStartTime(), avail.getEndTime());
+                System.out.printf("| %-9s | %-18s | %-10s | %-10s | %-9s |\n",
+                    avail.getDoctorID(),
+                    avail.getDoctorName(),
+                    avail.getDate(),
+                    avail.getStartTime(),
+                    avail.getEndTime());
             }
-    
-            System.out.println("+-----------------------------------------------+");
+
+            System.out.println("+----------------------------------------------------------------------+");
+
         }
 
         System.out.println("\nPress Enter to return to the main menu...");
@@ -147,20 +152,20 @@ public class PatientView
             if (patientAppointments.isEmpty()) {
                 System.out.println("No upcoming scheduled appointments.");
             } else {
-                System.out.println("+----------------------------------------------------------------+");
-                System.out.println("| Appointment ID | Doctor        | Date       | Time  |  Status  |");
-                System.out.println("+----------------------------------------------------------------+");
-        
+                System.out.println("+-----------------------------------------------------------------+");
+                System.out.println("| Appointment ID | Doctor         | Date       | Time  |  Status  |");
+                System.out.println("+-----------------------------------------------------------------+");
+
                 for (Appointment appointment : patientAppointments) {
-                    System.out.printf("| %-14s | %-10s | %-10s | %-5s | %-8s |\n",
-                                      appointment.getAppointmentID(),
-                                      appointment.getDoctor().getName(),
-                                      appointment.getAppointmentDate(),
-                                      appointment.getAppointmentTime(),
-                                      appointment.getStatus());
+                    System.out.printf("| %-14s | %-14s | %-10s | %-5s | %-8s |\n",
+                                    appointment.getAppointmentID(),
+                                    appointment.getDoctor().getName(),
+                                    appointment.getAppointmentDate(),
+                                    appointment.getAppointmentTime(),
+                                    appointment.getStatus());
                 }
-        
-                System.out.println("+----------------------------------------------------------------+");
+
+                System.out.println("+-----------------------------------------------------------------+");
             }
         }
 
@@ -259,17 +264,18 @@ public class PatientView
             }
         
             // Display available slots in a table format
-            System.out.println("+-----------------------------------------------------------+");
-            System.out.println("| Doctor ID   | Date       | Start Time   | End Time        |");
-            System.out.println("+-----------------------------------------------------------+");
+            System.out.println("+----------------------------------------------------------------------+");
+            System.out.println("| Doctor ID |    Doctor Name     |    Date    | Start Time | End Time  |");
+            System.out.println("+----------------------------------------------------------------------+");
             for (DoctorAvailability availability : availabilityList) {
-                System.out.printf("| %-11s | %-10s | %-12s | %-14s |\n",
-                        availability.getDoctorID(),
-                        availability.getDate(),
-                        availability.getStartTime(),
-                        availability.getEndTime());
+                System.out.printf("| %-9s | %-18s | %-10s | %-10s | %-9s |\n",
+                    availability.getDoctorID(),
+                    availability.getDoctorName(),
+                    availability.getDate(),
+                    availability.getStartTime(),
+                    availability.getEndTime());
             }
-            System.out.println("+-----------------------------------------------------------+");
+            System.out.println("+----------------------------------------------------------------------+");
         
             // Get user input for scheduling
             System.out.print("\nEnter Doctor ID: ");

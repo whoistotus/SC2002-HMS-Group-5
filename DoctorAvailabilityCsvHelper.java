@@ -27,8 +27,13 @@ public class DoctorAvailabilityCsvHelper {
                     String date = values[1].trim();
                     String startTime = values[2].trim();
                     String endTime = values[3].trim();
+
+                    DoctorModel doctor = DoctorAvailabilityCsvHelper.getDoctorById(doctorID);
+                    if (doctor == null) {
+                        return null;
+                    }
     
-                    DoctorAvailability availability = new DoctorAvailability(doctorID, date, startTime, endTime);
+                    DoctorAvailability availability = new DoctorAvailability(doctor, date, startTime, endTime);
                     availabilityList.add(availability);
                 } catch (Exception e) {
                     System.out.println("Error parsing line: " + line);
@@ -168,7 +173,11 @@ public class DoctorAvailabilityCsvHelper {
 
     public static boolean addSlot(String doctorID, String date, String time) {
         List<DoctorAvailability> availabilityList = loadDoctorAvailability();
-        DoctorAvailability newSlot = new DoctorAvailability(doctorID, date, time, time);
+        DoctorModel doctor = DoctorAvailabilityCsvHelper.getDoctorById(doctorID);
+            if (doctor == null) {
+                return false;
+            }
+        DoctorAvailability newSlot = new DoctorAvailability(doctor, date, time, time);
     
         // Add the new slot to the list
         availabilityList.add(newSlot);

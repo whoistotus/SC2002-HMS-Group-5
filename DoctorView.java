@@ -1,7 +1,3 @@
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -179,7 +175,7 @@ public class DoctorView {
         System.out.print("Enter end time (HH:MM): ");
         String endTime = scanner.nextLine();
 
-        DoctorAvailability availability = new DoctorAvailability(doctorModel.getHospitalID(), date, startTime, endTime);
+        DoctorAvailability availability = new DoctorAvailability(doctorModel, date, startTime, endTime);
         List<DoctorAvailability> availabilityList = new ArrayList<>(doctorModel.getAvailability());
         availabilityList.add(availability);
         doctorModel.setAvailability(availabilityList);
@@ -247,7 +243,7 @@ public class DoctorView {
 
             if (availableStart.isBefore(appointmentStartTime)) {
                 updatedAvailability.add(new DoctorAvailability(
-                    availability.getDoctorID(),
+                    availability.getDoctor(),
                     availability.getDate(),
                     availability.getStartTime(),
                     appointment.getAppointmentTime()
@@ -255,7 +251,7 @@ public class DoctorView {
             }
             if (availableEnd.isAfter(appointmentEndTime)) {
                 updatedAvailability.add(new DoctorAvailability(
-                    availability.getDoctorID(),
+                    availability.getDoctor(),
                     availability.getDate(),
                     appointmentEndTime.format(timeFormatter),
                     availability.getEndTime()

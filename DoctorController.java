@@ -1,12 +1,9 @@
 
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-
-
 import java.util.HashMap;
+import java.util.List;
 
 public class DoctorController {
     private DoctorModel doctorModel;
@@ -27,7 +24,7 @@ public class DoctorController {
 
     // Set availability
     public void setAvailability(String date, String startTime, String endTime) {
-        DoctorAvailability availability = new DoctorAvailability(doctorModel.getHospitalID(), date, startTime, endTime);
+        DoctorAvailability availability = new DoctorAvailability(doctorModel, date, startTime, endTime);
         doctorModel.getAvailability().add(availability);
     
         // Save updated availability to CSV
