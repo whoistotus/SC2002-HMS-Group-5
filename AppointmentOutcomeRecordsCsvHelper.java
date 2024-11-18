@@ -60,7 +60,7 @@ public class AppointmentOutcomeRecordsCsvHelper {
     try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_PATH, true))) { // Append mode
         bw.write(record); // Write the record
         bw.newLine(); // Add a newline for the next record
-        System.out.println("DEBUG: Successfully added to CSV -> " + record); // Debug output
+        System.out.println("Successfully added to CSV -> " + record); // Debug output
     } catch (IOException e) {
         System.out.println("ERROR: Failed to write to CSV -> " + e.getMessage()); // Handle file I/O errors
     }

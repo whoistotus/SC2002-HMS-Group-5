@@ -361,7 +361,7 @@ public class DoctorView {
             csvRecord.append(",Pending"); // Append statusOfPrescription as Pending
     
             // Debug the constructed CSV record
-            System.out.println("DEBUG: Constructed CSV record: " + csvRecord);
+            System.out.println("Constructed CSV record: " + csvRecord);
     
             // Write to the CSV file
             AppointmentOutcomeRecordsCsvHelper.writeToCsv(csvRecord.toString());
