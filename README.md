@@ -7,7 +7,7 @@ A comprehensive hospital management system designed to automate and streamline h
 ## Contributors
 - Aniston Tan Wen Min
 - Kathlyn Chin Wei Ting  
-- Li Jia Yi Jamie
+- Li Jiayi Jamie
 - Tan Yi Jun
 - Titus Lee Seng Keat
 
