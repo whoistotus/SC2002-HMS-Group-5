@@ -76,8 +76,8 @@ java -cp bin Main
 ## Project Structure
 
 ```
-hospital-management-system/
-├── src/
+Git/
+├── SC2002_Assignment/
 │   ├── controller/
 │   │   ├── AdminController.java
 │   │   ├── AppointmentManager.java
@@ -85,10 +85,12 @@ hospital-management-system/
 │   │   ├── InventoryController.java
 │   │   ├── LoginManager.java
 │   │   ├── PatientController.java
-│   │   └── PharmacistController.java
+│   │   ├── PharmacistController.java
+│   │   └── PharmacistReplenishmentRequestManager.java
 │   ├── model/
 │   │   ├── AdminModel.java
 │   │   ├── Appointment.java
+│   │   ├── AppointmentOutcomeRecord.java
 │   │   ├── DoctorModel.java
 │   │   ├── MedicalRecord.java
 │   │   ├── Medication.java
@@ -111,12 +113,65 @@ hospital-management-system/
 └── README.md
 ```
 
-## Design Patterns Used
-
-- **MVC Pattern**: Separation of Model, View, and Controller components
-- **Singleton Pattern**: Used for database connections and user sessions
-- **Observer Pattern**: For updating views when data changes
-- **Strategy Pattern**: For different user authentication methods
+```
+[controller]
+    ├── AdminController.java
+    ├── AppointmentManager.java
+    ├── DoctorController.java
+    ├── InventoryController.java
+    ├── LoginManager.java
+    ├── PatientController.java
+    ├── PharmacistController.java
+    └── PharmacistReplenishRequestManager.java
+[data]
+    ├── AppointmentOutcomeRecords.csv
+    ├── Appointments.csv
+    ├── DoctorAvailability.csv
+    ├── MedicalRecords.csv
+    ├── MedicationList.csv
+    ├── passwords.csv
+    ├── PatientList.csv
+    ├── ReplenishmentRequests.csv
+    └── StaffList.csv
+LICENSE
+LoginResult.java
+MainApp.java
+[model]
+    ├── AdminModel.java
+    ├── Appointment.java
+    ├── AppointmentOutcomeRecord.java
+    ├── DoctorAvailability.java
+    ├── DoctorModel.java
+    ├── HospitalStaff.java
+    ├── MedicalRecord.java
+    ├── Medication.java
+    ├── PatientModel.java
+    ├── PharmacistPrescribeManager.java
+    ├── ReplenishmentRequest.java
+    ├── TimeSlot.java
+    └── User.java
+Password.java
+README.md
+[utils]
+    ├── AdminCSVReader.java
+    ├── AdminCSVWriter.java
+    ├── AppointmentOutcomeRecordsCsvHelper.java
+    ├── AppointmentsCsvHelper.java
+    ├── DoctorAvailabilityCsvHelper.java
+    ├── MedicalRecordsCsvHelper.java
+    ├── MedicationCSVReader.java
+    ├── PatientListCsvHelper.java
+    └── ReplenishmentRequestCsvHelper.java
+[view]
+    ├── AdminView.java
+    ├── DoctorView.java
+    ├── InventoryView.java
+    ├── IPrescriptionManager.java
+    ├── IReplenishmentManager.java
+    ├── PatientView.java
+    ├── PharmacistView.java
+    └── UserInterface.java
+```
 
 ## Data Storage
 
