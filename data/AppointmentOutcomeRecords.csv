@@ -1,2 +1,2 @@
 patientID,doctorID,appointmentID,date,consultationNotes,serviceType,medications ,statusOfPrescription
-
+P1001,D002,AP002,2024-12-11,Bed Rest,CONSULTATION,Paracetamol:1,DISPENSED
