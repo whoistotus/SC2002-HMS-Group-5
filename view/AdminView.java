@@ -437,7 +437,7 @@ public class AdminView {
                     if (staffRole.equals("1")) {
                         return;
                     }
-                    if (!staffRole.equals("doctor") && !staffRole.equals("pharmacist")) {
+                    if (!staffRole.equals("Doctor") && !staffRole.equals("Pharmacist")) {
                         System.out.println("Invalid role. Please enter either 'Doctor' or 'Pharmacist'.");
                         continue;
                     }
@@ -475,7 +475,7 @@ public class AdminView {
                     if (gender.equals("1")) {
                         return;
                     }
-                    if (!gender.equals("male") && !gender.equals("female")) {
+                    if (!gender.equals("Male") && !gender.equals("Female")) {
                         System.out.println("Invalid gender. Please enter either 'Male' or 'Female'.");
                         continue;
                     }
