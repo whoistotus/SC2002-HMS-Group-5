@@ -112,7 +112,6 @@ public class AppointmentManager
         AppointmentsCsvHelper.updateAppointment(appointment);
     
         if (oldSlotAdded && newSlotRemoved) {
-            System.out.println("Appointment rescheduled successfully! Old slot restored and new slot booked.");
             return true;
         } else {
             System.out.println("Appointment rescheduled, but there was an issue updating the availability.");
