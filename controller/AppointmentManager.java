@@ -82,9 +82,16 @@ public class AppointmentManager
         }
     
         String doctorID = appointment.getDoctorID();
+        String oldDate = appointment.getAppointmentDate();
+        String oldStartTime = appointment.getAppointmentTime();
+        
+        // Calculate the end time for the original old slot (hardcoded to be 1 hour after start time)
+        String[] timeParts = oldStartTime.split(":");
+        int hour = Integer.parseInt(timeParts[0]) + 1; // Add 1 hour
+        String oldEndTime = String.format("%02d:%s", hour, timeParts[1]);
     
         // Free the old time slot
-        DoctorAvailabilityCsvHelper.updateDoctorAvailability(doctorID, appointment.getAppointmentDate(), appointment.getAppointmentTime());
+        boolean oldSlotAdded = DoctorAvailabilityCsvHelper.addSlot(doctorID, oldDate, oldStartTime, oldEndTime);
     
         // Check if the new slot is available
         List<String> availableSlots = DoctorAvailabilityCsvHelper.getAvailableSlots(doctorID, newDate);
@@ -99,11 +106,18 @@ public class AppointmentManager
         appointment.setStatus(Appointment.AppointmentStatus.PENDING);
     
         // Mark the new time slot as unavailable
-        DoctorAvailabilityCsvHelper.updateDoctorAvailability(doctorID, newDate, newTime);
+        boolean newSlotRemoved = DoctorAvailabilityCsvHelper.removeSlot(doctorID, newDate, newTime);
+    
+        // Update the appointment in the CSV
         AppointmentsCsvHelper.updateAppointment(appointment);
     
-        
-        return true;
+        if (oldSlotAdded && newSlotRemoved) {
+            System.out.println("Appointment rescheduled successfully! Old slot restored and new slot booked.");
+            return true;
+        } else {
+            System.out.println("Appointment rescheduled, but there was an issue updating the availability.");
+            return true;
+        }
     }
     
 
@@ -130,7 +144,6 @@ public class AppointmentManager
         allAppointments.removeIf(a -> a.getAppointmentID().equals(appointmentID));
         AppointmentsCsvHelper.saveAllAppointments(allAppointments);
     
-        System.out.println("Appointment canceled successfully.");
         return true;
     }
     

@@ -1,6 +1,7 @@
 package utils;
 
 import java.io.*;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -175,23 +176,36 @@ public class DoctorAvailabilityCsvHelper {
         return true;
     }
 
-    public static boolean addSlot(String doctorID, String date, String time) {
+    public static boolean addSlot(String doctorID, String date, String startTime, String endTime) {
         List<DoctorAvailability> availabilityList = loadDoctorAvailability();
-        DoctorModel doctor = DoctorAvailabilityCsvHelper.getDoctorById(doctorID);
-            if (doctor == null) {
-                return false;
+        DoctorModel doctor = getDoctorById(doctorID);
+        if (doctor == null) {
+            return false;
+        }
+    
+        // Check for overlap or adjacent slots and merge
+        for (DoctorAvailability availability : availabilityList) {
+            if (availability.getDoctorID().equals(doctorID) && availability.getDate().equals(date)) {
+                LocalTime newStart = LocalTime.parse(startTime);
+                LocalTime newEnd = LocalTime.parse(endTime);
+                LocalTime existingStart = LocalTime.parse(availability.getStartTime());
+                LocalTime existingEnd = LocalTime.parse(availability.getEndTime());
+    
+                if ((newStart.isBefore(existingEnd) && newEnd.isAfter(existingStart)) ||
+                    newStart.equals(existingStart) || newEnd.equals(existingEnd)) {
+                    availability.setStartTime(newStart.isBefore(existingStart) ? startTime : availability.getStartTime());
+                    availability.setEndTime(newEnd.isAfter(existingEnd) ? endTime : availability.getEndTime());
+                    saveDoctorAvailability(availabilityList); // Save the updated availability
+                    return true;
+                }
             }
-        DoctorAvailability newSlot = new DoctorAvailability(doctor, date, time, time);
+        }
     
-        // Add the new slot to the list
+        // Add a new availability slot if no overlap
+        DoctorAvailability newSlot = new DoctorAvailability(doctor, date, startTime, endTime);
         availabilityList.add(newSlot);
-    
-        // Save the updated availability back to the CSV
         saveDoctorAvailability(availabilityList);
         return true;
     }
-    
-    
-    
     
 }

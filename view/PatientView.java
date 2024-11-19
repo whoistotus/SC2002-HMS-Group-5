@@ -331,76 +331,92 @@ public class PatientView
             }
         }
         
-    public void rescheduleAppointment() {
-        Scanner scanner = new Scanner(System.in);
-    
-        System.out.print("Enter Appointment ID to reschedule: ");
-        String appointmentID = scanner.nextLine();
-
-        Appointment appointment = AppointmentsCsvHelper.getAppointmentById(appointmentID);
-        if (appointment == null) {
-            showMessage("Appointment not found!");
-            return;
-        }
-    
-        System.out.print("Enter new appointment date (YYYY-MM-DD): ");
-        String newDate = scanner.nextLine();
-    
-        System.out.print("Enter new appointment time (HH:MM): ");
-        String newTime = scanner.nextLine();
-
-        String doctorID = appointment.getDoctorID();
-        String oldDate = appointment.getAppointmentDate();
-        String oldTime = appointment.getAppointmentTime();
-    
-        // Attempt to reschedule
-        boolean success = appointmentManager.rescheduleAppointment(appointmentID, newDate, newTime);
-        if (success) {
-            // Add the original time slot back to availability
-            boolean oldSlotAdded = DoctorAvailabilityCsvHelper.addSlot(doctorID, oldDate, oldTime);
-            // Remove the new time slot from availability
-            boolean newSlotRemoved = DoctorAvailabilityCsvHelper.removeSlot(doctorID, newDate, newTime);
-    
-            if (oldSlotAdded && newSlotRemoved) {
-                showMessage("Appointment rescheduled successfully! Availability updated.");
-            } else {
-                showMessage("Appointment rescheduled successfully, but failed to update availability.");
-            }
-        } else {
-            showMessage("Failed to reschedule. The new slot may be unavailable.");
-        }
-    }
-
-    public void cancelAppointment() {
-        Scanner scanner = new Scanner(System.in);
-    
-        System.out.print("Enter Appointment ID: ");
-        String appointmentID = scanner.nextLine();
-    
-        Appointment appointment = model.getAppointmentById(appointmentID);
-        if (appointment == null) {
-            showMessage("Appointment not found!");
-            return;
-        }
-
-        String doctorID = appointment.getDoctorID();
-        String date = appointment.getAppointmentDate();
-        String time = appointment.getAppointmentTime();
+        public void rescheduleAppointment() {
+            Scanner scanner = new Scanner(System.in);
         
-        boolean success = appointmentManager.cancelAppointment(appointmentID);
-        if (success) {
-            // Add the canceled time slot back to availability
-            boolean slotAdded = DoctorAvailabilityCsvHelper.addSlot(doctorID, date, time);
-    
-            if (slotAdded) {
-                showMessage("Appointment canceled successfully! Time slot added back to availability.");
-            } else {
-                showMessage("Appointment canceled successfully, but failed to update availability.");
+            System.out.print("Enter Appointment ID to reschedule: ");
+            String appointmentID = scanner.nextLine();
+        
+            // Retrieve the appointment by ID
+            Appointment appointment = AppointmentsCsvHelper.getAppointmentById(appointmentID);
+            if (appointment == null) {
+                showMessage("Appointment not found!");
+                return;
             }
-        } else {
-            showMessage("Failed to cancel the appointment. Please try again.");
+        
+            System.out.print("Enter new appointment date (YYYY-MM-DD): ");
+            String newDate = scanner.nextLine();
+        
+            System.out.print("Enter new appointment time (HH:MM): ");
+            String newTime = scanner.nextLine();
+        
+            String doctorID = appointment.getDoctorID();
+            String oldDate = appointment.getAppointmentDate();
+            String oldTime = appointment.getAppointmentTime();
+        
+            // Calculate the old end time (assuming one hour slot duration)
+            String[] timeParts = oldTime.split(":");
+            int hour = Integer.parseInt(timeParts[0]) + 1; // Add 1 hour
+            String oldEndTime = String.format("%02d:%s", hour, timeParts[1]);
+        
+            // Attempt to reschedule
+            boolean success = appointmentManager.rescheduleAppointment(appointmentID, newDate, newTime);
+            if (success) {
+                // Add the original time slot back to availability
+                boolean oldSlotAdded = DoctorAvailabilityCsvHelper.addSlot(doctorID, oldDate, oldTime, oldEndTime);
+        
+                // Remove the new time slot from availability
+                boolean newSlotRemoved = DoctorAvailabilityCsvHelper.removeSlot(doctorID, newDate, newTime);
+        
+                if (oldSlotAdded && newSlotRemoved) {
+                    showMessage("Appointment rescheduled successfully! Availability updated.");
+                } else {
+                    showMessage("Appointment rescheduled successfully, but failed to update availability.");
+                }
+            } else {
+                showMessage("Failed to reschedule. The new slot may be unavailable.");
+            }
         }
-    }
+        
+
+        public void cancelAppointment() {
+            Scanner scanner = new Scanner(System.in);
+        
+            System.out.print("Enter Appointment ID: ");
+            String appointmentID = scanner.nextLine();
+        
+            // Retrieve the appointment
+            Appointment appointment = model.getAppointmentById(appointmentID);
+            if (appointment == null) {
+                showMessage("Appointment not found!");
+                return;
+            }
+        
+            String doctorID = appointment.getDoctorID();
+            String date = appointment.getAppointmentDate();
+            String time = appointment.getAppointmentTime();
+        
+            // Calculate the end time (assuming 1-hour slot duration)
+            String[] timeParts = time.split(":");
+            int hour = Integer.parseInt(timeParts[0]) + 1; // Add 1 hour
+            String endTime = String.format("%02d:%s", hour, timeParts[1]);
+        
+            // Attempt to cancel the appointment
+            boolean success = appointmentManager.cancelAppointment(appointmentID);
+            if (success) {
+                // Add the canceled time slot back to availability
+                boolean slotAdded = DoctorAvailabilityCsvHelper.addSlot(doctorID, date, time, endTime);
+        
+                if (slotAdded) {
+                    showMessage("Appointment canceled successfully! Time slot added back to availability.");
+                } else {
+                    showMessage("Appointment canceled successfully, but failed to update availability.");
+                }
+            } else {
+                showMessage("Failed to cancel the appointment. Please try again.");
+            }
+        }
+        
 
     
     public void showMessage(String message)
