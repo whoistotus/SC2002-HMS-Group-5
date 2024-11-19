@@ -432,8 +432,8 @@ public class AdminView {
                 while (true) {
                     System.out.println("\nEnter 1 to exit or");
                     System.out.println("Please enter the Staff Role (Doctor/Pharmacist): ");
-                    staffRole = sc.nextLine().trim().toLowerCase();
-
+                    staffRole = sc.nextLine().trim();
+                    
                     if (staffRole.equals("1")) {
                         return;
                     }
@@ -470,8 +470,8 @@ public class AdminView {
                 while (true) {
                     System.out.println("\nEnter 1 to exit or");
                     System.out.println("Please enter the gender (Male/Female): ");
-                    gender = sc.nextLine().trim().toLowerCase();
-
+                    gender = sc.nextLine().trim();
+                    
                     if (gender.equals("1")) {
                         return;
                     }
