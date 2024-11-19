@@ -1,52 +1,161 @@
-===============================================
-# Hospital Management System Project (Group 5)
-===============================================
+# Hospital Management System (HMS)
+## NTU SC/CE/CZ2002 Object-Oriented Design & Programming Assignment
+## Group 5
 
-Our group was tasked with designing and developing a **Hospital Management System**.
-The application is design to automate the management of hospital operations, including patient management, appointment scheduling, and staff management.
-
-## The Assignment
-
-Our group is tasked to design and develop a Hospital Mangement System (HMS).
-
-The HMS application is designed to automate the management of hospital operations, including patient management, appointment scheduling, staff management, and billing.
-
-The system is expected to facilitate efficient management of hospital resources, enhance patient care, and streamline administrative processes.
+A comprehensive hospital management system designed to automate and streamline hospital operations including patient management, appointment scheduling, staff management, and billing.
 
 ## Contributors
+- Aniston Tan Wen Min
+- Kathlyn Chin Wei Ting  
+- Li Jia Yi Jamie
+- Tan Yi Jun
+- Titus Lee Seng Keat
 
-|         Name               |  
-| Aniston Tan Wen Min        | 
-| Kathlyn Chin Wei Ting      |
-| Li Jia Yi Jamie            |
-| Tan Yi Jun                 |
-| Titus Lee Seng Keat        |  
+## Features
 
+### User Authentication
+- Secure login system with role-based access control
+- Supports multiple user roles: Patient, Doctor, Pharmacist, Administrator
+- Password change functionality after initial login
 
-## Prerequisites
+### Patient Portal
+- View personal medical records
+- Schedule/reschedule/cancel appointments
+- View appointment history and outcomes
+- Update personal contact information
 
-Ensure you have the following installed on your system:
+### Doctor Interface
+- Manage patient medical records
+- Set availability for appointments
+- Accept/decline appointment requests
+- Record appointment outcomes and prescriptions
+- View personal schedule
 
-- **JDK 22** or higher: [Download here](https://www.oracle.com/sg/java/technologies/downloads/)
+### Pharmacist Module
+- View and fulfill prescriptions
+- Monitor medication inventory
+- Submit replenishment requests
+- Update prescription status
 
-Make sure your environment is set up correctly by verifying the installation of Java. You can check this by running the following commands:
+### Administrator Dashboard
+- Manage hospital staff (add/remove/update)
+- View real-time appointment updates
+- Manage medication inventory
+- Process replenishment requests
+
+## Technical Requirements
+
+### Prerequisites
+- Java Development Kit (JDK) version 8 or higher
+- Any Java IDE (Eclipse, IntelliJ, etc.) or text editor
+- Git (for version control)
+
+### System Requirements
+- Operating System: Windows/Mac/Linux
+- Minimum RAM: 2GB
+- Storage: 500MB free space
+
+## Installation and Setup
+
+1. Clone the repository:
+```bash
+git clone <repository-url>
+cd hospital-management-system
+```
+
+2. Compile the Java files:
+```bash
+javac -d bin src/**/*.java
+```
+
+3. Run the application:
+```bash
+java -cp bin Main
+```
+
+## Project Structure
 
 ```
-java --version
+hospital-management-system/
+├── src/
+│   ├── controller/
+│   │   ├── AdminController.java
+│   │   ├── AppointmentManager.java
+│   │   ├── DoctorController.java
+│   │   ├── InventoryController.java
+│   │   ├── LoginManager.java
+│   │   ├── PatientController.java
+│   │   └── PharmacistController.java
+│   ├── model/
+│   │   ├── AdminModel.java
+│   │   ├── Appointment.java
+│   │   ├── DoctorModel.java
+│   │   ├── MedicalRecord.java
+│   │   ├── Medication.java
+│   │   ├── PatientModel.java
+│   │   └── User.java
+│   ├── view/
+│   │   ├── AdminView.java
+│   │   ├── DoctorView.java
+│   │   ├── PatientView.java
+│   │   └── PharmacistView.java
+│   └── utils/
+│       ├── CSVHelpers/
+│       └── DataManagers/
+├── data/
+│   ├── Appointments.csv
+│   ├── MedicalRecords.csv
+│   ├── Medications.csv
+│   ├── PatientList.csv
+│   └── StaffList.csv
+└── README.md
 ```
 
-If the command return version details, your setup is correct and you're ready to proceed. Otherwise, you may need to configure your PATH environment variables to include the locations of your Java and Maven installations.
+## Design Patterns Used
 
-## Usage Options:
+- **MVC Pattern**: Separation of Model, View, and Controller components
+- **Singleton Pattern**: Used for database connections and user sessions
+- **Observer Pattern**: For updating views when data changes
+- **Strategy Pattern**: For different user authentication methods
 
-We provide multiple convenient ways to run this project, depending on whether you use Maven or not:
+## Data Storage
 
-### Pre-compiled JAR
+The system uses CSV files for data persistence:
+- `Appointments.csv`: Stores appointment information
+- `MedicalRecords.csv`: Contains patient medical records
+- `Medications.csv`: Tracks medication inventory
+- `PatientList.csv`: Maintains patient information
+- `StaffList.csv`: Stores staff details
 
-Clone the repository and run the pre-compiled JAR file located in the `bin/` directory:
+## Testing
 
+To run the test cases:
+1. Navigate to the test directory
+2. Run the test suite:
+```bash
+java -cp .:junit.jar org.junit.runner.JUnitCore TestSuite
 ```
-git clone https://github.com/brandonleehs/SC2002-HMS.git
-cd SC2002-HMS/
-java -jar ./bin/hms-1.0.jar
-```
+
+## Documentation
+
+Detailed documentation including:
+- JavaDoc comments throughout the codebase
+- UML diagrams in the `docs` directory
+- User manual in `docs/manual.pdf`
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a Pull Request
+
+## License
+
+This project is part of the SC/CE/CZ2002 Object-Oriented Design & Programming course at Nanyang Technological University.
+
+## Acknowledgments
+
+- Course Instructors and TAs for guidance
+- NTU School of Computer Science & Engineering
