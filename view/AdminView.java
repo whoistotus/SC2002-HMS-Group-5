@@ -1,4 +1,8 @@
 package view;
+
+import controller.AdminController;
+import controller.AppointmentManager;
+import controller.InventoryController;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -8,19 +12,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
-
-import controller.AdminController;
-import controller.AppointmentManager;
-import controller.InventoryController;
 import model.AdminModel;
 import model.Appointment;
 import model.AppointmentOutcomeRecord;
-import utils.AppointmentOutcomeRecordsCsvHelper;
-import utils.AppointmentsCsvHelper;
 import model.HospitalStaff;
 import model.Medication;
 import model.ReplenishmentRequest;
 import utils.AdminCSVReader;
+import utils.AppointmentOutcomeRecordsCsvHelper;
+import utils.AppointmentsCsvHelper;
 import utils.MedicationCSVReader;
 import utils.ReplenishmentRequestCsvHelper;
 
@@ -36,17 +36,16 @@ public class AdminView {
     private List<ReplenishmentRequest> requests = new ArrayList<>();
     private MedicationCSVReader medicationReader;
 
-
     Scanner sc = new Scanner(System.in);
 
-    //Constructor
+    // Constructor
     public AdminView(InventoryController inventoryController) {
         this.inventoryController = inventoryController;
         this.appointmentManager = appointmentManager;
         this.medication = medication;
         AdminModel model = new AdminModel();
         this.adminController = new AdminController(model, this);
-        
+
         try {
             this.admincsvReader = new AdminCSVReader(STAFF_DATA_PATH);
             this.medicationReader = new MedicationCSVReader();
@@ -55,9 +54,8 @@ public class AdminView {
         }
     }
 
-
     public void showMenu() {
-        while (true) {  
+        while (true) {
             System.out.println("======================");
             System.out.println("Administrator Menu: ");
             System.out.println("1 - Show Medication Inventory");
@@ -71,109 +69,105 @@ public class AdminView {
             System.out.println("Please enter your choice: ");
             int choice = sc.nextInt();
             sc.nextLine();
-            
+
             switch (choice) {
                 case 1:
-                    showInventory(); //csv file
+                    showInventory();
                     break;
-                
+
                 case 2:
-                    manageMedicationInventory(); //csv
+                    manageMedicationInventory();
                     break;
-                
+
                 case 3:
-                    filterAndDisplayStaff(); //csv
+                    filterAndDisplayStaff();
                     break;
-    
+
                 case 4:
-                    manageStaffList(); //csv
+                    manageStaffList();
                     break;
-    
+
                 case 5:
                     manageReplenishmentReq();
                     break;
-    
+
                 case 6:
                     showAppointmentDetails();
                     break;
-                
-                case 7: 
+
+                case 7:
                     System.out.println("Logging out....");
-                    return;  
-    
+                    return;
+
                 default:
                     System.out.println("Please input a valid choice");
             }
         }
     }
 
-
-    
-
     public void showInventory() {
         final String CSV_PATH = "data/MedicationList.csv";
-    
+
         try {
-        // Create a new FileReader each time to ensure fresh read
-        BufferedReader br = null;
-        try {
-            // Force garbage collection and release any file handles
-            System.gc();
-            Thread.sleep(100); // Give system time to release resources
-            
-            br = new BufferedReader(new FileReader(new File(CSV_PATH).getAbsoluteFile()));
-            
-            System.out.println("\n================= Medication Inventory =================");
-            System.out.printf("%-20s %-10s %-40s %-15s%n", 
-                "Name", "Stock", "Description", "Threshold");
-            System.out.println("=".repeat(85));
+            // Create a new FileReader each time to ensure fresh read
+            BufferedReader br = null;
+            try {
+                // Force garbage collection and release any file handles
+                System.gc();
+                Thread.sleep(100); // Give system time to release resources
 
-            // Skip header line
-            br.readLine();
-            
-            String line;
-            boolean hasData = false;
-            
-            while ((line = br.readLine()) != null) {
-                hasData = true;
-                String[] values = line.split(",");
-                if (values.length == 4) {
-                    String name = values[0].trim();
-                    int stock = Integer.parseInt(values[1].trim());
-                    String description = values[2].trim();
-                    int threshold = Integer.parseInt(values[3].trim());
+                br = new BufferedReader(new FileReader(new File(CSV_PATH).getAbsoluteFile()));
 
-                    System.out.printf("%-20s %-10d %-40s %-15d%n",
-                        name, stock, description, threshold);
+                System.out.println("\n================= Medication Inventory =================");
+                System.out.printf("%-20s %-10s %-40s %-15s%n",
+                        "Name", "Stock", "Description", "Threshold");
+                System.out.println("=".repeat(85));
 
-                    if (stock <= threshold) {
-                        System.out.printf("WARNING: %s is below or at threshold level!%n", name);
+                // Skip header line
+                br.readLine();
+
+                String line;
+                boolean hasData = false;
+
+                while ((line = br.readLine()) != null) {
+                    hasData = true;
+                    String[] values = line.split(",");
+                    if (values.length == 4) {
+                        String name = values[0].trim();
+                        int stock = Integer.parseInt(values[1].trim());
+                        String description = values[2].trim();
+                        int threshold = Integer.parseInt(values[3].trim());
+
+                        System.out.printf("%-20s %-10d %-40s %-15d%n",
+                                name, stock, description, threshold);
+
+                        if (stock <= threshold) {
+                            System.out.printf("WARNING: %s is below or at threshold level!%n", name);
+                        }
                     }
+                }
+
+                if (!hasData) {
+                    System.out.println("No medications found in inventory.");
+                }
+
+                System.out.println("=".repeat(85));
+
+            } finally {
+                if (br != null) {
+                    br.close();
                 }
             }
 
-            if (!hasData) {
-                System.out.println("No medications found in inventory.");
-            }
+            // Pause for user to read
+            System.out.println("\nPress Enter to continue...");
+            sc.nextLine();
 
-            System.out.println("=".repeat(85));
-            
-        } finally {
-            if (br != null) {
-                br.close();
-            }
+        } catch (Exception e) {
+            System.out.println("Error reading medication inventory: " + e.getMessage());
+            e.printStackTrace();
         }
-        
-        // Pause for user to read
-        System.out.println("\nPress Enter to continue...");
-        sc.nextLine();
-        
-    } catch (Exception e) {
-        System.out.println("Error reading medication inventory: " + e.getMessage());
-        e.printStackTrace();
     }
-}
-    
 
     public void manageMedicationInventory() {
         while (true) {
@@ -184,10 +178,10 @@ public class AdminView {
             System.out.println("4 - Set Low Stock Alert Amount");
             System.out.println("5 - Return to Admin Menu");
             System.out.println("Please enter your choice: ");
-    
+
             try {
                 int choice = Integer.parseInt(sc.nextLine().trim());
-    
+
                 switch (choice) {
                     case 1:
                         addMedication();
@@ -211,56 +205,57 @@ public class AdminView {
             }
         }
     }
-    //medication methods start  
+
+    // medication methods start
     private void addMedication() {
         try {
             System.out.println("Enter Medication Name: ");
             String name = sc.nextLine().trim();
-    
+
             if (name.isEmpty()) {
                 System.out.println("Medication name cannot be empty.");
                 return;
             }
-    
+
             System.out.println("Enter Initial Stock Level: ");
             int stock = Integer.parseInt(sc.nextLine().trim());
-    
+
             System.out.println("Enter Medication Description: ");
             String description = sc.nextLine().trim();
-    
+
             System.out.println("Enter Low Stock Threshold: ");
             int threshold = Integer.parseInt(sc.nextLine().trim());
-    
+
             medicationReader.addMedication(name, stock, description, threshold);
             System.out.println("Medication added successfully!");
-    
+
         } catch (NumberFormatException e) {
             System.out.println("Invalid number format. Please enter valid numbers.");
         } catch (Exception e) {
             System.out.println("Error adding medication: " + e.getMessage());
         }
     }
-    
+
     private void removeMedication() {
         try {
             System.out.println("Enter Medication Name to remove: ");
             String name = sc.nextLine().trim();
-    
+
             if (name.isEmpty()) {
                 System.out.println("Medication name cannot be empty.");
                 return;
             }
-    
+
             System.out.println("Are you sure you want to remove " + name + "? (Y/N)");
             String confirm = sc.nextLine().trim().toLowerCase();
-    
+
             if (confirm.equals("y")) {
                 medicationReader.removeMedication(name);
                 System.out.println("Medication removed successfully!");
             } else {
                 System.out.println("Removal cancelled.");
             }
-    
+
         } catch (Exception e) {
             System.out.println("Error removing medication: " + e.getMessage());
         }
@@ -270,23 +265,23 @@ public class AdminView {
         try {
             System.out.println("Enter Medication Name: ");
             String name = sc.nextLine().trim();
-    
+
             if (name.isEmpty()) {
                 System.out.println("Medication name cannot be empty.");
                 return;
             }
-    
+
             System.out.println("Enter New Stock Level: ");
             int newStock = Integer.parseInt(sc.nextLine().trim());
-    
+
             if (newStock < 0) {
                 System.out.println("Stock level cannot be negative.");
                 return;
             }
-    
+
             medicationReader.updateMedication(name, newStock);
             System.out.println("Stock level updated successfully!");
-    
+
         } catch (NumberFormatException e) {
             System.out.println("Invalid number format. Please enter a valid number.");
         } catch (Exception e) {
@@ -298,34 +293,33 @@ public class AdminView {
         try {
             System.out.println("Enter Medication Name: ");
             String name = sc.nextLine().trim();
-    
+
             if (name.isEmpty()) {
                 System.out.println("Medication name cannot be empty.");
                 return;
             }
-    
+
             System.out.println("Enter New Threshold Level: ");
             int newThreshold = Integer.parseInt(sc.nextLine().trim());
-    
+
             if (newThreshold < 0) {
                 System.out.println("Threshold cannot be negative.");
                 return;
             }
-    
+
             medicationReader.updateThreshold(name, newThreshold);
             System.out.println("Threshold updated successfully!");
-    
+
         } catch (NumberFormatException e) {
             System.out.println("Invalid number format. Please enter a valid number.");
         } catch (Exception e) {
             System.out.println("Error updating threshold: " + e.getMessage());
         }
     }
-    //medication methods end
+    // medication methods end
 
-    //Appointment methods start
-    public void viewAppointments(String patientID)
-    {
+    // Appointment methods start
+    public void viewAppointments(String patientID) {
         System.out.println("===== Appointment Details ========");
     }
 
@@ -337,8 +331,8 @@ public class AdminView {
         }
         for (HospitalStaff staff : staffList) {
             System.out.printf("ID: %s | Name: %s | Role: %s | Gender: %s | Age: %d%n",
-                staff.getHospitalID(), staff.getName(), staff.getuserRole(),
-                staff.getGender(), staff.getAge());
+                    staff.getHospitalID(), staff.getName(), staff.getuserRole(),
+                    staff.getGender(), staff.getAge());
         }
     }
 
@@ -352,8 +346,8 @@ public class AdminView {
             System.out.println(appointment.toString());
         }
     }
-    
-    //Appointment methods end
+
+    // Appointment methods end
     public void viewReplenishmentRequests(List<ReplenishmentRequest> requests) {
         System.out.println("\n=== Replenishment Requests ===");
         if (requests.isEmpty()) {
@@ -374,7 +368,7 @@ public class AdminView {
         long pharmacistCount = staffList.stream()
                 .filter(staff -> staff.getuserRole().equalsIgnoreCase("Pharmacist"))
                 .count();
-        
+
         System.out.println("Doctors: " + doctorCount);
         System.out.println("Pharmacists: " + pharmacistCount);
         System.out.println("===========================");
@@ -386,13 +380,10 @@ public class AdminView {
         System.out.println("===========================");
     }
 
-    //check if hospital ID is exisiting 
-    public boolean existingHospitalID(String hospitalID)
-    {
-        for (HospitalStaff staff : staffs)
-        {
-            if (staff.getHospitalID().equalsIgnoreCase(hospitalID))
-            {
+    // check if hospital ID is exisiting
+    public boolean existingHospitalID(String hospitalID) {
+        for (HospitalStaff staff : staffs) {
+            if (staff.getHospitalID().equalsIgnoreCase(hospitalID)) {
                 return true;
             }
         }
@@ -431,7 +422,7 @@ public class AdminView {
 
     private void addStaff() {
         boolean continueAdding = true;
-    
+
         while (continueAdding) {
             try {
                 admincsvReader.refreshStaffData(); // Refresh data before each addition
@@ -442,7 +433,7 @@ public class AdminView {
                     System.out.println("\nEnter 1 to exit or");
                     System.out.println("Please enter the Staff Role (Doctor/Pharmacist): ");
                     staffRole = sc.nextLine().trim().toLowerCase();
-                    
+
                     if (staffRole.equals("1")) {
                         return;
                     }
@@ -452,18 +443,18 @@ public class AdminView {
                     }
                     break;
                 }
-    
+
                 // Generate Hospital ID based on role
                 String hospitalID = generateNextHospitalID(staffRole);
                 System.out.println("Generated Hospital ID: " + hospitalID);
-    
+
                 // Staff Name input
                 String staffName;
                 while (true) {
                     System.out.println("\nEnter 1 to exit or");
                     System.out.println("Please enter the Staff Name: ");
                     staffName = sc.nextLine().trim();
-                    
+
                     if (staffName.equals("1")) {
                         return;
                     }
@@ -473,14 +464,14 @@ public class AdminView {
                     }
                     break;
                 }
-    
+
                 // Gender input
                 String gender;
                 while (true) {
                     System.out.println("\nEnter 1 to exit or");
                     System.out.println("Please enter the gender (Male/Female): ");
                     gender = sc.nextLine().trim().toLowerCase();
-                    
+
                     if (gender.equals("1")) {
                         return;
                     }
@@ -490,14 +481,14 @@ public class AdminView {
                     }
                     break;
                 }
-    
+
                 // Age input
                 int age;
                 while (true) {
                     System.out.println("\nEnter 1 to exit or");
                     System.out.println("Please enter the age: ");
                     String ageInput = sc.nextLine().trim();
-                    
+
                     if (ageInput.equals("1")) {
                         return;
                     }
@@ -512,11 +503,11 @@ public class AdminView {
                         System.out.println("Invalid age format. Please enter a number.");
                     }
                 }
-    
+
                 // Add the staff member
                 adminController.addStaff(hospitalID, "password", staffRole, staffName, gender, age);
                 System.out.println("\nStaff added successfully!");
-    
+
                 // Ask if user wants to add another staff member
                 while (true) {
                     System.out.println("\nDo you want to add another staff member? (Y/N): ");
@@ -538,12 +529,12 @@ public class AdminView {
             }
         }
     }
-    
+
     private String generateNextHospitalID(String role) throws Exception {
         List<HospitalStaff> staffList = admincsvReader.getAllStaff();
         String prefix = role.equalsIgnoreCase("doctor") ? "D" : "P";
         int maxNumber = 0;
-    
+
         // Find the highest number for the given role
         for (HospitalStaff staff : staffList) {
             String staffId = staff.getHospitalID();
@@ -557,7 +548,7 @@ public class AdminView {
                 }
             }
         }
-    
+
         // Generate next number and format it with leading zeros
         int nextNumber = maxNumber + 1;
         return String.format("%s%03d", prefix, nextNumber);
@@ -576,7 +567,8 @@ public class AdminView {
 
             try {
                 // Confirm removal
-                System.out.println("\nAre you sure you want to remove staff with Hospital ID " + hospitalID + "? (Y/N): ");
+                System.out.println(
+                        "\nAre you sure you want to remove staff with Hospital ID " + hospitalID + "? (Y/N): ");
                 String confirmation = sc.nextLine().trim().toLowerCase();
                 if (confirmation.equals("y")) {
                     adminController.removeStaff(hospitalID);
@@ -596,30 +588,32 @@ public class AdminView {
 
     private void updateStaffDetails() {
         boolean continueUpdating = true;
-    
+
         while (continueUpdating) {
             try {
                 System.out.println("\nCurrent Staff List:");
                 List<HospitalStaff> staffList = admincsvReader.getAllStaff();
                 displayFilteredStaff(staffList);
-    
+
                 System.out.println("\nEnter 1 to exit or");
                 System.out.println("Please enter the Hospital ID of the staff to update: ");
                 String hospitalID = sc.nextLine().trim();
-    
-                if (hospitalID.equals("1")) return;
-                
+
+                if (hospitalID.equals("1"))
+                    return;
+
                 // Validate ID exists
                 List<HospitalStaff> foundStaff = admincsvReader.filterByStaffId(hospitalID);
                 if (foundStaff.isEmpty()) {
                     System.out.println("Staff member not found.");
                     continue;
                 }
-    
+
                 System.out.println("Enter new name (or press Enter to keep current): ");
                 String name = sc.nextLine().trim();
-                if (name.isEmpty()) name = foundStaff.get(0).getName();
-    
+                if (name.isEmpty())
+                    name = foundStaff.get(0).getName();
+
                 System.out.println("Enter new role (Doctor/Pharmacist) (or press Enter to keep current): ");
                 String role = sc.nextLine().trim();
                 if (role.isEmpty()) {
@@ -628,7 +622,7 @@ public class AdminView {
                     System.out.println("Invalid role. Please enter Doctor or Pharmacist.");
                     continue;
                 }
-    
+
                 System.out.println("Enter new gender (Male/Female) (or press Enter to keep current): ");
                 String gender = sc.nextLine().trim();
                 if (gender.isEmpty()) {
@@ -637,7 +631,7 @@ public class AdminView {
                     System.out.println("Invalid gender. Please enter Male or Female.");
                     continue;
                 }
-    
+
                 int age = foundStaff.get(0).getAge();
                 System.out.println("Enter new age (or press Enter to keep current): ");
                 String ageInput = sc.nextLine().trim();
@@ -653,12 +647,12 @@ public class AdminView {
                         continue;
                     }
                 }
-    
+
                 adminController.updateStaffInfo(hospitalID, name, role, gender, age, "password");
-    
+
                 System.out.println("\nUpdate another staff member? (Y/N): ");
                 continueUpdating = sc.nextLine().trim().toLowerCase().equals("y");
-    
+
             } catch (Exception e) {
                 System.out.println("Error updating staff details: " + e.getMessage());
             }
@@ -667,17 +661,17 @@ public class AdminView {
 
     private void manageReplenishmentReq() {
         boolean continueManaging = true;
-    
+
         while (continueManaging) {
             try {
                 displayReplenishmentMenu();
-                
+
                 // Get user choice with input validation
                 int choice;
                 while (true) {
                     System.out.print("\nPlease enter your choice: ");
                     String input = sc.nextLine().trim();
-    
+
                     try {
                         choice = Integer.parseInt(input);
                         if (choice >= 1 && choice <= 3) {
@@ -689,7 +683,7 @@ public class AdminView {
                         System.out.println("Invalid input. Please enter a number.");
                     }
                 }
-    
+
                 switch (choice) {
                     case 1: // View Replenishment Requests
                         System.out.println("\n===== Current Replenishment Requests =====");
@@ -708,37 +702,37 @@ public class AdminView {
                         sc.nextLine();
                         break;
 
-    
                     case 2: // Approve Replenishment Requests
                         System.out.println("Enter request ID to approve: ");
                         String requestId = sc.nextLine().trim();
-                        inventoryController.approveReplenishmentRequest(requestId); // Using the improved version from previous response
+                        inventoryController.approveReplenishmentRequest(requestId); // Using the improved version from
+                                                                                    // previous response
                         break;
-    
+
                     case 3: // Return to Admin Menu
                         System.out.println("\nReturning to Admin Menu...");
                         continueManaging = false;
                         break;
-    
+
                     default:
                         System.out.println("Invalid choice. Please try again.");
                         break;
                 }
-    
+
             } catch (Exception e) {
                 System.out.println("\nAn error occurred: " + e.getMessage());
                 System.out.println("Please try again.");
-                
+
                 // Clear scanner buffer
                 sc.nextLine();
-                
+
                 // Pause before showing menu again
                 System.out.println("\nPress Enter to continue...");
                 sc.nextLine();
             }
         }
     }
-    
+
     // Helper method to display the menu
     private void displayReplenishmentMenu() {
         System.out.println("\n========================================");
@@ -749,24 +743,24 @@ public class AdminView {
         System.out.println("3 - Return to Admin Menu");
         System.out.println("========================================");
     }
-    
+
     // Helper method to display requests in a formatted table
     private void displayRequestsTable(List<ReplenishmentRequest> requests) {
         // Print table header
-        System.out.println("\n" + String.format("%-15s %-20s %-12s %-10s", 
-            "Request ID", "Medicine Name", "Quantity", "Status"));
+        System.out.println("\n" + String.format("%-15s %-20s %-12s %-10s",
+                "Request ID", "Medicine Name", "Quantity", "Status"));
         System.out.println("---------------------------------------------------");
-    
+
         // Print each request
         for (ReplenishmentRequest request : requests) {
             System.out.println(String.format("%-15s %-20s %-12d %-10s",
-                request.getRequestID(),
-                request.getMedicineName(),
-                request.getQuantity(),
-                request.getStatus()));
+                    request.getRequestID(),
+                    request.getMedicineName(),
+                    request.getQuantity(),
+                    request.getStatus()));
         }
     }
-    
+
     // Method to check if user wants to continue after an operation
     private boolean askToContinue(Scanner sc, String message) {
         while (true) {
@@ -787,23 +781,23 @@ public class AdminView {
             System.out.println("\nNo staff members found matching the criteria.");
             return;
         }
-    
+
         System.out.println("\n========== Staff List ==========");
-        System.out.printf("%-10s %-20s %-15s %-8s %-5s%n", 
-            "Staff ID", "Name", "Role", "Gender", "Age");
+        System.out.printf("%-10s %-20s %-15s %-8s %-5s%n",
+                "Staff ID", "Name", "Role", "Gender", "Age");
         System.out.println("=".repeat(65));
-    
+
         for (HospitalStaff staff : staffList) {
             System.out.printf("%-10s %-20s %-15s %-8s %-5d%n",
-                staff.getHospitalID(),
-                staff.getName(),
-                staff.getuserRole(),
-                staff.getGender(),
-                staff.getAge());
+                    staff.getHospitalID(),
+                    staff.getName(),
+                    staff.getuserRole(),
+                    staff.getGender(),
+                    staff.getAge());
         }
         System.out.println("=".repeat(65));
         System.out.println("Total staff members found: " + staffList.size());
-        
+
         // Pause for user to read the results
         System.out.println("\nPress Enter to continue...");
         sc.nextLine();
@@ -818,7 +812,7 @@ public class AdminView {
             System.out.println("Error details: " + e.getMessage());
             return;
         }
-      
+
         while (true) {
             System.out.println("\n===== Filter Staff List =====");
             System.out.println("1. Filter by Staff ID (Format: [D/P/A]XXX)");
@@ -829,7 +823,7 @@ public class AdminView {
             System.out.println("6. Show All Staff");
             System.out.println("7. Return to Main Menu");
             System.out.print("Enter your choice: ");
-    
+
             int choice;
             try {
                 choice = Integer.parseInt(sc.nextLine().trim());
@@ -837,9 +831,9 @@ public class AdminView {
                 System.out.println("Invalid input. Please enter a number.");
                 continue;
             }
-    
+
             List<HospitalStaff> filteredList;
-            
+
             switch (choice) {
                 case 1:
                     System.out.println("Enter Staff ID to search (Format: [D/P/A]XXX where X is a number)");
@@ -852,21 +846,21 @@ public class AdminView {
                     filteredList = admincsvReader.filterByStaffId(staffId);
                     displayFilteredStaff(filteredList);
                     break;
-    
+
                 case 2:
                     System.out.print("Enter Name to search: ");
                     String name = sc.nextLine().trim();
                     filteredList = admincsvReader.filterByName(name);
                     displayFilteredStaff(filteredList);
                     break;
-    
+
                 case 3:
                     System.out.println("Choose role to filter:");
                     System.out.println("1. Doctor");
                     System.out.println("2. Pharmacist");
                     System.out.println("3. Administrator");
                     System.out.print("Enter your choice (1-3): ");
-                    
+
                     try {
                         int roleChoice = Integer.parseInt(sc.nextLine().trim());
                         String role;
@@ -891,7 +885,7 @@ public class AdminView {
                         continue;
                     }
                     break;
-    
+
                 case 4:
                     System.out.print("Enter Gender to filter (Male/Female): ");
                     String gender = sc.nextLine().trim();
@@ -902,12 +896,12 @@ public class AdminView {
                     filteredList = admincsvReader.filterByGender(gender);
                     displayFilteredStaff(filteredList);
                     break;
-    
+
                 case 5:
                     System.out.println("1. Search by specific age");
                     System.out.println("2. Search by age range");
                     System.out.print("Enter your choice: ");
-                    
+
                     try {
                         int ageChoice = Integer.parseInt(sc.nextLine().trim());
                         if (ageChoice == 1) {
@@ -938,15 +932,16 @@ public class AdminView {
                         continue;
                     }
                     break;
-    
+
                 case 6:
+                    admincsvReader.refreshStaffData();
                     filteredList = admincsvReader.getAllStaff();
                     displayFilteredStaff(filteredList);
                     break;
-    
+
                 case 7:
                     return;
-    
+
                 default:
                     System.out.println("Invalid choice. Please try again.");
             }
@@ -955,32 +950,35 @@ public class AdminView {
 
     public void showAppointmentDetails() {
         System.out.println("====== Appointment List ===========");
-        
+
         // Load all appointments from the CSV file
         List<Appointment> appointments = AppointmentsCsvHelper.loadAppointments();
-        List<AppointmentOutcomeRecord> appointmentOutcomes = AppointmentOutcomeRecordsCsvHelper.loadAppointmentOutcomes();
-        
+        List<AppointmentOutcomeRecord> appointmentOutcomes = AppointmentOutcomeRecordsCsvHelper
+                .loadAppointmentOutcomes();
+
         // Check if appointments list is empty
         if (appointments.isEmpty()) {
             System.out.println("No appointments found.");
             return;
         }
-        
+
         // Create a map for fast lookup of outcomes by AppointmentID
         Map<String, AppointmentOutcomeRecord> outcomeMap = new HashMap<>();
         for (AppointmentOutcomeRecord outcome : appointmentOutcomes) {
             outcomeMap.put(outcome.getAppointmentID(), outcome);
         }
-        
+
         // Display each appointment's details
         for (Appointment appointment : appointments) {
             System.out.println("Appointment ID: " + appointment.getAppointmentID());
             System.out.println("Patient ID: " + appointment.getPatientID());
             System.out.println("Doctor ID: " + appointment.getDoctorID());
-            System.out.println("Date and Time: " + appointment.getAppointmentDate()+ " , " + appointment.getAppointmentTime());
+            System.out.println(
+                    "Date and Time: " + appointment.getAppointmentDate() + " , " + appointment.getAppointmentTime());
             System.out.println("Status: " + appointment.getStatus());
-            
-            // Check if the appointment is completed and display the outcome record if available
+
+            // Check if the appointment is completed and display the outcome record if
+            // available
             if (appointment.getStatus() == Appointment.AppointmentStatus.COMPLETED) {
                 AppointmentOutcomeRecord outcomeRecord = outcomeMap.get(appointment.getAppointmentID());
                 if (outcomeRecord != null) {
