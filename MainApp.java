@@ -6,6 +6,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import controller.InventoryController;
+import controller.LoginManager;
+import model.DoctorModel;
+import model.PatientModel;
+import model.User;
+import view.AdminView;
+import view.DoctorView;
+import view.PatientView;
+import view.PharmacistView;
+
 public class MainApp {
     private static LoginManager loginManager;
     private static Scanner scanner;

@@ -1,5 +1,10 @@
 import java.util.Scanner;
 
+import controller.AppointmentManager;
+import controller.DoctorController;
+import model.DoctorModel;
+import view.DoctorView;
+
 public class DoctorRoleMain {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);

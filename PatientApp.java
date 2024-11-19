@@ -1,5 +1,11 @@
 import java.util.Scanner;
 
+import controller.AppointmentManager;
+import controller.PatientController;
+import model.PatientModel;
+import utils.PatientListCsvHelper;
+import view.PatientView;
+
 public class PatientApp {
 
     public static void main(String[] args) {

@@ -1,4 +1,4 @@
-
+import model.User;
 
 public class LoginResult {
     private boolean success;
