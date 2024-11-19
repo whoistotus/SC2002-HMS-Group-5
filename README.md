@@ -59,8 +59,8 @@ A comprehensive hospital management system designed to automate and streamline h
 
 1. Clone the repository:
 ```bash
-git clone <repository-url>
-cd hospital-management-system
+git clone https://github.com/whoistotus/SC2002-HMS-Group-5
+cd SC2002_Assignment
 ```
 
 2. Compile the Java files:
@@ -74,45 +74,6 @@ java -cp bin Main
 ```
 
 ## Project Structure
-
-```
-Git/
-├── SC2002_Assignment/
-│   ├── controller/
-│   │   ├── AdminController.java
-│   │   ├── AppointmentManager.java
-│   │   ├── DoctorController.java
-│   │   ├── InventoryController.java
-│   │   ├── LoginManager.java
-│   │   ├── PatientController.java
-│   │   ├── PharmacistController.java
-│   │   └── PharmacistReplenishmentRequestManager.java
-│   ├── model/
-│   │   ├── AdminModel.java
-│   │   ├── Appointment.java
-│   │   ├── AppointmentOutcomeRecord.java
-│   │   ├── DoctorModel.java
-│   │   ├── MedicalRecord.java
-│   │   ├── Medication.java
-│   │   ├── PatientModel.java
-│   │   └── User.java
-│   ├── view/
-│   │   ├── AdminView.java
-│   │   ├── DoctorView.java
-│   │   ├── PatientView.java
-│   │   └── PharmacistView.java
-│   └── utils/
-│       ├── CSVHelpers/
-│       └── DataManagers/
-├── data/
-│   ├── Appointments.csv
-│   ├── MedicalRecords.csv
-│   ├── Medications.csv
-│   ├── PatientList.csv
-│   └── StaffList.csv
-└── README.md
-```
-
 ```
 [controller]
     ├── AdminController.java
