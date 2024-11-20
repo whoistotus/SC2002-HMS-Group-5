@@ -212,10 +212,10 @@ public class DoctorView {
 
             for (Appointment appointment : pendingAppointments) {
                 System.out.printf("| %-14s | %-10s | %-5s | %-7s |\n",
-                    appointment.getAppointmentID(),
-                    appointment.getPatient().getHospitalID(),
-                    appointment.getAppointmentTime(),
-                    appointment.getStatus());
+                        appointment.getAppointmentID(),
+                        appointment.getPatient().getHospitalID(),
+                        appointment.getAppointmentTime(),
+                        appointment.getStatus());
             }
 
             System.out.println("+-------------------------------------------+");
@@ -229,8 +229,18 @@ public class DoctorView {
                 AppointmentsCsvHelper.updateAppointmentStatus(appointmentIDToAccept, Appointment.AppointmentStatus.CONFIRMED);
                 doctorModel.addAppointment(appointmentToAccept);
 
-                blockTimeInAvailability(appointmentToAccept);
-                System.out.println("Appointment accepted: " + appointmentToAccept.getAppointmentID());
+                // Block the specific slot in the CSV
+                boolean isRemoved = DoctorAvailabilityCsvHelper.removeSlot(
+                        appointmentToAccept.getDoctorID(),
+                        appointmentToAccept.getAppointmentDate(),
+                        appointmentToAccept.getAppointmentTime()
+                );
+
+                if (isRemoved) {
+                    System.out.println("Appointment accepted and time slot blocked: " + appointmentToAccept.getAppointmentID());
+                } else {
+                    System.out.println("Failed to block the time slot. Please check availability.");
+                }
             } else {
                 System.out.println("Appointment not found or already processed.");
             }
@@ -238,41 +248,19 @@ public class DoctorView {
     }
 
     private void blockTimeInAvailability(Appointment appointment) {
-        List<DoctorAvailability> availabilityList = doctorModel.getAvailability();
-        List<DoctorAvailability> updatedAvailability = new ArrayList<>();
-
-        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
-        LocalTime appointmentStartTime = LocalTime.parse(appointment.getAppointmentTime(), timeFormatter);
-        LocalTime appointmentEndTime = appointmentStartTime.plusHours(1);
-
-        for (DoctorAvailability availability : availabilityList) {
-            if (!availability.getDate().equals(appointment.getAppointmentDate())) {
-                updatedAvailability.add(availability);
-                continue;
-            }
-
-            LocalTime availableStart = LocalTime.parse(availability.getStartTime(), timeFormatter);
-            LocalTime availableEnd = LocalTime.parse(availability.getEndTime(), timeFormatter);
-
-            if (availableStart.isBefore(appointmentStartTime)) {
-                updatedAvailability.add(new DoctorAvailability(
-                    availability.getDoctor(),
-                    availability.getDate(),
-                    availability.getStartTime(),
-                    appointment.getAppointmentTime()
-                ));
-            }
-            if (availableEnd.isAfter(appointmentEndTime)) {
-                updatedAvailability.add(new DoctorAvailability(
-                    availability.getDoctor(),
-                    availability.getDate(),
-                    appointmentEndTime.format(timeFormatter),
-                    availability.getEndTime()
-                ));
-            }
+        boolean isRemoved = DoctorAvailabilityCsvHelper.removeSlot(
+            appointment.getDoctorID(),
+            appointment.getAppointmentDate(),
+            appointment.getAppointmentTime()
+        );
+    
+        if (isRemoved) {
+            System.out.println("Blocked time slot: " + appointment.getAppointmentDate() + " at " + appointment.getAppointmentTime());
+        } else {
+            System.out.println("Failed to block the time slot. Please ensure it exists in the CSV.");
         }
-        DoctorAvailabilityCsvHelper.saveDoctorAvailability(updatedAvailability);
     }
+    
 
     public void declineAppointment() {
         System.out.println("\n=== Decline Appointment Request ===");
