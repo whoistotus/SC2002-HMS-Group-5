@@ -53,19 +53,20 @@ public class DoctorAvailabilityCsvHelper {
     
     
     public static void saveDoctorAvailability(List<DoctorAvailability> availabilityList) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH, true))) { // Use true for append mode
+        try (PrintWriter writer = new PrintWriter(new FileWriter(FILE_PATH, false))) {
+            writer.println("DoctorID,Date,StartTime,EndTime"); // Write header
             for (DoctorAvailability availability : availabilityList) {
-                writer.write(String.format("%s,%s,%s,%s%n",
+                writer.printf("%s,%s,%s,%s%n",
                         availability.getDoctorID(),
                         availability.getDate(),
                         availability.getStartTime(),
-                        availability.getEndTime()));
+                        availability.getEndTime());
             }
+            //System.out.println("Doctor availability successfully saved to CSV.");
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-    
     
 
 
